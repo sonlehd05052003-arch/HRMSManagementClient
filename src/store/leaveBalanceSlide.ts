@@ -73,14 +73,11 @@ const initialState: ILeaveBalanceState = {
 
 export const fetchMyBalance = createAsyncThunk(
   "leaveBalance/fetchMy",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveBalances/my-balance",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -91,14 +88,11 @@ export const fetchMyBalance = createAsyncThunk(
 
 export const fetchAllBalances = createAsyncThunk(
   "leaveBalance/fetchAll",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveBalances",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -109,14 +103,11 @@ export const fetchAllBalances = createAsyncThunk(
 
 export const fetchBalancesByEmployee = createAsyncThunk(
   "leaveBalance/fetchByEmployee",
-  async (employeeId: number, { rejectWithValue, getState }) => {
+  async (employeeId: number, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/LeaveBalances/employee/${employeeId}`,
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -127,15 +118,12 @@ export const fetchBalancesByEmployee = createAsyncThunk(
 
 export const createLeaveBalance = createAsyncThunk(
   "leaveBalance/create",
-  async (data: CreateLeaveBalanceDto, { rejectWithValue, getState }) => {
+  async (data: CreateLeaveBalanceDto, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveBalances",
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -146,15 +134,12 @@ export const createLeaveBalance = createAsyncThunk(
 
 export const adjustLeaveBalance = createAsyncThunk(
   "leaveBalance/adjust",
-  async (data: AdjustLeaveBalanceDto, { rejectWithValue, getState }) => {
+  async (data: AdjustLeaveBalanceDto, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveBalances/adjust",
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -165,14 +150,11 @@ export const adjustLeaveBalance = createAsyncThunk(
 
 export const generateLeaveBalances = createAsyncThunk(
   "leaveBalance/generate",
-  async ({ year, carryForward }: { year: number; carryForward: boolean }, { rejectWithValue, getState }) => {
+  async ({ year, carryForward }: { year: number; carryForward: boolean }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/LeaveBalances/generate?year=${year}&carryForward=${carryForward}`,
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {

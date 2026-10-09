@@ -41,14 +41,11 @@ const initialState: ILeaveTypeState = {
 
 export const fetchActiveLeaveTypes = createAsyncThunk(
   "leaveType/fetchActive",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/leave-types",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -59,14 +56,11 @@ export const fetchActiveLeaveTypes = createAsyncThunk(
 
 export const fetchAllLeaveTypes = createAsyncThunk(
   "leaveType/fetchAll",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/leave-types/all",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -77,14 +71,11 @@ export const fetchAllLeaveTypes = createAsyncThunk(
 
 export const fetchLeaveTypeById = createAsyncThunk(
   "leaveType/fetchById",
-  async (id: number, { rejectWithValue, getState }) => {
+  async (id: number, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/leave-types/${id}`,
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -95,15 +86,12 @@ export const fetchLeaveTypeById = createAsyncThunk(
 
 export const createLeaveType = createAsyncThunk(
   "leaveType/create",
-  async (dto: CreateLeaveTypeDto, { rejectWithValue, getState }) => {
+  async (dto: CreateLeaveTypeDto, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/leave-types",
         method: "POST",
         data: dto,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -114,15 +102,12 @@ export const createLeaveType = createAsyncThunk(
 
 export const updateLeaveType = createAsyncThunk(
   "leaveType/update",
-  async ({ id, dto }: { id: number; dto: CreateLeaveTypeDto }, { rejectWithValue, getState }) => {
+  async ({ id, dto }: { id: number; dto: CreateLeaveTypeDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/leave-types/${id}`,
         method: "PUT",
         data: dto,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -133,15 +118,12 @@ export const updateLeaveType = createAsyncThunk(
 
 export const deleteLeaveType = createAsyncThunk(
   "leaveType/delete",
-  async (id: number, { rejectWithValue, getState }) => {
+  async (id: number, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       // Note: Soft delete endpoint might need to be verified if the controller adds it
       const response = await request({
         url: `/leave-types/${id}`,
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {

@@ -44,20 +44,13 @@ const initialState: IPayrollState = {
 }
 
 // ─────────────────────────────────────────────────────────
-// HELPER
-// ─────────────────────────────────────────────────────────
-const getAuthHeader = (state: any) => ({
-  Authorization: `Bearer ${state.auth.infoLogin?.accessToken}`,
-})
-
-// ─────────────────────────────────────────────────────────
 // THUNKS — KỲ LƯƠNG
 // ─────────────────────────────────────────────────────────
 export const fetchPayrollPeriods = createAsyncThunk(
   "payroll/fetchPeriods",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await request({ url: "/payroll/periods", method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: "/payroll/periods", method: "GET" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải danh sách kỳ lương")
@@ -67,9 +60,9 @@ export const fetchPayrollPeriods = createAsyncThunk(
 
 export const fetchPayrollPeriodById = createAsyncThunk(
   "payroll/fetchPeriodById",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/periods/${periodId}`, method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/periods/${periodId}`, method: "GET" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải kỳ lương")
@@ -79,9 +72,9 @@ export const fetchPayrollPeriodById = createAsyncThunk(
 
 export const fetchPayrollPeriodSummary = createAsyncThunk(
   "payroll/fetchPeriodSummary",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/periods/${periodId}/summary`, method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/periods/${periodId}/summary`, method: "GET" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải tổng hợp kỳ lương")
@@ -91,9 +84,9 @@ export const fetchPayrollPeriodSummary = createAsyncThunk(
 
 export const createPayrollPeriod = createAsyncThunk(
   "payroll/createPeriod",
-  async (data: ICreatePayrollPeriod, { rejectWithValue, getState }) => {
+  async (data: ICreatePayrollPeriod, { rejectWithValue }) => {
     try {
-      const res = await request({ url: "/payroll/periods", method: "POST", data, headers: getAuthHeader(getState()) })
+      const res = await request({ url: "/payroll/periods", method: "POST", data })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tạo kỳ lương")
@@ -103,9 +96,9 @@ export const createPayrollPeriod = createAsyncThunk(
 
 export const approvePayrollPeriod = createAsyncThunk(
   "payroll/approvePeriod",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/periods/${periodId}/approve`, method: "PUT", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/periods/${periodId}/approve`, method: "PUT" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi duyệt kỳ lương")
@@ -115,9 +108,9 @@ export const approvePayrollPeriod = createAsyncThunk(
 
 export const rejectPayrollPeriod = createAsyncThunk(
   "payroll/rejectPeriod",
-  async ({ periodId, data }: { periodId: number; data: IRejectPayrollPeriod }, { rejectWithValue, getState }) => {
+  async ({ periodId, data }: { periodId: number; data: IRejectPayrollPeriod }, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/periods/${periodId}/reject`, method: "PUT", data, headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/periods/${periodId}/reject`, method: "PUT", data })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi từ chối kỳ lương")
@@ -127,9 +120,9 @@ export const rejectPayrollPeriod = createAsyncThunk(
 
 export const triggerAttendanceReview = createAsyncThunk(
   "payroll/triggerAttendanceReview",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/periods/${periodId}/trigger-attendance-review`, method: "PUT", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/periods/${periodId}/trigger-attendance-review`, method: "PUT" })
       return res.data as IPayrollPeriod
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi kích hoạt review chấm công")
@@ -142,9 +135,9 @@ export const triggerAttendanceReview = createAsyncThunk(
 // ─────────────────────────────────────────────────────────
 export const calculateAllEmployees = createAsyncThunk(
   "payroll/calculateAll",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/periods/${periodId}/calculate`, method: "POST", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/periods/${periodId}/calculate`, method: "POST" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tính lương")
@@ -154,9 +147,9 @@ export const calculateAllEmployees = createAsyncThunk(
 
 export const calculateOneEmployee = createAsyncThunk(
   "payroll/calculateOne",
-  async ({ periodId, employeeId }: { periodId: number; employeeId: number }, { rejectWithValue, getState }) => {
+  async ({ periodId, employeeId }: { periodId: number; employeeId: number }, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/periods/${periodId}/calculate/${employeeId}`, method: "POST", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/periods/${periodId}/calculate/${employeeId}`, method: "POST" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tính lương nhân viên")
@@ -169,9 +162,9 @@ export const calculateOneEmployee = createAsyncThunk(
 // ─────────────────────────────────────────────────────────
 export const fetchRecordsByPeriod = createAsyncThunk(
   "payroll/fetchRecordsByPeriod",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/records/${periodId}`, method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/${periodId}`, method: "GET" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải bảng lương")
@@ -181,9 +174,9 @@ export const fetchRecordsByPeriod = createAsyncThunk(
 
 export const fetchRecordById = createAsyncThunk(
   "payroll/fetchRecordById",
-  async (recordId: number, { rejectWithValue, getState }) => {
+  async (recordId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/records/detail/${recordId}`, method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/detail/${recordId}`, method: "GET" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải chi tiết lương")
@@ -193,9 +186,9 @@ export const fetchRecordById = createAsyncThunk(
 
 export const updateBonus = createAsyncThunk(
   "payroll/updateBonus",
-  async ({ recordId, bonusAmount }: { recordId: number; bonusAmount: number }, { rejectWithValue, getState }) => {
+  async ({ recordId, bonusAmount }: { recordId: number; bonusAmount: number }, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/records/${recordId}/bonus`, method: "PUT", data: bonusAmount, headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/${recordId}/bonus`, method: "PUT", data: bonusAmount })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi cập nhật thưởng")
@@ -207,10 +200,10 @@ export const addAllowance = createAsyncThunk(
   "payroll/addAllowance",
   async (
     { recordId, data }: { recordId: number; data: Omit<IPayrollAllowance, "allowanceId" | "payrollRecordId"> },
-    { rejectWithValue, getState }
+    { rejectWithValue }
   ) => {
     try {
-      const res = await request({ url: `/payroll/records/${recordId}/allowance`, method: "POST", data, headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/${recordId}/allowance`, method: "POST", data })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi thêm phụ cấp")
@@ -220,9 +213,9 @@ export const addAllowance = createAsyncThunk(
 
 export const removeAllowance = createAsyncThunk(
   "payroll/removeAllowance",
-  async ({ recordId, allowanceId }: { recordId: number; allowanceId: number }, { rejectWithValue, getState }) => {
+  async ({ recordId, allowanceId }: { recordId: number; allowanceId: number }, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/records/${recordId}/allowance/${allowanceId}`, method: "DELETE", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/${recordId}/allowance/${allowanceId}`, method: "DELETE" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi xóa phụ cấp")
@@ -234,10 +227,10 @@ export const addDeduction = createAsyncThunk(
   "payroll/addDeduction",
   async (
     { recordId, data }: { recordId: number; data: Omit<IPayrollDeduction, "deductionId" | "payrollRecordId"> },
-    { rejectWithValue, getState }
+    { rejectWithValue }
   ) => {
     try {
-      const res = await request({ url: `/payroll/records/${recordId}/deduction`, method: "POST", data, headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/${recordId}/deduction`, method: "POST", data })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi thêm khấu trừ")
@@ -247,9 +240,9 @@ export const addDeduction = createAsyncThunk(
 
 export const removeDeduction = createAsyncThunk(
   "payroll/removeDeduction",
-  async ({ recordId, deductionId }: { recordId: number; deductionId: number }, { rejectWithValue, getState }) => {
+  async ({ recordId, deductionId }: { recordId: number; deductionId: number }, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/records/${recordId}/deduction/${deductionId}`, method: "DELETE", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/${recordId}/deduction/${deductionId}`, method: "DELETE" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi xóa khấu trừ")
@@ -262,9 +255,9 @@ export const removeDeduction = createAsyncThunk(
 // ─────────────────────────────────────────────────────────
 export const generatePayslipsForPeriod = createAsyncThunk(
   "payroll/generatePayslipsForPeriod",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/payslips/period/${periodId}/generate-all`, method: "POST", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/payslips/period/${periodId}/generate-all`, method: "POST" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tạo phiếu lương")
@@ -274,9 +267,9 @@ export const generatePayslipsForPeriod = createAsyncThunk(
 
 export const generatePayslip = createAsyncThunk(
   "payroll/generatePayslip",
-  async (recordId: number, { rejectWithValue, getState }) => {
+  async (recordId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/payslips/${recordId}/generate`, method: "POST", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/payslips/${recordId}/generate`, method: "POST" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tạo phiếu lương")
@@ -286,9 +279,9 @@ export const generatePayslip = createAsyncThunk(
 
 export const fetchMyPayslips = createAsyncThunk(
   "payroll/fetchMyPayslips",
-  async (employeeId: number, { rejectWithValue, getState }) => {
+  async (employeeId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/payslips/employee/${employeeId}`, method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/payslips/employee/${employeeId}`, method: "GET" })
       return res.data
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải phiếu lương")
@@ -298,9 +291,9 @@ export const fetchMyPayslips = createAsyncThunk(
 
 export const downloadPayslipPdf = createAsyncThunk(
   "payroll/downloadPayslipPdf",
-  async (payslipId: number, { rejectWithValue, getState }) => {
+  async (payslipId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/payslips/${payslipId}/pdf`, method: "GET", headers: getAuthHeader(getState()), responseType: "blob" })
+      const res = await request({ url: `/payroll/payslips/${payslipId}/pdf`, method: "GET", responseType: "blob" })
       return res.data as Blob
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Tải PDF thất bại")
@@ -310,9 +303,9 @@ export const downloadPayslipPdf = createAsyncThunk(
 
 export const exportPayrollExcel = createAsyncThunk(
   "payroll/exportPayrollExcel",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/export/${periodId}`, method: "GET", headers: getAuthHeader(getState()), responseType: "blob" })
+      const res = await request({ url: `/payroll/export/${periodId}`, method: "GET", responseType: "blob" })
       return res.data as Blob
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Xuất Excel thất bại")
@@ -325,9 +318,9 @@ export const exportPayrollExcel = createAsyncThunk(
 // ─────────────────────────────────────────────────────────
 export const fetchMyAttendanceSummary = createAsyncThunk(
   "payroll/fetchMyAttendanceSummary",
-  async (periodId: number, { rejectWithValue, getState }) => {
+  async (periodId: number, { rejectWithValue }) => {
     try {
-      const res = await request({ url: `/payroll/records/my/${periodId}/attendance`, method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: `/payroll/records/my/${periodId}/attendance`, method: "GET" })
       return res.data as IAttendanceSummary
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải dữ liệu chấm công")
@@ -337,9 +330,9 @@ export const fetchMyAttendanceSummary = createAsyncThunk(
 
 export const fetchMyPeriods = createAsyncThunk(
   "payroll/fetchMyPeriods",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await request({ url: "/payroll/periods/my", method: "GET", headers: getAuthHeader(getState()) })
+      const res = await request({ url: "/payroll/periods/my", method: "GET" })
       return res.data as IPayrollPeriod[]
     } catch (err: any) {
       return rejectWithValue(err.response?.data || "Lỗi tải danh sách kỳ lương")

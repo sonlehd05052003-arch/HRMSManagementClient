@@ -40,12 +40,10 @@ export const fetchEmployeeOptions = createAsyncThunk(
     async (_, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/User/employee-options",
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     ...companyScopeHeader(state),
                 },
             });
@@ -62,12 +60,10 @@ export const fetchAllUsers = createAsyncThunk(
     async (_, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/User",
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     ...companyScopeHeader(state),
                 },
             });
@@ -84,13 +80,11 @@ export const createUser = createAsyncThunk(
     async (data: any, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/User",
                 method: "POST",
                 data,
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     ...companyScopeHeader(state),
                 },
             });
@@ -107,13 +101,11 @@ export const updateUser = createAsyncThunk(
     async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/User/${id}`,
                 method: "PUT",
                 data,
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     ...companyScopeHeader(state),
                 },
             });
@@ -130,12 +122,10 @@ export const activateUser = createAsyncThunk(
     async (id: number, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/User/${id}/activate`,
                 method: "PATCH",
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     ...companyScopeHeader(state),
                 },
             });
@@ -152,12 +142,10 @@ export const deactivateUser = createAsyncThunk(
     async (id: number, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/User/${id}/deactivate`,
                 method: "PATCH",
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     ...companyScopeHeader(state),
                 },
             });
@@ -179,13 +167,11 @@ export const resetUserPassword = createAsyncThunk(
     async ({ id, data }: { id: number; data: IResetUserPassword }, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/User/${id}/reset-password`,
                 method: "POST",
                 data,
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     ...companyScopeHeader(state),
                 },
             });

@@ -45,10 +45,8 @@ const initialState: ExportState = {
 
 export const exportReport = createAsyncThunk(
     "export/report",
-    async (payload: ExportRequestDTO, { rejectWithValue, getState }) => {
+    async (payload: ExportRequestDTO, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             
             // Set responseType to blob because we might receive a file
             const response = await request({
@@ -56,7 +54,6 @@ export const exportReport = createAsyncThunk(
                 method: "POST",
                 data: payload,
                 responseType: payload.sendToEmail ? "json" : "blob",
-                headers: { Authorization: `Bearer ${token}` },
             });
 
             if (payload.sendToEmail) {

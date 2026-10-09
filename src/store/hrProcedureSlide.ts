@@ -66,11 +66,9 @@ const initialState: IHRProcedureState = {
 
 export const fetchAllProcedures = createAsyncThunk(
     "hrProcedure/fetchAll",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/HRProcedure", method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/HRProcedure", method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -80,11 +78,9 @@ export const fetchAllProcedures = createAsyncThunk(
 
 export const fetchProcedureById = createAsyncThunk(
     "hrProcedure/fetchById",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/HRProcedure/${id}`, method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/HRProcedure/${id}`, method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -94,11 +90,9 @@ export const fetchProcedureById = createAsyncThunk(
 
 export const fetchPendingProcedures = createAsyncThunk(
     "hrProcedure/fetchPending",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/HRProcedure/pending", method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/HRProcedure/pending", method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -108,11 +102,9 @@ export const fetchPendingProcedures = createAsyncThunk(
 
 export const fetchProceduresByEmployee = createAsyncThunk(
     "hrProcedure/fetchByEmployee",
-    async (employeeId: number, { rejectWithValue, getState }) => {
+    async (employeeId: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/HRProcedure/employee/${employeeId}`, method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/HRProcedure/employee/${employeeId}`, method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -122,11 +114,9 @@ export const fetchProceduresByEmployee = createAsyncThunk(
 
 export const fetchProceduresByStatus = createAsyncThunk(
     "hrProcedure/fetchByStatus",
-    async (status: string, { rejectWithValue, getState }) => {
+    async (status: string, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/HRProcedure/status/${status}`, method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/HRProcedure/status/${status}`, method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -136,11 +126,9 @@ export const fetchProceduresByStatus = createAsyncThunk(
 
 export const submitProcedure = createAsyncThunk(
     "hrProcedure/submit",
-    async (data: any, { rejectWithValue, getState }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/HRProcedure", method: "POST", data, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/HRProcedure", method: "POST", data });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -150,11 +138,9 @@ export const submitProcedure = createAsyncThunk(
 
 export const updateProcedure = createAsyncThunk(
     "hrProcedure/update",
-    async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: any }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/HRProcedure/${id}`, method: "PUT", data, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/HRProcedure/${id}`, method: "PUT", data });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -164,11 +150,9 @@ export const updateProcedure = createAsyncThunk(
 
 export const approveProcedure = createAsyncThunk(
     "hrProcedure/approve",
-    async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: any }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/HRProcedure/${id}/approve`, method: "POST", data, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/HRProcedure/${id}/approve`, method: "POST", data });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -178,11 +162,9 @@ export const approveProcedure = createAsyncThunk(
 
 export const rejectProcedure = createAsyncThunk(
     "hrProcedure/reject",
-    async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: any }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/HRProcedure/${id}/reject`, method: "POST", data, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/HRProcedure/${id}/reject`, method: "POST", data });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -192,11 +174,9 @@ export const rejectProcedure = createAsyncThunk(
 
 export const applyProcedure = createAsyncThunk(
     "hrProcedure/apply",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/HRProcedure/${id}/apply`, method: "POST", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/HRProcedure/${id}/apply`, method: "POST" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -206,11 +186,9 @@ export const applyProcedure = createAsyncThunk(
 
 export const deleteProcedure = createAsyncThunk(
     "hrProcedure/delete",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            await request({ url: `/HRProcedure/${id}`, method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+            await request({ url: `/HRProcedure/${id}`, method: "DELETE" });
             return id;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");

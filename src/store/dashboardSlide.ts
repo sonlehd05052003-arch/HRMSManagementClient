@@ -114,15 +114,12 @@ const initialState: IDashboardState = {
 
 export const fetchAdminDashboardData = createAsyncThunk(
     "dashboard/fetchAdminData",
-    async (params: { fromDate?: string; toDate?: string } | undefined, { rejectWithValue, getState }) => {
+    async (params: { fromDate?: string; toDate?: string } | undefined, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({ 
                 url: "/Dashboard/admin-stats", 
                 method: "GET", 
-                params,
-                headers: { Authorization: `Bearer ${token}` } 
+                params 
             });
             return response.data;
         } catch (error: any) {
@@ -133,15 +130,12 @@ export const fetchAdminDashboardData = createAsyncThunk(
 
 export const fetchHrDashboardData = createAsyncThunk(
     "dashboard/fetchHrData",
-    async (params: { fromDate?: string; toDate?: string } | undefined, { rejectWithValue, getState }) => {
+    async (params: { fromDate?: string; toDate?: string } | undefined, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({ 
                 url: "/Dashboard/hr-stats", 
                 method: "GET", 
-                params,
-                headers: { Authorization: `Bearer ${token}` } 
+                params 
             });
             return response.data;
         } catch (error: any) {
@@ -152,15 +146,12 @@ export const fetchHrDashboardData = createAsyncThunk(
 
 export const fetchManagerDashboardData = createAsyncThunk(
     "dashboard/fetchManagerData",
-    async (params: { fromDate?: string; toDate?: string } | undefined, { rejectWithValue, getState }) => {
+    async (params: { fromDate?: string; toDate?: string } | undefined, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({ 
                 url: "/Dashboard/manager-stats", 
                 method: "GET", 
-                params,
-                headers: { Authorization: `Bearer ${token}` } 
+                params 
             });
             return response.data;
         } catch (error: any) {

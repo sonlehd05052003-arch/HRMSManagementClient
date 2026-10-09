@@ -47,14 +47,11 @@ const initialState: IPositionState = {
 
 export const fetchAllPositions = createAsyncThunk(
     "position/fetchAll",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Position",
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -65,14 +62,11 @@ export const fetchAllPositions = createAsyncThunk(
 
 export const fetchActivePositions = createAsyncThunk(
     "position/fetchActive",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Position/active",
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -83,14 +77,11 @@ export const fetchActivePositions = createAsyncThunk(
 
 export const fetchPositionById = createAsyncThunk(
     "position/fetchById",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Position/${id}`,
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -101,15 +92,12 @@ export const fetchPositionById = createAsyncThunk(
 
 export const createPosition = createAsyncThunk(
     "position/create",
-    async (data: any, { rejectWithValue, getState }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Position",
                 method: "POST",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -120,15 +108,12 @@ export const createPosition = createAsyncThunk(
 
 export const updatePosition = createAsyncThunk(
     "position/update",
-    async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: any }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Position/${id}`,
                 method: "PUT",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -139,14 +124,11 @@ export const updatePosition = createAsyncThunk(
 
 export const deactivatePosition = createAsyncThunk(
     "position/deactivate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Position/${id}/deactivate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, message: response.data };
         } catch (error: any) {
@@ -157,14 +139,11 @@ export const deactivatePosition = createAsyncThunk(
 
 export const activatePosition = createAsyncThunk(
     "position/activate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Position/${id}/activate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, message: response.data };
         } catch (error: any) {

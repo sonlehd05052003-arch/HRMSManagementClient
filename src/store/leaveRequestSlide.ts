@@ -102,15 +102,12 @@ const initialState: ILeaveRequestState = {
 
 export const createLeaveRequest = createAsyncThunk(
   "leaveRequest/create",
-  async (data: CreateLeaveRequestDto, { rejectWithValue, getState }) => {
+  async (data: CreateLeaveRequestDto, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveRequests",
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -121,14 +118,11 @@ export const createLeaveRequest = createAsyncThunk(
 
 export const fetchMyLeaveRequests = createAsyncThunk(
   "leaveRequest/fetchMy",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveRequests/my-requests",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -139,15 +133,12 @@ export const fetchMyLeaveRequests = createAsyncThunk(
 
 export const approveLeaveRequest = createAsyncThunk(
   "leaveRequest/approve",
-  async ({ id, data }: { id: number; data: ApproveLeaveRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: ApproveLeaveRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/LeaveRequests/${id}/approve`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -158,15 +149,12 @@ export const approveLeaveRequest = createAsyncThunk(
 
 export const rejectLeaveRequest = createAsyncThunk(
   "leaveRequest/reject",
-  async ({ id, data }: { id: number; data: RejectLeaveRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: RejectLeaveRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/LeaveRequests/${id}/reject`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -177,15 +165,12 @@ export const rejectLeaveRequest = createAsyncThunk(
 
 export const cancelLeaveRequest = createAsyncThunk(
   "leaveRequest/cancel",
-  async ({ id, data }: { id: number; data: CancelLeaveRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: CancelLeaveRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/LeaveRequests/${id}/cancel`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -196,14 +181,11 @@ export const cancelLeaveRequest = createAsyncThunk(
 
 export const fetchTeamLeaveCalendar = createAsyncThunk(
   "leaveRequest/fetchTeamCalendar",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveRequests/team-calendar",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -214,14 +196,11 @@ export const fetchTeamLeaveCalendar = createAsyncThunk(
 
 export const fetchPendingLeaveRequests = createAsyncThunk(
   "leaveRequest/fetchPending",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/LeaveRequests/pending",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {

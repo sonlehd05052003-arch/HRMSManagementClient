@@ -62,14 +62,11 @@ const initialState: SystemSettingState = {
 
 export const fetchLocationSettings = createAsyncThunk(
     "systemSetting/fetchLocationSettings",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/SystemSettings/location",
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "GET"
             });
             return response.data;
         } catch (error: any) {
@@ -80,15 +77,12 @@ export const fetchLocationSettings = createAsyncThunk(
 
 export const updateLocationSettings = createAsyncThunk(
     "systemSetting/updateLocationSettings",
-    async (dto: LocationSettings, { rejectWithValue, getState }) => {
+    async (dto: LocationSettings, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/SystemSettings/location",
                 method: "PUT",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {
@@ -99,14 +93,11 @@ export const updateLocationSettings = createAsyncThunk(
 
 export const fetchApprovalSettings = createAsyncThunk(
     "systemSetting/fetchApprovalSettings",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/SystemSettings/approval",
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "GET"
             });
             return response.data;
         } catch (error: any) {
@@ -117,14 +108,11 @@ export const fetchApprovalSettings = createAsyncThunk(
 
 export const fetchPayrollSettings = createAsyncThunk(
     "systemSetting/fetchPayrollSettings",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/SystemSettings/payroll",
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "GET"
             });
             return response.data;
         } catch (error: any) {
@@ -135,15 +123,12 @@ export const fetchPayrollSettings = createAsyncThunk(
 
 export const updatePayrollSettings = createAsyncThunk(
     "systemSetting/updatePayrollSettings",
-    async (dto: PayrollSettings, { rejectWithValue, getState }) => {
+    async (dto: PayrollSettings, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/SystemSettings/payroll",
                 method: "PUT",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {
@@ -154,11 +139,9 @@ export const updatePayrollSettings = createAsyncThunk(
 
 export const fetchCompanySettings = createAsyncThunk(
     "systemSetting/fetchCompanySettings",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/SystemSettings/company", method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/SystemSettings/company", method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Lỗi lấy thông tin công ty");
@@ -168,11 +151,9 @@ export const fetchCompanySettings = createAsyncThunk(
 
 export const updateCompanySettings = createAsyncThunk(
     "systemSetting/updateCompanySettings",
-    async (dto: CompanySettings, { rejectWithValue, getState }) => {
+    async (dto: CompanySettings, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/SystemSettings/company", method: "PUT", data: dto, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/SystemSettings/company", method: "PUT", data: dto });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật thông tin công ty");
@@ -182,11 +163,9 @@ export const updateCompanySettings = createAsyncThunk(
 
 export const fetchPayrollCalcSettings = createAsyncThunk(
     "systemSetting/fetchPayrollCalcSettings",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/SystemSettings/payroll-calculation", method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/SystemSettings/payroll-calculation", method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Lỗi lấy cấu hình tính lương");
@@ -196,11 +175,9 @@ export const fetchPayrollCalcSettings = createAsyncThunk(
 
 export const updatePayrollCalcSettings = createAsyncThunk(
     "systemSetting/updatePayrollCalcSettings",
-    async (dto: PayrollCalculationSettings, { rejectWithValue, getState }) => {
+    async (dto: PayrollCalculationSettings, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/SystemSettings/payroll-calculation", method: "PUT", data: dto, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/SystemSettings/payroll-calculation", method: "PUT", data: dto });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật cấu hình tính lương");
@@ -210,15 +187,12 @@ export const updatePayrollCalcSettings = createAsyncThunk(
 
 export const updateApprovalSettings = createAsyncThunk(
     "systemSetting/updateApprovalSettings",
-    async (dto: ApprovalSettings, { rejectWithValue, getState }) => {
+    async (dto: ApprovalSettings, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/SystemSettings/approval",
                 method: "PUT",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {

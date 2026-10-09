@@ -37,15 +37,12 @@ const initialState: IShiftState = {
 
 export const fetchAllShifts = createAsyncThunk(
     "shift/fetchAll",
-    async (isActive: boolean | undefined, { rejectWithValue, getState }) => {
+    async (isActive: boolean | undefined, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Shifts",
                 method: "GET",
                 params: { isActive },
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -56,14 +53,11 @@ export const fetchAllShifts = createAsyncThunk(
 
 export const fetchShiftById = createAsyncThunk(
     "shift/fetchById",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Shifts/${id}`,
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -74,15 +68,12 @@ export const fetchShiftById = createAsyncThunk(
 
 export const createShift = createAsyncThunk(
     "shift/create",
-    async (data: any, { rejectWithValue, getState }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Shifts",
                 method: "POST",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -93,15 +84,12 @@ export const createShift = createAsyncThunk(
 
 export const updateShift = createAsyncThunk(
     "shift/update",
-    async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: any }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Shifts/${id}`,
                 method: "PUT",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -112,14 +100,11 @@ export const updateShift = createAsyncThunk(
 
 export const deactivateShift = createAsyncThunk(
     "shift/deactivate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Shifts/${id}/deactivate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, message: response.data.message };
         } catch (error: any) {
@@ -130,14 +115,11 @@ export const deactivateShift = createAsyncThunk(
 
 export const activateShift = createAsyncThunk(
     "shift/activate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Shifts/${id}/activate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, message: response.data.message };
         } catch (error: any) {

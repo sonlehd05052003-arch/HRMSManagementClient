@@ -1,7 +1,3 @@
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-
-
 import authSlide from "./authSlide";
 import roleSlide from "./roleSlide";
 import userSlide from "./userSlide";
@@ -30,14 +26,9 @@ import companySlide from "./companySlide";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, type TypedUseSelectorHook } from "react-redux";
 
-const persistConfig = {
-  key: "auth",
-  storage,
-  whitelist: ["infoLogin", "isLogin"],
-};
-
 const reducers = {
-  auth: persistReducer(persistConfig, authSlide),
+  // Not persisted: the session lives in an HttpOnly cookie and is re-read from the API on load
+  auth: authSlide,
   role: roleSlide,
   user: userSlide,
   task: taskSlide,
@@ -68,8 +59,6 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
 });
-
-export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

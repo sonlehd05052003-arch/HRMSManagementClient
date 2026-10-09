@@ -58,7 +58,7 @@ const initialState: IMenuState = {
 
 const authHeader = (getState: () => unknown) => {
   const state: any = getState();
-  return { Authorization: `Bearer ${state.auth.infoLogin?.accessToken}`, ...companyScopeHeader(state) };
+  return { ...companyScopeHeader(state) };
 };
 
 const errorOf = (error: any, fallback: string) =>

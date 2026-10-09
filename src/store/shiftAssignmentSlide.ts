@@ -51,15 +51,12 @@ const initialState: IShiftAssignmentState = {
 
 export const assignShift = createAsyncThunk(
     "shiftAssignment/assign",
-    async (data: AssignShiftDto, { rejectWithValue, getState }) => {
+    async (data: AssignShiftDto, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/ShiftAssignments/assign",
                 method: "POST",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -70,15 +67,12 @@ export const assignShift = createAsyncThunk(
 
 export const fetchShiftAssignments = createAsyncThunk(
     "shiftAssignment/fetchAll",
-    async (params: { date?: string; employeeId?: number; status?: string }, { rejectWithValue, getState }) => {
+    async (params: { date?: string; employeeId?: number; status?: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/ShiftAssignments",
                 method: "GET",
                 params,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -89,15 +83,12 @@ export const fetchShiftAssignments = createAsyncThunk(
 
 export const fetchMySchedule = createAsyncThunk(
     "shiftAssignment/fetchMySchedule",
-    async (params: { fromDate?: string; toDate?: string }, { rejectWithValue, getState }) => {
+    async (params: { fromDate?: string; toDate?: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/ShiftAssignments/my-schedule",
                 method: "GET",
                 params,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -108,15 +99,12 @@ export const fetchMySchedule = createAsyncThunk(
 
 export const updateShiftAssignment = createAsyncThunk(
     "shiftAssignment/update",
-    async ({ id, data }: { id: number; data: UpdateShiftAssignmentDto }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: UpdateShiftAssignmentDto }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/ShiftAssignments/${id}`,
                 method: "PUT",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -127,14 +115,11 @@ export const updateShiftAssignment = createAsyncThunk(
 
 export const deactivateShiftAssignment = createAsyncThunk(
     "shiftAssignment/deactivate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/ShiftAssignments/${id}/deactivate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, ...response.data };
         } catch (error: any) {
@@ -145,14 +130,11 @@ export const deactivateShiftAssignment = createAsyncThunk(
 
 export const activateShiftAssignment = createAsyncThunk(
     "shiftAssignment/activate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/ShiftAssignments/${id}/activate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, ...response.data };
         } catch (error: any) {
@@ -163,14 +145,11 @@ export const activateShiftAssignment = createAsyncThunk(
 
 export const deleteShiftAssignment = createAsyncThunk(
     "shiftAssignment/delete",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/ShiftAssignments/${id}`,
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, ...response.data };
         } catch (error: any) {

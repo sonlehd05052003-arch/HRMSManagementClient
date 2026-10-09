@@ -2,7 +2,7 @@ import { Layout, Menu, Spin, Empty } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { useNavigate, useLocation } from "react-router-dom";
-import { selectInfoLogin } from "../../../../store/authSlide";
+import { selectIsLogin } from "../../../../store/authSlide";
 import { fetchMyMenu, selectMyMenu, selectMyMenuLoaded, type IMyMenuNode } from "../../../../store/menuSlide";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
@@ -25,17 +25,16 @@ const flatten = (nodes: IMyMenuNode[]): IMyMenuNode[] =>
 
 const Sidebar = () => {
   const dispatch = useAppDispatch();
-  const infoLogin = useAppSelector(selectInfoLogin);
   const myMenu = useAppSelector(selectMyMenu);
   const loaded = useAppSelector(selectMyMenuLoaded);
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
-  const accessToken = infoLogin?.accessToken;
+  const isLogin = useAppSelector(selectIsLogin);
   useEffect(() => {
-    if (accessToken) dispatch(fetchMyMenu());
-  }, [accessToken, dispatch]);
+    if (isLogin) dispatch(fetchMyMenu());
+  }, [isLogin, dispatch]);
 
   const allNodes = useMemo(() => flatten(myMenu), [myMenu]);
 

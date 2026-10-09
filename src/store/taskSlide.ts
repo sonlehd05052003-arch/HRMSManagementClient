@@ -52,16 +52,11 @@ const initialState: ITaskState = {
 // GET: /api/Task
 export const fetchAllTasks = createAsyncThunk(
     "task/fetchAllTasks",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Task",
                 method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             });
             return response.data;
         } catch (error: any) {
@@ -73,16 +68,11 @@ export const fetchAllTasks = createAsyncThunk(
 // GET: /api/Task/{id}
 export const fetchTaskById = createAsyncThunk(
     "task/fetchTaskById",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Task/${id}`,
                 method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             });
             return response.data;
         } catch (error: any) {
@@ -94,17 +84,12 @@ export const fetchTaskById = createAsyncThunk(
 // POST: /api/Task
 export const createTask = createAsyncThunk(
     "task/createTask",
-    async (data: ICreateTaskDTO, { rejectWithValue, getState }) => {
+    async (data: ICreateTaskDTO, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Task",
                 method: "POST",
                 data,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             });
             return response.data;
         } catch (error: any) {
@@ -116,17 +101,12 @@ export const createTask = createAsyncThunk(
 // PUT: /api/Task/{id}
 export const updateTask = createAsyncThunk(
     "task/updateTask",
-    async ({ id, data }: { id: number; data: IUpdateTaskDTO }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: IUpdateTaskDTO }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Task/${id}`,
                 method: "PUT",
                 data,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             });
             return { id, data, message: response.data };
         } catch (error: any) {
@@ -138,17 +118,12 @@ export const updateTask = createAsyncThunk(
 // PATCH: /api/Task/{id}/approve
 export const approveTask = createAsyncThunk(
     "task/approveTask",
-    async ({ id, comments }: { id: number; comments?: string }, { rejectWithValue, getState }) => {
+    async ({ id, comments }: { id: number; comments?: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Task/${id}/approve`,
                 method: "PATCH",
                 data: { comments },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             });
             return { id, message: response.data };
         } catch (error: any) {
@@ -160,17 +135,12 @@ export const approveTask = createAsyncThunk(
 // PATCH: /api/Task/{id}/reject
 export const rejectTask = createAsyncThunk(
     "task/rejectTask",
-    async ({ id, reason }: { id: number; reason: string }, { rejectWithValue, getState }) => {
+    async ({ id, reason }: { id: number; reason: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Task/${id}/reject`,
                 method: "PATCH",
                 data: { reason },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             });
             return { id, message: response.data };
         } catch (error: any) {
@@ -182,16 +152,11 @@ export const rejectTask = createAsyncThunk(
 // DELETE: /api/Task/{id}
 export const cancelTask = createAsyncThunk(
     "task/cancelTask",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Task/${id}`,
                 method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             });
             return { id, message: response.data };
         } catch (error: any) {

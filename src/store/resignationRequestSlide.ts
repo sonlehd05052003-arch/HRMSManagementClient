@@ -55,15 +55,12 @@ const initialState: IResignationRequestState = {
 
 export const createResignationRequest = createAsyncThunk(
   "resignationRequest/create",
-  async (data: CreateResignationRequestDto, { rejectWithValue, getState }) => {
+  async (data: CreateResignationRequestDto, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/ResignationRequests",
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -74,14 +71,11 @@ export const createResignationRequest = createAsyncThunk(
 
 export const fetchMyResignationRequests = createAsyncThunk(
   "resignationRequest/fetchMy",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/ResignationRequests/my",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -92,14 +86,11 @@ export const fetchMyResignationRequests = createAsyncThunk(
 
 export const cancelResignationRequest = createAsyncThunk(
   "resignationRequest/cancel",
-  async (id: number, { rejectWithValue, getState }) => {
+  async (id: number, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/ResignationRequests/${id}/cancel`,
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -110,14 +101,11 @@ export const cancelResignationRequest = createAsyncThunk(
 
 export const fetchPendingResignationRequests = createAsyncThunk(
   "resignationRequest/fetchPending",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/ResignationRequests/pending",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -128,15 +116,12 @@ export const fetchPendingResignationRequests = createAsyncThunk(
 
 export const approveResignationRequest = createAsyncThunk(
   "resignationRequest/approve",
-  async ({ id, data }: { id: number; data: ApproveResignationRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: ApproveResignationRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/ResignationRequests/${id}/approve`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -147,15 +132,12 @@ export const approveResignationRequest = createAsyncThunk(
 
 export const rejectResignationRequest = createAsyncThunk(
   "resignationRequest/reject",
-  async ({ id, data }: { id: number; data: RejectResignationRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: RejectResignationRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/ResignationRequests/${id}/reject`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {

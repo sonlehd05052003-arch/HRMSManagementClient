@@ -60,17 +60,14 @@ export const uploadEmployeeDocument = createAsyncThunk(
     "employeeDocument/upload",
     async (
         { formData }: { formData: FormData },
-        { rejectWithValue, getState }
+        { rejectWithValue }
     ) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/EmployeeDocument/upload",
                 method: "POST",
                 data: formData,
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data",
                 },
             });
@@ -86,11 +83,9 @@ export const updateEmployeeDocument = createAsyncThunk(
     "employeeDocument/update",
     async (
         { id, data }: { id: number; data: { documentTitle: string; documentCategory: string; isConfidential: boolean; modifiedBy?: number } },
-        { rejectWithValue, getState }
+        { rejectWithValue }
     ) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/EmployeeDocument/${id}`,
                 method: "PUT",
@@ -98,7 +93,6 @@ export const updateEmployeeDocument = createAsyncThunk(
                     ...data,
                     employeeDocumentId: id, // Thêm ID vào body nếu backend yêu cầu PascalCase hoặc camelCase tùy cấu hình
                 },
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data as IEmployeeDocumentDetail;
         } catch (error: any) {
@@ -110,14 +104,11 @@ export const updateEmployeeDocument = createAsyncThunk(
 // GET /api/EmployeeDocument/employee/{employeeId}
 export const fetchDocumentsByEmployee = createAsyncThunk(
     "employeeDocument/fetchByEmployee",
-    async (employeeId: number, { rejectWithValue, getState }) => {
+    async (employeeId: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/EmployeeDocument/employee/${employeeId}`,
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data as IEmployeeDocumentList[];
         } catch (error: any) {
@@ -129,14 +120,11 @@ export const fetchDocumentsByEmployee = createAsyncThunk(
 // GET /api/EmployeeDocument/{id}
 export const fetchDocumentById = createAsyncThunk(
     "employeeDocument/fetchById",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/EmployeeDocument/${id}`,
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data as IEmployeeDocumentDetail;
         } catch (error: any) {
@@ -149,15 +137,12 @@ export const fetchDocumentById = createAsyncThunk(
 // Returns a blob URL (handled outside Redux - called directly in component)
 export const downloadEmployeeDocument = createAsyncThunk(
     "employeeDocument/download",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/EmployeeDocument/${id}/download`,
                 method: "GET",
                 responseType: "blob",
-                headers: { Authorization: `Bearer ${token}` },
             });
             // Return a temporary object URL for the browser to download
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -177,14 +162,11 @@ export const downloadEmployeeDocument = createAsyncThunk(
 // DELETE /api/EmployeeDocument/{id}
 export const deleteEmployeeDocument = createAsyncThunk(
     "employeeDocument/delete",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             await request({
                 url: `/EmployeeDocument/${id}`,
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return id;
         } catch (error: any) {
@@ -198,15 +180,12 @@ export const fetchDocumentsByCategory = createAsyncThunk(
     "employeeDocument/fetchByCategory",
     async (
         { employeeId, category }: { employeeId: number; category: string },
-        { rejectWithValue, getState }
+        { rejectWithValue }
     ) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/EmployeeDocument/employee/${employeeId}/category/${category}`,
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data as IEmployeeDocumentList[];
         } catch (error: any) {

@@ -45,12 +45,11 @@ export const fetchAllRoles = createAsyncThunk(
     async (_, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Role",
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${token}`, ...companyScopeHeader(state),
+                    ...companyScopeHeader(state),
                 },
             });
             return response.data;
@@ -66,13 +65,12 @@ export const createRole = createAsyncThunk(
     async (data: { roleName: string; description?: string }, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Role",
                 method: "POST",
                 data,
                 headers: {
-                    Authorization: `Bearer ${token}`, ...companyScopeHeader(state),
+                    ...companyScopeHeader(state),
                 },
             });
             return response.data;
@@ -88,11 +86,10 @@ export const fetchPermissionCatalog = createAsyncThunk(
     async (_, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Role/permissions",
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}`, ...companyScopeHeader(state), },
+                headers: { ...companyScopeHeader(state), },
             });
             return response.data;
         } catch (error: any) {
@@ -107,11 +104,10 @@ export const fetchRolePermissions = createAsyncThunk(
     async (roleId: number, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Role/${roleId}/permissions`,
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}`, ...companyScopeHeader(state), },
+                headers: { ...companyScopeHeader(state), },
             });
             return response.data as string[];
         } catch (error: any) {
@@ -126,12 +122,11 @@ export const updateRolePermissions = createAsyncThunk(
     async ({ roleId, permissionKeys }: { roleId: number; permissionKeys: string[] }, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Role/${roleId}/permissions`,
                 method: "PUT",
                 data: { permissionKeys },
-                headers: { Authorization: `Bearer ${token}`, ...companyScopeHeader(state), },
+                headers: { ...companyScopeHeader(state), },
             });
             return response.data;
         } catch (error: any) {
@@ -146,13 +141,12 @@ export const changeRoleStatus = createAsyncThunk(
     async ({ id, isActive }: { id: number; isActive: boolean }, { rejectWithValue, getState }) => {
         try {
             const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Role/${id}/status`,
                 method: "PATCH",
                 params: { isActive },
                 headers: {
-                    Authorization: `Bearer ${token}`, ...companyScopeHeader(state),
+                    ...companyScopeHeader(state),
                 },
             });
             return { id, isActive, message: response.data };

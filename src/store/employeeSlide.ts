@@ -81,11 +81,9 @@ const initialState: IEmployeeState = {
 
 export const fetchAllEmployees = createAsyncThunk(
     "employee/fetchAll",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/Employee", method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/Employee", method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -95,11 +93,9 @@ export const fetchAllEmployees = createAsyncThunk(
 
 export const fetchActiveEmployees = createAsyncThunk(
     "employee/fetchActive",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/Employee/active", method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/Employee/active", method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -109,11 +105,9 @@ export const fetchActiveEmployees = createAsyncThunk(
 
 export const fetchEmployeeById = createAsyncThunk(
     "employee/fetchById",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/Employee/${id}`, method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/Employee/${id}`, method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -123,11 +117,9 @@ export const fetchEmployeeById = createAsyncThunk(
 
 export const createEmployee = createAsyncThunk(
     "employee/create",
-    async (data: any, { rejectWithValue, getState }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/Employee", method: "POST", data, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/Employee", method: "POST", data });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -137,11 +129,9 @@ export const createEmployee = createAsyncThunk(
 
 export const updateEmployee = createAsyncThunk(
     "employee/update",
-    async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: any }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: `/Employee/${id}`, method: "PUT", data, headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: `/Employee/${id}`, method: "PUT", data });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -151,13 +141,11 @@ export const updateEmployee = createAsyncThunk(
 
 export const updateEmployeeStatus = createAsyncThunk(
     "employee/updateStatus",
-    async ({ id, status, disabledBy }: { id: number; status: string; disabledBy?: number }, { rejectWithValue, getState }) => {
+    async ({ id, status, disabledBy }: { id: number; status: string; disabledBy?: number }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const params: any = { status };
             if (disabledBy !== undefined) params.disabledBy = disabledBy;
-            await request({ url: `/Employee/${id}/status`, method: "PATCH", params, headers: { Authorization: `Bearer ${token}` } });
+            await request({ url: `/Employee/${id}/status`, method: "PATCH", params });
             return { id, status };
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
@@ -167,11 +155,9 @@ export const updateEmployeeStatus = createAsyncThunk(
 
 export const fetchApprovalAnalysis = createAsyncThunk(
     "employee/fetchApprovalAnalysis",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
-            const response = await request({ url: "/Employee/approval-analysis", method: "GET", headers: { Authorization: `Bearer ${token}` } });
+            const response = await request({ url: "/Employee/approval-analysis", method: "GET" });
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");

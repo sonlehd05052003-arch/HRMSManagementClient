@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { EUserRole, type DynamicKeyObject } from "../interface/app";
 import { request } from "../utils/request";
-import { jwtDecode } from "jwt-decode";
 import type { RootState } from "./index";
 
+/**
+ * Profile of the signed-in user, as returned by the login / me endpoints. Kept in memory only: the JWT
+ * stays in an HttpOnly cookie, and on every page load the session is asked from the API (fetchCurrentUser).
+ */
 interface IInfoLogin {
-  accessToken: string;
   role: EUserRole;
   userId: string;
   employeeId?: number;
@@ -18,11 +20,22 @@ interface IInfoLogin {
 type IInitialState = {
   infoLogin: IInfoLogin | null;
   isLogin: boolean;
+  /** False until the API has said whether the cookie holds a valid session, so guards do not redirect too early. */
+  sessionChecked: boolean;
 }
+
+const toInfoLogin = (user: any): IInfoLogin => ({
+  role: user.role as EUserRole,
+  userId: user.userId,
+  employeeId: user.employeeId ?? undefined,
+  userName: user.userName,
+  expiresTime: user.expiresTime,
+  isTopLevel: !!user.isTopLevel,
+  positionName: user.positionName || "",
+});
 
 const initialState: IInitialState = {
   infoLogin: {
-    accessToken: "",
     role: EUserRole.EMPLOYEE,
     userId: "",
     employeeId: undefined,
@@ -32,7 +45,18 @@ const initialState: IInitialState = {
     positionName: "",
   },
   isLogin: false,
+  sessionChecked: false,
 }
+
+// GET /api/Auth/me: who the cookie belongs to (401 when there is no valid session)
+export const fetchCurrentUser = createAsyncThunk("auth/fetchCurrentUser", async (_, { rejectWithValue }) => {
+  try {
+    const response = await request({ url: `/Auth/me`, method: "GET" });
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.status ?? 0);
+  }
+});
 
 export const actionLogin = createAsyncThunk(
   "auth/actionLogin",
@@ -49,17 +73,24 @@ export const actionLogin = createAsyncThunk(
   }
 );
 
+// The cookie is HttpOnly, so only the API can clear it; the local session is cleared either way
+export const actionLogout = createAsyncThunk("auth/actionLogout", async (_, { dispatch }) => {
+  try {
+    await request({ url: `/Auth/logout`, method: "POST" });
+  } catch {
+    // The cookie still expires on its own
+  }
+  dispatch(slice.actions.logout());
+});
+
 export const changePassword = createAsyncThunk(
   "auth/changePassword",
-  async (data: any, { rejectWithValue, getState }) => {
+  async (data: any, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/Auth/change-password`,
         method: "POST",
-        data,
-        headers: { Authorization: `Bearer ${token}` }
+        data
       });
       return response.data;
     } catch (error: any) {
@@ -111,23 +142,23 @@ export const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(actionLogin.fulfilled, (state, action) => {
-      const token = action.payload?.data?.token ?? "";
-      if (token) {
-        const decodedToken: any = jwtDecode(token);
-        state.infoLogin = {
-          ...state.infoLogin,
-          accessToken: token,
-          role: decodedToken["role"] as EUserRole,
-          userId: decodedToken["nameid"],
-          employeeId: decodedToken["employeeId"] ? Number(decodedToken["employeeId"]) : undefined,
-          userName: decodedToken["unique_name"],
-          expiresTime: decodedToken["exp"],
-          isTopLevel: decodedToken["IsTopLevel"] === "true",
-          positionName: decodedToken["PositionName"] || "",
-        };
+      const user = action.payload?.data?.user;
+      if (user) {
+        state.infoLogin = toInfoLogin(user);
         state.isLogin = true;
+        state.sessionChecked = true;
       }
     })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.infoLogin = toInfoLogin(action.payload);
+        state.isLogin = true;
+        state.sessionChecked = true;
+      })
+      .addCase(fetchCurrentUser.rejected, (state) => {
+        state.infoLogin = initialState.infoLogin;
+        state.isLogin = false;
+        state.sessionChecked = true;
+      })
       .addCase(actionLogin.rejected, (state) => {
         state.infoLogin = initialState.infoLogin;
         state.isLogin = false;
@@ -138,4 +169,5 @@ export const slice = createSlice({
 export const { logout } = slice.actions;
 export const selectIsLogin = (state: RootState) => state.auth.isLogin;
 export const selectInfoLogin = (state: RootState) => state.auth.infoLogin;
+export const selectSessionChecked = (state: RootState) => state.auth.sessionChecked;
 export default slice.reducer;

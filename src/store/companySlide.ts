@@ -77,18 +77,13 @@ export const companyScopeHeader = (state: any): Record<string, string> => {
     : {};
 };
 
-const authHeader = (getState: () => unknown) => {
-  const state: any = getState();
-  return { Authorization: `Bearer ${state.auth.infoLogin?.accessToken}` };
-};
-
 const errorOf = (error: any, fallback: string) =>
   error.response?.data?.message || error.response?.data?.title || fallback;
 
 // GET /api/Company
-export const fetchCompanies = createAsyncThunk("company/fetchAll", async (_, { rejectWithValue, getState }) => {
+export const fetchCompanies = createAsyncThunk("company/fetchAll", async (_, { rejectWithValue }) => {
   try {
-    const response = await request({ url: "/Company", method: "GET", headers: authHeader(getState) });
+    const response = await request({ url: "/Company", method: "GET" });
     return response.data as ICompany[];
   } catch (error: any) {
     return rejectWithValue(errorOf(error, "Không tải được danh sách công ty"));
@@ -98,9 +93,9 @@ export const fetchCompanies = createAsyncThunk("company/fetchAll", async (_, { r
 // POST /api/Company
 export const createCompany = createAsyncThunk(
   "company/create",
-  async (data: ICreateCompany, { rejectWithValue, getState }) => {
+  async (data: ICreateCompany, { rejectWithValue }) => {
     try {
-      const response = await request({ url: "/Company", method: "POST", data, headers: authHeader(getState) });
+      const response = await request({ url: "/Company", method: "POST", data });
       return response.data as ICreateCompanyResult;
     } catch (error: any) {
       return rejectWithValue(errorOf(error, "Tạo công ty thất bại"));
@@ -111,9 +106,9 @@ export const createCompany = createAsyncThunk(
 // PUT /api/Company/{id}
 export const updateCompany = createAsyncThunk(
   "company/update",
-  async ({ companyId, data }: { companyId: number; data: ICompanyWrite }, { rejectWithValue, getState }) => {
+  async ({ companyId, data }: { companyId: number; data: ICompanyWrite }, { rejectWithValue }) => {
     try {
-      const response = await request({ url: `/Company/${companyId}`, method: "PUT", data, headers: authHeader(getState) });
+      const response = await request({ url: `/Company/${companyId}`, method: "PUT", data });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(errorOf(error, "Cập nhật công ty thất bại"));
@@ -124,13 +119,12 @@ export const updateCompany = createAsyncThunk(
 // PATCH /api/Company/{id}/status
 export const setCompanyStatus = createAsyncThunk(
   "company/setStatus",
-  async ({ companyId, isActive }: { companyId: number; isActive: boolean }, { rejectWithValue, getState }) => {
+  async ({ companyId, isActive }: { companyId: number; isActive: boolean }, { rejectWithValue }) => {
     try {
       const response = await request({
         url: `/Company/${companyId}/status`,
         method: "PATCH",
-        data: { isActive },
-        headers: authHeader(getState),
+        data: { isActive }
       });
       return response.data;
     } catch (error: any) {
@@ -142,12 +136,11 @@ export const setCompanyStatus = createAsyncThunk(
 // POST /api/Company/{id}/admins/{userId}/reset-password
 export const resetCompanyAdminPassword = createAsyncThunk(
   "company/resetAdminPassword",
-  async ({ companyId, userId }: { companyId: number; userId: number }, { rejectWithValue, getState }) => {
+  async ({ companyId, userId }: { companyId: number; userId: number }, { rejectWithValue }) => {
     try {
       const response = await request({
         url: `/Company/${companyId}/admins/${userId}/reset-password`,
-        method: "POST",
-        headers: authHeader(getState),
+        method: "POST"
       });
       return response.data as IResetAdminPasswordResult;
     } catch (error: any) {

@@ -32,14 +32,11 @@ const initialState: IFaceState = {
 
 export const fetchAllEmployeesFaceStatus = createAsyncThunk(
     "face/fetchAllEmployeesFaceStatus",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Face/admin/employees",
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "GET"
             });
             return response.data as EmployeeFaceStatusDto[];
         } catch (error: any) {
@@ -50,15 +47,12 @@ export const fetchAllEmployeesFaceStatus = createAsyncThunk(
 
 export const adminRegisterFace = createAsyncThunk(
     "face/adminRegisterFace",
-    async (dto: { employeeId: number; referenceImageBase64: string }, { rejectWithValue, getState }) => {
+    async (dto: { employeeId: number; referenceImageBase64: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Face/admin/register/${dto.employeeId}`,
                 method: "POST",
-                data: { referenceImageBase64: dto.referenceImageBase64 },
-                headers: { Authorization: `Bearer ${token}` }
+                data: { referenceImageBase64: dto.referenceImageBase64 }
             });
             return response.data;
         } catch (error: any) {
@@ -69,14 +63,11 @@ export const adminRegisterFace = createAsyncThunk(
 
 export const adminDeleteFace = createAsyncThunk(
     "face/adminDeleteFace",
-    async (employeeId: number, { rejectWithValue, getState }) => {
+    async (employeeId: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Face/admin/${employeeId}`,
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "DELETE"
             });
             return response.data;
         } catch (error: any) {

@@ -1,7 +1,7 @@
 import { Layout, Avatar, Dropdown } from 'antd';
 import { UserOutlined, LogoutOutlined, KeyOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import { logout, selectInfoLogin } from '../../../../store/authSlide';
+import { actionLogout, selectInfoLogin, selectIsLogin } from '../../../../store/authSlide';
 import { useNavigate } from 'react-router-dom';
 import URL from '../../../../constants/url';
 import { useEffect, useState } from 'react';
@@ -16,23 +16,23 @@ const HeaderBar = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const infoLogin = useAppSelector(selectInfoLogin);
+    const isLogin = useAppSelector(selectIsLogin);
     const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(actionLogout());
         navigate(URL.Login);
     };
 
     useEffect(() => {
-        if (!infoLogin?.accessToken) return;
+        if (!isLogin) return;
 
         // Automatically ping the server to check if the session is still valid (detects concurrent logins)
         const pingTimer = setInterval(async () => {
             try {
                 await request({
                     url: '/Auth/ping',
-                    method: 'GET',
-                    headers: { Authorization: `Bearer ${infoLogin.accessToken}` }
+                    method: 'GET'
                 });
             } catch (error) {
                 clearInterval(pingTimer);
@@ -40,7 +40,7 @@ const HeaderBar = () => {
         }, 10000); // Ping every 10 seconds
 
         return () => clearInterval(pingTimer);
-    }, [infoLogin?.accessToken]);
+    }, [isLogin]);
 
     const userInitial = getInitial(infoLogin?.userName);
     const avatarColor = infoLogin?.userName ? stringToColor(infoLogin.userName) : "#bfbfbf";

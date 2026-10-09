@@ -128,15 +128,12 @@ const initialState: IAttendanceState = {
 
 export const checkIn = createAsyncThunk(
     "attendance/checkIn",
-    async (dto: CheckInRequestDto, { rejectWithValue, getState }) => {
+    async (dto: CheckInRequestDto, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance/checkin",
                 method: "POST",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {
@@ -147,15 +144,12 @@ export const checkIn = createAsyncThunk(
 
 export const checkOut = createAsyncThunk(
     "attendance/checkOut",
-    async (dto: CheckOutRequestDto, { rejectWithValue, getState }) => {
+    async (dto: CheckOutRequestDto, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance/checkout",
                 method: "POST",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {
@@ -166,14 +160,11 @@ export const checkOut = createAsyncThunk(
 
 export const fetchMyToday = createAsyncThunk(
     "attendance/fetchMyToday",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance/my-today",
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "GET"
             });
             return response.data;
         } catch (error: any) {
@@ -184,14 +175,11 @@ export const fetchMyToday = createAsyncThunk(
 
 export const checkFaceRegistration = createAsyncThunk(
     "attendance/checkFaceRegistration",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Face/check-registration",
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "GET"
             });
             return response.data;
         } catch (error: any) {
@@ -202,15 +190,12 @@ export const checkFaceRegistration = createAsyncThunk(
 
 export const registerFace = createAsyncThunk(
     "attendance/registerFace",
-    async (dto: { referenceImageBase64: string }, { rejectWithValue, getState }) => {
+    async (dto: { referenceImageBase64: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Face/register",
                 method: "POST",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {
@@ -221,15 +206,12 @@ export const registerFace = createAsyncThunk(
 
 export const fetchMyHistory = createAsyncThunk(
     "attendance/fetchMyHistory",
-    async (params: { fromDate?: string; toDate?: string }, { rejectWithValue, getState }) => {
+    async (params: { fromDate?: string; toDate?: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance/my-history",
                 method: "GET",
-                params,
-                headers: { Authorization: `Bearer ${token}` }
+                params
             });
             return response.data;
         } catch (error: any) {
@@ -240,15 +222,12 @@ export const fetchMyHistory = createAsyncThunk(
 
 export const addLocationReason = createAsyncThunk(
     "attendance/addLocationReason",
-    async ({ attendanceId, reason }: { attendanceId: number; reason: string }, { rejectWithValue, getState }) => {
+    async ({ attendanceId, reason }: { attendanceId: number; reason: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/${attendanceId}/location-reason`,
                 method: "PUT",
-                data: { reason },
-                headers: { Authorization: `Bearer ${token}` }
+                data: { reason }
             });
             return response.data;
         } catch (error: any) {
@@ -275,16 +254,13 @@ export const submitExplanation = createAsyncThunk(
             requestedCheckInTime?: string;
             requestedCheckOutTime?: string;
         },
-        { rejectWithValue, getState }
+        { rejectWithValue }
     ) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/${attendanceId}/submit-explanation`,
                 method: "POST",
-                data: { message, explanationType, leaveTypeId, requestedCheckInTime, requestedCheckOutTime },
-                headers: { Authorization: `Bearer ${token}` }
+                data: { message, explanationType, leaveTypeId, requestedCheckInTime, requestedCheckOutTime }
             });
             return response.data;
         } catch (error: any) {
@@ -311,16 +287,13 @@ export const submitAbsentExplanation = createAsyncThunk(
             requestedCheckInTime?: string;
             requestedCheckOutTime?: string;
         },
-        { rejectWithValue, getState }
+        { rejectWithValue }
     ) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/submit-absent-explanation`,
                 method: "POST",
-                data: { date: attendanceDate, message, explanationType, leaveTypeId, requestedCheckInTime, requestedCheckOutTime },
-                headers: { Authorization: `Bearer ${token}` }
+                data: { date: attendanceDate, message, explanationType, leaveTypeId, requestedCheckInTime, requestedCheckOutTime }
             });
             return response.data;
         } catch (error: any) {
@@ -331,15 +304,12 @@ export const submitAbsentExplanation = createAsyncThunk(
 
 export const approveExplanation = createAsyncThunk(
     "attendance/approveExplanation",
-    async ({ attendanceId, isApproved, responseMessage, manualCheckInTime, manualCheckOutTime }: { attendanceId: number; isApproved: boolean; responseMessage?: string; manualCheckInTime?: string; manualCheckOutTime?: string; }, { rejectWithValue, getState }) => {
+    async ({ attendanceId, isApproved, responseMessage, manualCheckInTime, manualCheckOutTime }: { attendanceId: number; isApproved: boolean; responseMessage?: string; manualCheckInTime?: string; manualCheckOutTime?: string; }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/${attendanceId}/approve-explanation`,
                 method: "PUT",
-                data: { isApproved, response: responseMessage, manualCheckInTime, manualCheckOutTime },
-                headers: { Authorization: `Bearer ${token}` }
+                data: { isApproved, response: responseMessage, manualCheckInTime, manualCheckOutTime }
             });
             return response.data;
         } catch (error: any) {
@@ -352,15 +322,12 @@ export const approveExplanation = createAsyncThunk(
 
 export const fetchAttendanceByDate = createAsyncThunk(
     "attendance/fetchByDate",
-    async (date: string, { rejectWithValue, getState }) => {
+    async (date: string, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance",
                 method: "GET",
-                params: { date },
-                headers: { Authorization: `Bearer ${token}` }
+                params: { date }
             });
             return response.data;
         } catch (error: any) {
@@ -371,15 +338,12 @@ export const fetchAttendanceByDate = createAsyncThunk(
 
 export const searchAttendance = createAsyncThunk(
     "attendance/search",
-    async (params: { fromDate?: string; toDate?: string; employeeId?: number; status?: string }, { rejectWithValue, getState }) => {
+    async (params: { fromDate?: string; toDate?: string; employeeId?: number; status?: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance/search",
                 method: "GET",
-                params,
-                headers: { Authorization: `Bearer ${token}` }
+                params
             });
             return response.data;
         } catch (error: any) {
@@ -390,14 +354,11 @@ export const searchAttendance = createAsyncThunk(
 
 export const fetchAttendanceDetail = createAsyncThunk(
     "attendance/fetchDetail",
-    async ({ employeeId, date }: { employeeId: number; date: string }, { rejectWithValue, getState }) => {
+    async ({ employeeId, date }: { employeeId: number; date: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/${employeeId}/${date}`,
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "GET"
             });
             return response.data;
         } catch (error: any) {
@@ -408,15 +369,12 @@ export const fetchAttendanceDetail = createAsyncThunk(
 
 export const manualAdjustAttendance = createAsyncThunk(
     "attendance/manualAdjust",
-    async ({ attendanceId, dto }: { attendanceId: number; dto: ManualAdjustAttendanceDto }, { rejectWithValue, getState }) => {
+    async ({ attendanceId, dto }: { attendanceId: number; dto: ManualAdjustAttendanceDto }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/manual-adjust/${attendanceId}`,
                 method: "PUT",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {
@@ -427,15 +385,12 @@ export const manualAdjustAttendance = createAsyncThunk(
 
 export const manualCreateAttendance = createAsyncThunk(
     "attendance/manualCreate",
-    async (dto: ManualCreateAttendanceDto, { rejectWithValue, getState }) => {
+    async (dto: ManualCreateAttendanceDto, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance/manual-create",
                 method: "POST",
-                data: dto,
-                headers: { Authorization: `Bearer ${token}` }
+                data: dto
             });
             return response.data;
         } catch (error: any) {
@@ -446,14 +401,11 @@ export const manualCreateAttendance = createAsyncThunk(
 
 export const lockAttendance = createAsyncThunk(
     "attendance/lock",
-    async (attendanceId: number, { rejectWithValue, getState }) => {
+    async (attendanceId: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/${attendanceId}/lock`,
-                method: "PUT",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "PUT"
             });
             return { attendanceId, message: response.data.message };
         } catch (error: any) {
@@ -464,14 +416,11 @@ export const lockAttendance = createAsyncThunk(
 
 export const unlockAttendance = createAsyncThunk(
     "attendance/unlock",
-    async (attendanceId: number, { rejectWithValue, getState }) => {
+    async (attendanceId: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Attendance/${attendanceId}/unlock`,
-                method: "PUT",
-                headers: { Authorization: `Bearer ${token}` }
+                method: "PUT"
             });
             return { attendanceId, message: response.data.message };
         } catch (error: any) {
@@ -482,15 +431,12 @@ export const unlockAttendance = createAsyncThunk(
 
 export const fetchAttendanceLogs = createAsyncThunk(
     "attendance/fetchLogs",
-    async (params: { employeeId: number; date: string }, { rejectWithValue, getState }) => {
+    async (params: { employeeId: number; date: string }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Attendance/logs",
                 method: "GET",
-                params,
-                headers: { Authorization: `Bearer ${token}` }
+                params
             });
             return response.data;
         } catch (error: any) {

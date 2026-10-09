@@ -1,7 +1,7 @@
 import { Avatar, Dropdown } from "antd";
 import { UserOutlined, LogoutOutlined, KeyOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { logout, selectInfoLogin } from "../../store/authSlide";
+import { actionLogout, selectInfoLogin, selectIsLogin } from "../../store/authSlide";
 import { useNavigate } from "react-router-dom";
 import URL from "../../constants/url";
 import { useEffect, useState } from "react";
@@ -14,24 +14,24 @@ const MobileHeader = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const infoLogin = useAppSelector(selectInfoLogin);
+    const isLogin = useAppSelector(selectIsLogin);
     const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(actionLogout());
         navigate(URL.Login);
     };
 
 
 
     useEffect(() => {
-        if (!infoLogin?.accessToken) return;
+        if (!isLogin) return;
 
         const pingTimer = setInterval(async () => {
             try {
                 await request({
                     url: "/Auth/ping",
                     method: "GET",
-                    headers: { Authorization: `Bearer ${infoLogin.accessToken}` },
                 });
             } catch {
                 clearInterval(pingTimer);
@@ -39,7 +39,7 @@ const MobileHeader = () => {
         }, 10000);
 
         return () => clearInterval(pingTimer);
-    }, [infoLogin?.accessToken]);
+    }, [isLogin]);
 
     const userInitial = getInitial(infoLogin?.userName);
     const avatarColor = infoLogin?.userName ? stringToColor(infoLogin.userName) : "#bfbfbf";

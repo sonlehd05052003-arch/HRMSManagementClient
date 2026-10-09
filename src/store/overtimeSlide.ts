@@ -77,15 +77,12 @@ const initialState: IOvertimeState = {
 
 export const createOvertimeRequest = createAsyncThunk(
   "overtime/create",
-  async (data: CreateOvertimeRequestDto, { rejectWithValue, getState }) => {
+  async (data: CreateOvertimeRequestDto, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/OvertimeRequests",
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -96,14 +93,11 @@ export const createOvertimeRequest = createAsyncThunk(
 
 export const fetchMyOvertimeRequests = createAsyncThunk(
   "overtime/fetchMy",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/OvertimeRequests/my-requests",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -114,14 +108,11 @@ export const fetchMyOvertimeRequests = createAsyncThunk(
 
 export const fetchPendingOvertimeRequests = createAsyncThunk(
   "overtime/fetchPending",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: "/OvertimeRequests/pending",
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -132,15 +123,12 @@ export const fetchPendingOvertimeRequests = createAsyncThunk(
 
 export const approveOvertimeRequest = createAsyncThunk(
   "overtime/approve",
-  async ({ id, data }: { id: number; data: ApproveOvertimeRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: ApproveOvertimeRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/OvertimeRequests/${id}/approve`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -151,15 +139,12 @@ export const approveOvertimeRequest = createAsyncThunk(
 
 export const rejectOvertimeRequest = createAsyncThunk(
   "overtime/reject",
-  async ({ id, data }: { id: number; data: RejectOvertimeRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: RejectOvertimeRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/OvertimeRequests/${id}/reject`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -170,15 +155,12 @@ export const rejectOvertimeRequest = createAsyncThunk(
 
 export const cancelOvertimeRequest = createAsyncThunk(
   "overtime/cancel",
-  async ({ id, data }: { id: number; data: CancelOvertimeRequestDto }, { rejectWithValue, getState }) => {
+  async ({ id, data }: { id: number; data: CancelOvertimeRequestDto }, { rejectWithValue }) => {
     try {
-      const state: any = getState();
-      const token = state.auth.infoLogin?.accessToken;
       const response = await request({
         url: `/OvertimeRequests/${id}/cancel`,
         method: "POST",
         data,
-        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {

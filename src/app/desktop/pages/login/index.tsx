@@ -1,7 +1,7 @@
 import { Form, Input, Button, ConfigProvider } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import imghrm from '../../../../assets/images/hrm.jpg';
-import { actionLogin, selectInfoLogin } from '../../../../store/authSlide';
+import { actionLogin, selectInfoLogin, selectIsLogin } from '../../../../store/authSlide';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -46,6 +46,7 @@ const LoginPage = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const infoLogin = useAppSelector(selectInfoLogin);
+    const isLogin = useAppSelector(selectIsLogin);
     const [loading, setLoading] = useState(false);
     const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
 
@@ -64,7 +65,7 @@ const LoginPage = () => {
     };
 
     useEffect(() => {
-        if (infoLogin?.accessToken) {
+        if (isLogin && infoLogin) {
             const role = infoLogin.role;
             const routes = {
                 [EUserRole.ADMIN]: URL.DashboardAdmin,
@@ -75,7 +76,7 @@ const LoginPage = () => {
             };
             navigate(routes[role as keyof typeof routes] || URL.MyAttendance);
         }
-    }, [infoLogin, navigate]);
+    }, [isLogin, infoLogin, navigate]);
 
     return (
         <ConfigProvider

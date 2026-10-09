@@ -58,14 +58,11 @@ const initialState: IDepartmentState = {
 
 export const fetchAllDepartments = createAsyncThunk(
     "department/fetchAll",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Department",
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -76,14 +73,11 @@ export const fetchAllDepartments = createAsyncThunk(
 
 export const fetchActiveDepartments = createAsyncThunk(
     "department/fetchActive",
-    async (_, { rejectWithValue, getState }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Department/active",
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -94,14 +88,11 @@ export const fetchActiveDepartments = createAsyncThunk(
 
 export const fetchDepartmentById = createAsyncThunk(
     "department/fetchById",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Department/${id}`,
                 method: "GET",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -112,15 +103,12 @@ export const fetchDepartmentById = createAsyncThunk(
 
 export const createDepartment = createAsyncThunk(
     "department/create",
-    async (data: any, { rejectWithValue, getState }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: "/Department",
                 method: "POST",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -131,15 +119,12 @@ export const createDepartment = createAsyncThunk(
 
 export const updateDepartment = createAsyncThunk(
     "department/update",
-    async ({ id, data }: { id: number; data: any }, { rejectWithValue, getState }) => {
+    async ({ id, data }: { id: number; data: any }, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Department/${id}`,
                 method: "PUT",
                 data,
-                headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error: any) {
@@ -150,14 +135,11 @@ export const updateDepartment = createAsyncThunk(
 
 export const deactivateDepartment = createAsyncThunk(
     "department/deactivate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Department/${id}/deactivate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, message: response.data };
         } catch (error: any) {
@@ -168,14 +150,11 @@ export const deactivateDepartment = createAsyncThunk(
 
 export const activateDepartment = createAsyncThunk(
     "department/activate",
-    async (id: number, { rejectWithValue, getState }) => {
+    async (id: number, { rejectWithValue }) => {
         try {
-            const state: any = getState();
-            const token = state.auth.infoLogin?.accessToken;
             const response = await request({
                 url: `/Department/${id}/activate`,
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${token}` },
             });
             return { id, message: response.data };
         } catch (error: any) {
