@@ -7,6 +7,8 @@ import {
   fetchRoleMenus,
   updateRoleMenus,
   fetchMyMenu,
+  fetchSuperAdminMenus,
+  updateSuperAdminMenus,
   selectRoleMenuTree,
   selectRoleMenuTreeLoading,
   type IMenuAdminNode,
@@ -19,7 +21,12 @@ import { flattenTree } from "./menuTreeUtils";
 
 const { Text } = Typography;
 
-const toTreeData = (nodes: IMenuAdminNode[]): DataNode[] =>
+// The SuperAdmin has no company role, so it gets a pseudo entry in the role picker
+const SUPERADMIN_ROLE_ID = -1;
+// Always kept in the SuperAdmin's sidebar (the server enforces it too), so it cannot hide this page
+const SUPERADMIN_REQUIRED_MENU_CODE = "system.menus";
+
+const toTreeData = (nodes: IMenuAdminNode[], locked: Set<number>): DataNode[] =>
   nodes.map((n) => ({
     key: n.menuId,
     title: (
@@ -27,10 +34,12 @@ const toTreeData = (nodes: IMenuAdminNode[]): DataNode[] =>
         {n.title}
         {n.route && <Text type="secondary" style={{ fontSize: 12 }}>{n.route}</Text>}
         {!n.isActive && <Tag>Đang ẩn</Tag>}
+        {locked.has(n.menuId) && <Tag color="blue">Bắt buộc</Tag>}
       </Space>
     ),
     icon: renderMenuIcon(n.iconName),
-    children: toTreeData(n.children),
+    disableCheckbox: locked.has(n.menuId),
+    children: toTreeData(n.children, locked),
   }));
 
 const RoleMenuTab = () => {
@@ -50,9 +59,9 @@ const RoleMenuTab = () => {
   useEffect(() => {
     if (!ready) return;
     if (loadedScope.current !== scopeKey) {
-      // Switched company: its roles are different, so drop the selection
+      // Switched company: its roles are different, so drop the selection (the SuperAdmin entry is company-independent)
       loadedScope.current = scopeKey;
-      setRoleId(null);
+      setRoleId((id) => (id === SUPERADMIN_ROLE_ID ? id : null));
     }
     setRolesReady(false);
     dispatch(fetchAllRoles()).finally(() => setRolesReady(true));
@@ -63,9 +72,12 @@ const RoleMenuTab = () => {
     if (rolesReady && roleId == null && roles.length > 0) setRoleId(roles[0].roleId);
   }, [rolesReady, roles, roleId]);
 
+  const isSuperAdminRole = roleId === SUPERADMIN_ROLE_ID;
+
   useEffect(() => {
-    if (rolesReady && roleId != null) dispatch(fetchRoleMenus(roleId));
-  }, [rolesReady, roleId, dispatch]);
+    if (isSuperAdminRole) dispatch(fetchSuperAdminMenus());
+    else if (rolesReady && roleId != null) dispatch(fetchRoleMenus(roleId));
+  }, [rolesReady, roleId, isSuperAdminRole, dispatch]);
 
   const rows = useMemo(() => flattenTree(roleTree), [roleTree]);
 
@@ -74,7 +86,17 @@ const RoleMenuTab = () => {
   }, [rows]);
 
   const byId = useMemo(() => new Map(rows.map((r) => [r.node.menuId, r.node])), [rows]);
-  const treeData = useMemo(() => toTreeData(roleTree), [roleTree]);
+
+  // The required menu and its ancestors, which stay ticked for the SuperAdmin
+  const locked = useMemo(() => {
+    const ids = new Set<number>();
+    if (!isSuperAdminRole) return ids;
+    const required = rows.find((r) => r.node.code === SUPERADMIN_REQUIRED_MENU_CODE)?.node;
+    for (let id: number | null = required?.menuId ?? null; id != null; id = byId.get(id)?.parentId ?? null) ids.add(id);
+    return ids;
+  }, [isSuperAdminRole, rows, byId]);
+
+  const treeData = useMemo(() => toTreeData(roleTree, locked), [roleTree, locked]);
   const allKeys = useMemo(() => rows.map((r) => r.node.menuId), [rows]);
 
   // A node is only visible when its whole ancestor chain is granted, so keep the set consistent.
@@ -85,7 +107,7 @@ const RoleMenuTab = () => {
         for (let id: number | null = menuId; id != null; id = byId.get(id)?.parentId ?? null) next.add(id);
       } else {
         const clear = (node: IMenuAdminNode) => {
-          next.delete(node.menuId);
+          if (!locked.has(node.menuId)) next.delete(node.menuId);
           node.children.forEach(clear);
         };
         const node = byId.get(menuId);
@@ -98,10 +120,13 @@ const RoleMenuTab = () => {
   const handleSave = () => {
     if (roleId == null) return;
     setSaving(true);
-    dispatch(updateRoleMenus({ roleId, menuIds: Array.from(granted) }))
-      .unwrap()
+    const menuIds = Array.from(granted);
+    const saved = isSuperAdminRole
+      ? dispatch(updateSuperAdminMenus(menuIds)).unwrap()
+      : dispatch(updateRoleMenus({ roleId, menuIds })).unwrap();
+    saved
       .then(() => {
-        message.success("Đã lưu phân menu cho vai trò");
+        message.success(isSuperAdminRole ? "Đã lưu menu của SuperAdmin" : "Đã lưu phân menu cho vai trò");
         dispatch(fetchMyMenu());
       })
       .catch((error: any) => message.error(typeof error === "string" ? error : "Lưu thất bại"))
@@ -117,7 +142,10 @@ const RoleMenuTab = () => {
           placeholder="Chọn vai trò"
           value={roleId ?? undefined}
           onChange={setRoleId}
-          options={roles.map((r) => ({ value: r.roleId, label: r.roleName }))}
+          options={[
+            { value: SUPERADMIN_ROLE_ID, label: "SUPERADMIN (hệ thống)" },
+            ...roles.map((r) => ({ value: r.roleId, label: r.roleName })),
+          ]}
         />
         <Button type="primary" icon={<SaveOutlined />} disabled={roleId == null} loading={saving} onClick={handleSave}>
           Lưu
@@ -125,7 +153,7 @@ const RoleMenuTab = () => {
         {roleId != null && (
           <>
             <Button onClick={() => setGranted(new Set(allKeys))}>Chọn tất cả</Button>
-            <Button onClick={() => setGranted(new Set())}>Bỏ chọn tất cả</Button>
+            <Button onClick={() => setGranted(new Set(locked))}>Bỏ chọn tất cả</Button>
             <Text type="secondary">Đã chọn {granted.size}/{allKeys.length} mục</Text>
           </>
         )}

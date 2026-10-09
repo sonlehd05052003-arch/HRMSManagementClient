@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { Modal, Form, Input, Select, Button, message } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
-import { updateUser, selectUserLoading } from "../../../../../store/userSlide";
+import { updateUser, selectUserLoading, fetchEmployeeOptions, selectEmployeeOptions } from "../../../../../store/userSlide";
 import { selectRoles } from "../../../../../store/roleSlide";
-import { fetchAllEmployees, selectEmployees } from "../../../../../store/employeeSlide";
 
 interface EditAccountModalProps {
     open: boolean;
@@ -16,17 +15,18 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
     const [form] = Form.useForm();
     const dispatch = useAppDispatch();
     const roles = useAppSelector(selectRoles);
-    const employees = useAppSelector(selectEmployees);
+    const employees = useAppSelector(selectEmployeeOptions);
     const loading = useAppSelector(selectUserLoading);
     const isActive = Form.useWatch("isActive", form);
     const isProtectedAdmin = editingUser?.username?.toLowerCase() === "admin";
     const currentIsActive = typeof isActive === "boolean" ? isActive : !!editingUser?.isActive;
 
+    // Refetch on every open: the SuperAdmin may have switched company since the last one
     useEffect(() => {
-        if (open && employees.length === 0) {
-            dispatch(fetchAllEmployees());
+        if (open) {
+            dispatch(fetchEmployeeOptions());
         }
-    }, [open, employees.length, dispatch]);
+    }, [open, dispatch]);
 
     useEffect(() => {
         if (open && editingUser) {

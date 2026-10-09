@@ -1,9 +1,15 @@
 import { useEffect } from "react";
 import { Modal, Form, Input, Select, message } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
-import { createUser, selectUserLoading, fetchAllUsers, selectUsers } from "../../../../../store/userSlide";
+import {
+    createUser,
+    selectUserLoading,
+    fetchAllUsers,
+    selectUsers,
+    fetchEmployeeOptions,
+    selectEmployeeOptions,
+} from "../../../../../store/userSlide";
 import { selectRoles } from "../../../../../store/roleSlide";
-import { fetchAllEmployees, selectEmployees } from "../../../../../store/employeeSlide";
 
 interface AddAccountModalProps {
     open: boolean;
@@ -15,13 +21,13 @@ const AddAccountModal = ({ open, onCancel, onSuccess }: AddAccountModalProps) =>
     const [form] = Form.useForm();
     const dispatch = useAppDispatch();
     const roles = useAppSelector(selectRoles);
-    const employees = useAppSelector(selectEmployees);
+    const employees = useAppSelector(selectEmployeeOptions);
     const users = useAppSelector(selectUsers);
     const loading = useAppSelector(selectUserLoading);
 
     useEffect(() => {
         if (open) {
-            dispatch(fetchAllEmployees());
+            dispatch(fetchEmployeeOptions());
             dispatch(fetchAllUsers());
         }
     }, [open, dispatch]);

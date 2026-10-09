@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Tag, Space, Card, message, Typography } from "antd";
-import { PlusOutlined, EditOutlined, UserOutlined } from "@ant-design/icons";
+import { Table, Button, Tag, Space, Card, message, Typography, Tooltip } from "antd";
+import { PlusOutlined, EditOutlined, UserOutlined, KeyOutlined, DeleteOutlined, UndoOutlined } from "@ant-design/icons";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { fetchAllUsers, activateUser, deactivateUser, selectUsers, selectUserLoading } from "../../../../store/userSlide";
+import {
+    fetchAllUsers,
+    activateUser,
+    deactivateUser,
+    selectUsers,
+    selectUserLoading,
+} from "../../../../store/userSlide";
+import { selectInfoLogin } from "../../../../store/authSlide";
 import { fetchAllRoles } from "../../../../store/roleSlide";
+import CompanyScopeSelect from "../../components/companyScopeSelect";
+import { useConfigScope, useIsSuperAdmin } from "../../components/companyScopeSelect/hooks";
 import Condition from "./Condition";
 import AddAccountModal from "./modal/AddAccountModal";
 import EditAccountModal from "./modal/EditAccountModal";
+import ResetPasswordModal from "./modal/ResetPasswordModal";
 
 const { Title } = Typography;
 
@@ -25,16 +35,26 @@ const ManageAccount = () => {
     const [roleFilter, setRoleFilter] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<boolean | null>(null);
     const [togglingUserId, setTogglingUserId] = useState<number | null>(null);
+    const [resettingUser, setResettingUser] = useState<any>(null);
+    const infoLogin = useAppSelector(selectInfoLogin);
+    // Same rule as the API: only an ADMIN or the SuperAdmin may reset an ADMIN account
+    const canResetAdmins = infoLogin?.role === "ADMIN" || infoLogin?.role === "SUPERADMIN";
+    // The SuperAdmin works on the company picked above the table; reload when it changes
+    const { ready, scopeKey } = useConfigScope();
+    const isSuperAdmin = useIsSuperAdmin();
 
     useEffect(() => {
+        if (!ready) return;
         dispatch(fetchAllUsers());
         dispatch(fetchAllRoles());
+    }, [dispatch, ready, scopeKey]);
 
+    useEffect(() => {
         const roleParam = searchParams.get("role");
         if (roleParam) {
             setRoleFilter(roleParam);
         }
-    }, [dispatch, searchParams]);
+    }, [searchParams]);
 
     const handleAdd = () => {
         setIsAddModalOpen(true);
@@ -145,15 +165,23 @@ const ManageAccount = () => {
                         icon={<EditOutlined />}
                         onClick={() => handleEdit(record)}
                     />
-                    <Button
-                        type={record.isActive ? "primary" : "default"}
-                        danger={record.isActive}
-                        loading={togglingUserId === record.userId}
-                        disabled={record.isActive && isProtectedAdmin(record)}
-                        onClick={() => handleToggleStatus(record)}
-                    >
-                        {record.isActive ? "Deactivate" : "Activate"}
-                    </Button>
+                    <Tooltip title={record.isActive ? "Đặt lại mật khẩu" : "Tài khoản đang bị vô hiệu hóa"}>
+                        <Button
+                            icon={<KeyOutlined />}
+                            disabled={!record.isActive || (!canResetAdmins && record.roles.includes("ADMIN"))}
+                            onClick={() => setResettingUser(record)}
+                        />
+                    </Tooltip>
+                    <Tooltip title={record.isActive ? "Vô hiệu hóa tài khoản" : "Kích hoạt lại tài khoản"}>
+                        <Button
+                            type={record.isActive ? "primary" : "default"}
+                            danger={record.isActive}
+                            icon={record.isActive ? <DeleteOutlined /> : <UndoOutlined />}
+                            loading={togglingUserId === record.userId}
+                            disabled={record.isActive && isProtectedAdmin(record)}
+                            onClick={() => handleToggleStatus(record)}
+                        />
+                    </Tooltip>
                 </Space>
             ),
         },
@@ -171,6 +199,11 @@ const ManageAccount = () => {
                     </div>
                 }
             >
+                {isSuperAdmin && (
+                    <div style={{ marginBottom: 16 }}>
+                        <CompanyScopeSelect />
+                    </div>
+                )}
                 <Condition
                     searchText={searchText}
                     setSearchText={setSearchText}
@@ -203,6 +236,8 @@ const ManageAccount = () => {
                 onSuccess={handleSuccess}
                 editingUser={editingUser}
             />
+
+            <ResetPasswordModal user={resettingUser} onClose={() => setResettingUser(null)} />
         </div>
     );
 };

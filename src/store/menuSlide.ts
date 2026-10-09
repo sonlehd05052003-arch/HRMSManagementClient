@@ -145,6 +145,34 @@ export const updateRoleMenus = createAsyncThunk(
   }
 );
 
+// GET /api/Menu/superadmin
+export const fetchSuperAdminMenus = createAsyncThunk("menu/fetchSuperAdminMenus", async (_, { rejectWithValue, getState }) => {
+  try {
+    const response = await request({ url: "/Menu/superadmin", method: "GET", headers: authHeader(getState) });
+    return response.data as IMenuAdminNode[];
+  } catch (error: any) {
+    return rejectWithValue(errorOf(error, "Không tải được menu của SuperAdmin"));
+  }
+});
+
+// PUT /api/Menu/superadmin
+export const updateSuperAdminMenus = createAsyncThunk(
+  "menu/updateSuperAdminMenus",
+  async (menuIds: number[], { rejectWithValue, getState }) => {
+    try {
+      const response = await request({
+        url: "/Menu/superadmin",
+        method: "PUT",
+        data: { menuIds },
+        headers: authHeader(getState),
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(errorOf(error, "Lưu menu SuperAdmin thất bại"));
+    }
+  }
+);
+
 export const menuSlice = createSlice({
   name: "menu",
   initialState,
@@ -176,6 +204,17 @@ export const menuSlice = createSlice({
         state.roleTree = action.payload;
       })
       .addCase(fetchRoleMenus.rejected, (state) => {
+        state.roleTreeLoading = false;
+      })
+      // The SuperAdmin's tree is shown in the same role-menu tab
+      .addCase(fetchSuperAdminMenus.pending, (state) => {
+        state.roleTreeLoading = true;
+      })
+      .addCase(fetchSuperAdminMenus.fulfilled, (state, action) => {
+        state.roleTreeLoading = false;
+        state.roleTree = action.payload;
+      })
+      .addCase(fetchSuperAdminMenus.rejected, (state) => {
         state.roleTreeLoading = false;
       })
       .addCase(logout, () => initialState);

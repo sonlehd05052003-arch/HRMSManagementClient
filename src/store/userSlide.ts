@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { companyScopeHeader } from "./companySlide";
 
 export interface IUser {
     userId: number;
@@ -11,17 +12,49 @@ export interface IUser {
     roles: string[];
 }
 
+/** An employee an account can be linked to. */
+export interface IUserEmployeeOption {
+    employeeId: number;
+    employeeCode: string;
+    fullName: string;
+    email: string;
+}
+
 interface IUserState {
     users: IUser[];
+    employeeOptions: IUserEmployeeOption[];
     loading: boolean;
     error: string | null;
 }
 
 const initialState: IUserState = {
     users: [],
+    employeeOptions: [],
     loading: false,
     error: null,
 };
+
+// GET: /api/User/employee-options
+export const fetchEmployeeOptions = createAsyncThunk(
+    "user/fetchEmployeeOptions",
+    async (_, { rejectWithValue, getState }) => {
+        try {
+            const state: any = getState();
+            const token = state.auth.infoLogin?.accessToken;
+            const response = await request({
+                url: "/User/employee-options",
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    ...companyScopeHeader(state),
+                },
+            });
+            return response.data as IUserEmployeeOption[];
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || "Something went wrong");
+        }
+    }
+);
 
 // GET: /api/User
 export const fetchAllUsers = createAsyncThunk(
@@ -35,6 +68,7 @@ export const fetchAllUsers = createAsyncThunk(
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    ...companyScopeHeader(state),
                 },
             });
             return response.data;
@@ -57,6 +91,7 @@ export const createUser = createAsyncThunk(
                 data,
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    ...companyScopeHeader(state),
                 },
             });
             return response.data;
@@ -79,6 +114,7 @@ export const updateUser = createAsyncThunk(
                 data,
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    ...companyScopeHeader(state),
                 },
             });
             return { id, data, message: response.data };
@@ -100,6 +136,7 @@ export const activateUser = createAsyncThunk(
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    ...companyScopeHeader(state),
                 },
             });
             return { id, message: response.data };
@@ -121,11 +158,40 @@ export const deactivateUser = createAsyncThunk(
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    ...companyScopeHeader(state),
                 },
             });
             return { id, message: response.data };
         } catch (error: any) {
             return rejectWithValue(error.response?.data || "Something went wrong");
+        }
+    }
+);
+
+export interface IResetUserPassword {
+    newPassword: string;
+    confirmNewPassword: string;
+}
+
+// POST: /api/User/{id}/reset-password
+export const resetUserPassword = createAsyncThunk(
+    "user/resetUserPassword",
+    async ({ id, data }: { id: number; data: IResetUserPassword }, { rejectWithValue, getState }) => {
+        try {
+            const state: any = getState();
+            const token = state.auth.infoLogin?.accessToken;
+            const response = await request({
+                url: `/User/${id}/reset-password`,
+                method: "POST",
+                data,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    ...companyScopeHeader(state),
+                },
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || error.response?.data || "Đặt lại mật khẩu thất bại");
         }
     }
 );
@@ -148,6 +214,9 @@ export const userSlice = createSlice({
             .addCase(fetchAllUsers.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(fetchEmployeeOptions.fulfilled, (state, action) => {
+                state.employeeOptions = action.payload;
             })
             // Create User
             .addCase(createUser.pending, (state) => {
@@ -191,7 +260,8 @@ export const userSlice = createSlice({
 });
 
 export const selectUsers = (state: RootState) => state.user.users;
-export const selectUserLoading = (state: RootState) => state.user.loading;
+export const selectEmployeeOptions = (state: RootState) => state.user.employeeOptions;
+export const selectUserLoading =(state: RootState) => state.user.loading;
 export const selectUserError = (state: RootState) => state.user.error;
 
 export default userSlice.reducer;
