@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react"
 import URL from "../constants/url"
 import { DEFAULT_LAYOUT, NONE_LAYOUT } from "../constants/layout"
 import { Navigate, Route, Routes } from "react-router-dom"
+import PageErrorBoundary from "./PageErrorBoundary"
 import PrivateLayout from "./PrivateLayout"
 import DefaultLayout from "./DefaultLayout"
 import { useIsMobile } from "../hooks/useIsMobile"
@@ -357,7 +358,7 @@ export default function Routers() {
             <Route path="/" element={<Navigate to={URL.Login} replace />} />
             {menus.map((menu: any) => {
                 let element = menu.element;
-                element = <Suspense fallback={null}>{element}</Suspense>;
+                element = <PageErrorBoundary><Suspense fallback={null}>{element}</Suspense></PageErrorBoundary>;
                 if (menu.private) {
                     element = <PrivateLayout>{element}</PrivateLayout>;
                 }
