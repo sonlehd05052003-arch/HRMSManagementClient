@@ -20,7 +20,7 @@ const ForgotPasswordModal = ({ open, onCancel }: ForgotPasswordModalProps) => {
         setLoading(true);
         try {
             await dispatch(forgotPassword(values)).unwrap();
-            message.success("Mã OTP đã được gửi đến email của bạn.");
+            message.success("Nếu tài khoản tồn tại, mã OTP đã được gửi đến email đăng ký.");
             setEmailOrUsername(values.emailOrUsername);
             setCurrentStep(1);
         } catch (error: any) {
@@ -123,7 +123,7 @@ const ForgotPasswordModal = ({ open, onCancel }: ForgotPasswordModalProps) => {
                 ) : (
                     <Form form={form} layout="vertical" onFinish={handleResetPassword} requiredMark={false}>
                         <div className="mb-6 text-gray-500 text-sm">
-                            Mã OTP đã được gửi. Vui lòng kiểm tra email và nhập mật khẩu mới.
+                            Nếu tài khoản tồn tại, mã OTP đã được gửi. Vui lòng kiểm tra email và nhập mật khẩu mới.
                         </div>
                         <Form.Item
                             name="otp"
