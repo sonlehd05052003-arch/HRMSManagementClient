@@ -3,6 +3,7 @@ import { useAppDispatch } from "../../../../../store";
 import { manualAdjustAttendance } from "../../../../../store/attendanceSlide";
 import { useEffect } from "react";
 import dayjs from "dayjs";
+import { errorText } from "../../../../../utils/apiError";
 
 interface ManualAdjustModalProps {
     open: boolean;
@@ -40,8 +41,8 @@ const ManualAdjustModal = ({ open, onClose, record }: ManualAdjustModalProps) =>
             await dispatch(manualAdjustAttendance({ attendanceId: record.attendanceId, dto })).unwrap();
             message.success("Điều chỉnh chấm công thành công");
             onClose();
-        } catch (error: any) {
-            message.error(error || "Điều chỉnh thất bại");
+        } catch (error) {
+            message.error(errorText(error, "Điều chỉnh thất bại"));
         }
     };
 

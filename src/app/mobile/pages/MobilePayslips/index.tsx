@@ -8,6 +8,7 @@ import { selectInfoLogin } from "../../../../store/authSlide";
 import type { IPayslip } from "../../../../types/payroll";
 import MobilePageWrapper from "../../components/MobilePageWrapper";
 import MobileCard from "../../components/MobileCard";
+import { errorText } from "../../../../utils/apiError";
 
 const fmt = (v: number) => v.toLocaleString("vi-VN") + "₫";
 
@@ -40,8 +41,8 @@ const MobilePayslips = () => {
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
-        } catch (err: any) {
-            alert(err.message || "Tải PDF thất bại");
+        } catch (err) {
+            alert(errorText(err, "Tải PDF thất bại"));
         } finally {
             setDownloading(false);
         }

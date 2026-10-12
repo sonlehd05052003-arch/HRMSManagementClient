@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface MyLeaveBalanceDto {
   leaveTypeId: number;
@@ -80,8 +81,8 @@ export const fetchMyBalance = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -95,8 +96,8 @@ export const fetchAllBalances = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -110,8 +111,8 @@ export const fetchBalancesByEmployee = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -126,8 +127,8 @@ export const createLeaveBalance = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -142,8 +143,8 @@ export const adjustLeaveBalance = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -157,8 +158,8 @@ export const generateLeaveBalances = createAsyncThunk(
         method: "POST",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );

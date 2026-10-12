@@ -16,6 +16,7 @@ import {
 } from "../../../../store/faceSlide";
 import dayjs from "dayjs";
 import HRFaceRegisterModal from "./HRFaceRegisterModal";
+import { errorText } from "../../../../utils/apiError";
 
 const { Title, Paragraph } = Typography;
 
@@ -55,8 +56,8 @@ const ManageFaceRegistrationPage: React.FC = () => {
             await dispatch(adminDeleteFace(employeeId)).unwrap();
             message.success(`Đã xóa hồ sơ khuôn mặt của ${name}`);
             dispatch(fetchAllEmployeesFaceStatus());
-        } catch (error: any) {
-            message.error(error || "Xóa thất bại");
+        } catch (error) {
+            message.error(errorText(error, "Xóa thất bại"));
         }
     };
 

@@ -13,6 +13,7 @@ import {
 import { fetchPayrollSettings, selectPayrollSettings } from "../../../../../store/systemSettingSlide";
 import dayjs from "dayjs";
 import ExplanationModal from "../modal/ExplanationModal";
+import { errorText, isFormValidationError } from "../../../../../utils/apiError";
 
 const { Text } = Typography;
 
@@ -162,9 +163,9 @@ const MyAttendanceHistoryTable = () => {
             message.success("Phiếu giải trình đã được gửi. Đang chờ Quản lý duyệt.");
             setModalOpen(false);
             handleSearch();
-        } catch (error: any) {
-            if (error?.errorFields) return;
-            message.error(error?.message || "Gửi giải trình thất bại.");
+        } catch (error) {
+            if (isFormValidationError(error)) return;
+            message.error(errorText(error, "Gửi giải trình thất bại."));
         }
     };
 

@@ -15,6 +15,7 @@ import { EUserRole } from "../../../../../interface/app"
 import AllowanceSection from "./AllowanceSection"
 import DeductionSection from "./DeductionSection"
 import SalaryBreakdown from "./SalaryBreakdown"
+import { errorText } from "../../../../../utils/apiError";
 
 const { Title, Text } = Typography
 
@@ -40,8 +41,8 @@ const PayrollRecordDetail = () => {
     try {
       await dispatch(calculateOneEmployee({ periodId: record.periodId, employeeId: record.employeeId })).unwrap()
       message.success("Đã tính lại lương thành công!")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi tính lại lương")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi tính lại lương"))
     }
   }
 
@@ -53,8 +54,8 @@ const PayrollRecordDetail = () => {
       const blob = await dispatch(downloadPayslipPdf(record.payrollRecordId)).unwrap()
       const url = window.URL.createObjectURL(blob)
       window.open(url, "_blank")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi tạo phiếu lương")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi tạo phiếu lương"))
     }
   }
 

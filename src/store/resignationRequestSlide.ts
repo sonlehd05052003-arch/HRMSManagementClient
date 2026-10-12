@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface IResignationRequest {
   resignationRequestId: number;
@@ -63,8 +64,8 @@ export const createResignationRequest = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -78,8 +79,8 @@ export const fetchMyResignationRequests = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -93,8 +94,8 @@ export const cancelResignationRequest = createAsyncThunk(
         method: "POST",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -108,8 +109,8 @@ export const fetchPendingResignationRequests = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -124,8 +125,8 @@ export const approveResignationRequest = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -140,8 +141,8 @@ export const rejectResignationRequest = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 // ── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -70,8 +71,8 @@ export const fetchAllProcedures = createAsyncThunk(
         try {
             const response = await request({ url: "/HRProcedure", method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -82,8 +83,8 @@ export const fetchProcedureById = createAsyncThunk(
         try {
             const response = await request({ url: `/HRProcedure/${id}`, method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -94,8 +95,8 @@ export const fetchPendingProcedures = createAsyncThunk(
         try {
             const response = await request({ url: "/HRProcedure/pending", method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -106,8 +107,8 @@ export const fetchProceduresByEmployee = createAsyncThunk(
         try {
             const response = await request({ url: `/HRProcedure/employee/${employeeId}`, method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -118,8 +119,8 @@ export const fetchProceduresByStatus = createAsyncThunk(
         try {
             const response = await request({ url: `/HRProcedure/status/${status}`, method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -130,8 +131,8 @@ export const submitProcedure = createAsyncThunk(
         try {
             const response = await request({ url: "/HRProcedure", method: "POST", data });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -142,8 +143,8 @@ export const updateProcedure = createAsyncThunk(
         try {
             const response = await request({ url: `/HRProcedure/${id}`, method: "PUT", data });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -154,8 +155,8 @@ export const approveProcedure = createAsyncThunk(
         try {
             const response = await request({ url: `/HRProcedure/${id}/approve`, method: "POST", data });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -166,8 +167,8 @@ export const rejectProcedure = createAsyncThunk(
         try {
             const response = await request({ url: `/HRProcedure/${id}/reject`, method: "POST", data });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -178,8 +179,8 @@ export const applyProcedure = createAsyncThunk(
         try {
             const response = await request({ url: `/HRProcedure/${id}/apply`, method: "POST" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -190,8 +191,8 @@ export const deleteProcedure = createAsyncThunk(
         try {
             await request({ url: `/HRProcedure/${id}`, method: "DELETE" });
             return id;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );

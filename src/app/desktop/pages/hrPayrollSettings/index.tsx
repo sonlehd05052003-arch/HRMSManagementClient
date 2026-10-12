@@ -7,6 +7,7 @@ import {
     selectSystemSettingLoading, updatePayrollSettings
 } from "../../../../store/systemSettingSlide";
 import PayrollSettingsCard from "../manageSystemSettings/components/PayrollSettingsCard";
+import { errorText } from "../../../../utils/apiError";
 
 const { Title, Paragraph } = Typography;
 
@@ -30,8 +31,8 @@ const HRPayrollSettingsPage: React.FC = () => {
             await dispatch(updatePayrollSettings(values)).unwrap();
             message.success("Cấu hình kỳ lương đã được lưu");
             dispatch(fetchPayrollSettings());
-        } catch (error: any) {
-            message.error(error || "Lỗi lưu cấu hình kỳ lương");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi lưu cấu hình kỳ lương"));
         }
     };
 

@@ -7,6 +7,7 @@ import {
   type ICompany,
   type ICreateCompanyResult,
 } from "../../../../store/companySlide";
+import { errorText } from "../../../../utils/apiError";
 
 const { Text } = Typography;
 
@@ -51,8 +52,8 @@ const CompanyFormModal = ({ open, company, onClose, onSaved }: Props) => {
         const result = await dispatch(createCompany(values)).unwrap();
         onSaved(result);
       }
-    } catch (error: any) {
-      message.error(typeof error === "string" ? error : "Lưu công ty thất bại");
+    } catch (error) {
+      message.error(errorText(error, "Lưu công ty thất bại"));
     } finally {
       setSaving(false);
     }

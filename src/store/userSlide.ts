@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
 import { companyScopeHeader } from "./companySlide";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface IUser {
     userId: number;
@@ -48,8 +49,8 @@ export const fetchEmployeeOptions = createAsyncThunk(
                 },
             });
             return response.data as IUserEmployeeOption[];
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -68,8 +69,8 @@ export const fetchAllUsers = createAsyncThunk(
                 },
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -89,8 +90,8 @@ export const createUser = createAsyncThunk(
                 },
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -110,8 +111,8 @@ export const updateUser = createAsyncThunk(
                 },
             });
             return { id, data, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -130,8 +131,8 @@ export const activateUser = createAsyncThunk(
                 },
             });
             return { id, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -150,8 +151,8 @@ export const deactivateUser = createAsyncThunk(
                 },
             });
             return { id, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -176,8 +177,8 @@ export const resetUserPassword = createAsyncThunk(
                 },
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || error.response?.data || "Đặt lại mật khẩu thất bại");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Đặt lại mật khẩu thất bại"));
         }
     }
 );

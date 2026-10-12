@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface ILeaveRequest {
   leaveRequestID: number;
@@ -110,8 +111,8 @@ export const createLeaveRequest = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -125,8 +126,8 @@ export const fetchMyLeaveRequests = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -141,8 +142,8 @@ export const approveLeaveRequest = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -157,8 +158,8 @@ export const rejectLeaveRequest = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -173,8 +174,8 @@ export const cancelLeaveRequest = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -188,8 +189,8 @@ export const fetchTeamLeaveCalendar = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -203,8 +204,8 @@ export const fetchPendingLeaveRequests = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );

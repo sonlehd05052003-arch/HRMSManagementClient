@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface IPositionList {
     positionId: number;
@@ -54,8 +55,8 @@ export const fetchAllPositions = createAsyncThunk(
                 method: "GET",
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -69,8 +70,8 @@ export const fetchActivePositions = createAsyncThunk(
                 method: "GET",
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -84,8 +85,8 @@ export const fetchPositionById = createAsyncThunk(
                 method: "GET",
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -100,8 +101,8 @@ export const createPosition = createAsyncThunk(
                 data,
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -116,8 +117,8 @@ export const updatePosition = createAsyncThunk(
                 data,
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -131,8 +132,8 @@ export const deactivatePosition = createAsyncThunk(
                 method: "PATCH",
             });
             return { id, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -146,8 +147,8 @@ export const activatePosition = createAsyncThunk(
                 method: "PATCH",
             });
             return { id, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );

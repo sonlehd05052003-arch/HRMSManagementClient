@@ -9,6 +9,7 @@ import type {
   IPayrollAllowance, IPayrollDeduction,
   IAttendanceSummary, IRejectPayrollPeriod,
 } from "../types/payroll"
+import { apiErrorMessage } from "../utils/apiError";
 
 // ─────────────────────────────────────────────────────────
 // STATE
@@ -52,8 +53,8 @@ export const fetchPayrollPeriods = createAsyncThunk(
     try {
       const res = await request({ url: "/payroll/periods", method: "GET" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải danh sách kỳ lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải danh sách kỳ lương"))
     }
   }
 )
@@ -64,8 +65,8 @@ export const fetchPayrollPeriodById = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/periods/${periodId}`, method: "GET" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải kỳ lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải kỳ lương"))
     }
   }
 )
@@ -76,8 +77,8 @@ export const fetchPayrollPeriodSummary = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/periods/${periodId}/summary`, method: "GET" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải tổng hợp kỳ lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải tổng hợp kỳ lương"))
     }
   }
 )
@@ -88,8 +89,8 @@ export const createPayrollPeriod = createAsyncThunk(
     try {
       const res = await request({ url: "/payroll/periods", method: "POST", data })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tạo kỳ lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tạo kỳ lương"))
     }
   }
 )
@@ -100,8 +101,8 @@ export const approvePayrollPeriod = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/periods/${periodId}/approve`, method: "PUT" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi duyệt kỳ lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi duyệt kỳ lương"))
     }
   }
 )
@@ -112,8 +113,8 @@ export const rejectPayrollPeriod = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/periods/${periodId}/reject`, method: "PUT", data })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi từ chối kỳ lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi từ chối kỳ lương"))
     }
   }
 )
@@ -124,8 +125,8 @@ export const triggerAttendanceReview = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/periods/${periodId}/trigger-attendance-review`, method: "PUT" })
       return res.data as IPayrollPeriod
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi kích hoạt review chấm công")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi kích hoạt review chấm công"))
     }
   }
 )
@@ -139,8 +140,8 @@ export const calculateAllEmployees = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/periods/${periodId}/calculate`, method: "POST" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tính lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tính lương"))
     }
   }
 )
@@ -151,8 +152,8 @@ export const calculateOneEmployee = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/periods/${periodId}/calculate/${employeeId}`, method: "POST" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tính lương nhân viên")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tính lương nhân viên"))
     }
   }
 )
@@ -166,8 +167,8 @@ export const fetchRecordsByPeriod = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/${periodId}`, method: "GET" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải bảng lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải bảng lương"))
     }
   }
 )
@@ -178,8 +179,8 @@ export const fetchRecordById = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/detail/${recordId}`, method: "GET" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải chi tiết lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải chi tiết lương"))
     }
   }
 )
@@ -190,8 +191,8 @@ export const updateBonus = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/${recordId}/bonus`, method: "PUT", data: bonusAmount })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi cập nhật thưởng")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi cập nhật thưởng"))
     }
   }
 )
@@ -205,8 +206,8 @@ export const addAllowance = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/${recordId}/allowance`, method: "POST", data })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi thêm phụ cấp")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi thêm phụ cấp"))
     }
   }
 )
@@ -217,8 +218,8 @@ export const removeAllowance = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/${recordId}/allowance/${allowanceId}`, method: "DELETE" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi xóa phụ cấp")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi xóa phụ cấp"))
     }
   }
 )
@@ -232,8 +233,8 @@ export const addDeduction = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/${recordId}/deduction`, method: "POST", data })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi thêm khấu trừ")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi thêm khấu trừ"))
     }
   }
 )
@@ -244,8 +245,8 @@ export const removeDeduction = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/${recordId}/deduction/${deductionId}`, method: "DELETE" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi xóa khấu trừ")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi xóa khấu trừ"))
     }
   }
 )
@@ -259,8 +260,8 @@ export const generatePayslipsForPeriod = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/payslips/period/${periodId}/generate-all`, method: "POST" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tạo phiếu lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tạo phiếu lương"))
     }
   }
 )
@@ -271,8 +272,8 @@ export const generatePayslip = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/payslips/${recordId}/generate`, method: "POST" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tạo phiếu lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tạo phiếu lương"))
     }
   }
 )
@@ -283,8 +284,8 @@ export const fetchMyPayslips = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/payslips/employee/${employeeId}`, method: "GET" })
       return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải phiếu lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải phiếu lương"))
     }
   }
 )
@@ -295,8 +296,8 @@ export const downloadPayslipPdf = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/payslips/${payslipId}/pdf`, method: "GET", responseType: "blob" })
       return res.data as Blob
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Tải PDF thất bại")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Tải PDF thất bại"))
     }
   }
 )
@@ -307,8 +308,8 @@ export const exportPayrollExcel = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/export/${periodId}`, method: "GET", responseType: "blob" })
       return res.data as Blob
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Xuất Excel thất bại")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Xuất Excel thất bại"))
     }
   }
 )
@@ -322,8 +323,8 @@ export const fetchMyAttendanceSummary = createAsyncThunk(
     try {
       const res = await request({ url: `/payroll/records/my/${periodId}/attendance`, method: "GET" })
       return res.data as IAttendanceSummary
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải dữ liệu chấm công")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải dữ liệu chấm công"))
     }
   }
 )
@@ -334,8 +335,8 @@ export const fetchMyPeriods = createAsyncThunk(
     try {
       const res = await request({ url: "/payroll/periods/my", method: "GET" })
       return res.data as IPayrollPeriod[]
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Lỗi tải danh sách kỳ lương")
+    } catch (err) {
+      return rejectWithValue(apiErrorMessage(err, "Lỗi tải danh sách kỳ lương"))
     }
   }
 )

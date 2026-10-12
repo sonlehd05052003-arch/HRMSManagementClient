@@ -3,6 +3,7 @@ import { request } from "../utils/request";
 import type { RootState } from "./index";
 import { logout } from "./authSlide";
 import { companyScopeHeader } from "./companySlide";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface IMyMenuNode {
   menuId: number;
@@ -61,16 +62,14 @@ const authHeader = (getState: () => unknown) => {
   return { ...companyScopeHeader(state) };
 };
 
-const errorOf = (error: any, fallback: string) =>
-  error.response?.data?.message || error.response?.data || fallback;
 
 // GET /api/Menu/my
 export const fetchMyMenu = createAsyncThunk("menu/fetchMyMenu", async (_, { rejectWithValue, getState }) => {
   try {
     const response = await request({ url: "/Menu/my", method: "GET", headers: authHeader(getState) });
     return response.data as IMyMenuNode[];
-  } catch (error: any) {
-    return rejectWithValue(errorOf(error, "Không tải được menu"));
+  } catch (error) {
+    return rejectWithValue(apiErrorMessage(error, "Không tải được menu"));
   }
 });
 
@@ -79,8 +78,8 @@ export const fetchMenuTree = createAsyncThunk("menu/fetchMenuTree", async (_, { 
   try {
     const response = await request({ url: "/Menu", method: "GET", headers: authHeader(getState) });
     return response.data as IMenuAdminNode[];
-  } catch (error: any) {
-    return rejectWithValue(errorOf(error, "Không tải được cây menu"));
+  } catch (error) {
+    return rejectWithValue(apiErrorMessage(error, "Không tải được cây menu"));
   }
 });
 
@@ -89,8 +88,8 @@ export const createMenu = createAsyncThunk("menu/createMenu", async (data: IMenu
   try {
     const response = await request({ url: "/Menu", method: "POST", data, headers: authHeader(getState) });
     return response.data;
-  } catch (error: any) {
-    return rejectWithValue(errorOf(error, "Tạo menu thất bại"));
+  } catch (error) {
+    return rejectWithValue(apiErrorMessage(error, "Tạo menu thất bại"));
   }
 });
 
@@ -101,8 +100,8 @@ export const updateMenu = createAsyncThunk(
     try {
       const response = await request({ url: `/Menu/${id}`, method: "PUT", data, headers: authHeader(getState) });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(errorOf(error, "Cập nhật menu thất bại"));
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Cập nhật menu thất bại"));
     }
   }
 );
@@ -112,8 +111,8 @@ export const deleteMenu = createAsyncThunk("menu/deleteMenu", async (id: number,
   try {
     const response = await request({ url: `/Menu/${id}`, method: "DELETE", headers: authHeader(getState) });
     return response.data as { deletedCount: number };
-  } catch (error: any) {
-    return rejectWithValue(errorOf(error, "Xóa menu thất bại"));
+  } catch (error) {
+    return rejectWithValue(apiErrorMessage(error, "Xóa menu thất bại"));
   }
 });
 
@@ -122,8 +121,8 @@ export const fetchRoleMenus = createAsyncThunk("menu/fetchRoleMenus", async (rol
   try {
     const response = await request({ url: `/Menu/roles/${roleId}`, method: "GET", headers: authHeader(getState) });
     return response.data as IMenuAdminNode[];
-  } catch (error: any) {
-    return rejectWithValue(errorOf(error, "Không tải được menu của vai trò"));
+  } catch (error) {
+    return rejectWithValue(apiErrorMessage(error, "Không tải được menu của vai trò"));
   }
 });
 
@@ -139,8 +138,8 @@ export const updateRoleMenus = createAsyncThunk(
         headers: authHeader(getState),
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(errorOf(error, "Lưu phân menu thất bại"));
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Lưu phân menu thất bại"));
     }
   }
 );
@@ -150,8 +149,8 @@ export const fetchSuperAdminMenus = createAsyncThunk("menu/fetchSuperAdminMenus"
   try {
     const response = await request({ url: "/Menu/superadmin", method: "GET", headers: authHeader(getState) });
     return response.data as IMenuAdminNode[];
-  } catch (error: any) {
-    return rejectWithValue(errorOf(error, "Không tải được menu của SuperAdmin"));
+  } catch (error) {
+    return rejectWithValue(apiErrorMessage(error, "Không tải được menu của SuperAdmin"));
   }
 });
 
@@ -167,8 +166,8 @@ export const updateSuperAdminMenus = createAsyncThunk(
         headers: authHeader(getState),
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(errorOf(error, "Lưu menu SuperAdmin thất bại"));
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Lưu menu SuperAdmin thất bại"));
     }
   }
 );

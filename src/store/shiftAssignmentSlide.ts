@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface IShiftAssignment {
     assignmentId: number;
@@ -59,8 +60,8 @@ export const assignShift = createAsyncThunk(
                 data,
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -75,8 +76,8 @@ export const fetchShiftAssignments = createAsyncThunk(
                 params,
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -91,8 +92,8 @@ export const fetchMySchedule = createAsyncThunk(
                 params,
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -107,8 +108,8 @@ export const updateShiftAssignment = createAsyncThunk(
                 data,
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -122,8 +123,8 @@ export const deactivateShiftAssignment = createAsyncThunk(
                 method: "PATCH",
             });
             return { id, ...response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -137,8 +138,8 @@ export const activateShiftAssignment = createAsyncThunk(
                 method: "PATCH",
             });
             return { id, ...response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -152,8 +153,8 @@ export const deleteShiftAssignment = createAsyncThunk(
                 method: "DELETE",
             });
             return { id, ...response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );

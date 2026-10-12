@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
+import { apiErrorMessage } from "../utils/apiError";
 
 interface LocationSettings {
     officeLatitude: number;
@@ -69,8 +70,8 @@ export const fetchLocationSettings = createAsyncThunk(
                 method: "GET"
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy cấu hình vị trí");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy cấu hình vị trí"));
         }
     }
 );
@@ -85,8 +86,8 @@ export const updateLocationSettings = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật cấu hình vị trí");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi cập nhật cấu hình vị trí"));
         }
     }
 );
@@ -100,8 +101,8 @@ export const fetchApprovalSettings = createAsyncThunk(
                 method: "GET"
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy cấu hình phê duyệt");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy cấu hình phê duyệt"));
         }
     }
 );
@@ -115,8 +116,8 @@ export const fetchPayrollSettings = createAsyncThunk(
                 method: "GET"
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy cấu hình kỳ lương");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy cấu hình kỳ lương"));
         }
     }
 );
@@ -131,8 +132,8 @@ export const updatePayrollSettings = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật cấu hình kỳ lương");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi cập nhật cấu hình kỳ lương"));
         }
     }
 );
@@ -143,8 +144,8 @@ export const fetchCompanySettings = createAsyncThunk(
         try {
             const response = await request({ url: "/SystemSettings/company", method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy thông tin công ty");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy thông tin công ty"));
         }
     }
 );
@@ -155,8 +156,8 @@ export const updateCompanySettings = createAsyncThunk(
         try {
             const response = await request({ url: "/SystemSettings/company", method: "PUT", data: dto });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật thông tin công ty");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi cập nhật thông tin công ty"));
         }
     }
 );
@@ -167,8 +168,8 @@ export const fetchPayrollCalcSettings = createAsyncThunk(
         try {
             const response = await request({ url: "/SystemSettings/payroll-calculation", method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy cấu hình tính lương");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy cấu hình tính lương"));
         }
     }
 );
@@ -179,8 +180,8 @@ export const updatePayrollCalcSettings = createAsyncThunk(
         try {
             const response = await request({ url: "/SystemSettings/payroll-calculation", method: "PUT", data: dto });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật cấu hình tính lương");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi cập nhật cấu hình tính lương"));
         }
     }
 );
@@ -195,8 +196,8 @@ export const updateApprovalSettings = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật cấu hình phê duyệt");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi cập nhật cấu hình phê duyệt"));
         }
     }
 );

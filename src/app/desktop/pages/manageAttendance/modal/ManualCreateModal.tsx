@@ -4,6 +4,7 @@ import { manualCreateAttendance } from "../../../../../store/attendanceSlide";
 import { selectEmployees, fetchAllEmployees } from "../../../../../store/employeeSlide";
 import { useEffect } from "react";
 import dayjs from "dayjs";
+import { errorText } from "../../../../../utils/apiError";
 
 interface ManualCreateModalProps {
     open: boolean;
@@ -40,8 +41,8 @@ const ManualCreateModal = ({ open, onClose }: ManualCreateModalProps) => {
             
             message.success("Tạo chấm công thành công");
             onClose();
-        } catch (error: any) {
-            message.error(error || "Tạo thất bại");
+        } catch (error) {
+            message.error(errorText(error, "Tạo thất bại"));
         }
     };
 

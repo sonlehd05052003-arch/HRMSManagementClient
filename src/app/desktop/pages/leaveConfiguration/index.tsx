@@ -35,6 +35,7 @@ import {
 import LeaveTypeModal from "./LeaveTypeModal";
 import CreateBalanceModal from "./CreateBalanceModal";
 import EmployeeBalanceDetailsModal from "./EmployeeBalanceDetailsModal";
+import { errorText } from "../../../../utils/apiError";
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -101,8 +102,8 @@ const LeaveConfiguration = () => {
             setGenerateResult(data);
             setIsGenerateResultVisible(true);
             dispatch(fetchAllBalances());
-        } catch (err: any) {
-            message.error(err?.message || "Có lỗi xảy ra khi khởi tạo số dư.");
+        } catch (err) {
+            message.error(errorText(err, "Có lỗi xảy ra khi khởi tạo số dư."));
         } finally {
             setIsGenerating(false);
         }
@@ -117,8 +118,8 @@ const LeaveConfiguration = () => {
         try {
             await dispatch(deleteLeaveType(id)).unwrap();
             message.success("Đã ngừng hoạt động loại phép này.");
-        } catch (err: any) {
-            message.error(err.message || "Không thể xóa loại phép này.");
+        } catch (err) {
+            message.error(errorText(err, "Không thể xóa loại phép này."));
         }
     };
 

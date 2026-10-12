@@ -4,6 +4,7 @@ import { FilePdfOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import { fetchMyPayslips, downloadPayslipPdf, selectMyPayslips, selectPayrollLoading } from "../../../../../store/payrollSlide"
 import type { IPayslip } from "../../../../../types/payroll"
+import { errorText } from "../../../../../utils/apiError";
 
 const { Title } = Typography
 
@@ -31,8 +32,8 @@ const MyPayslips = () => {
       a.click()
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
-    } catch (err: any) {
-      alert(err.message || "Tải PDF thất bại")
+    } catch (err) {
+      alert(errorText(err, "Tải PDF thất bại"))
     }
   }
 

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 // ── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -72,8 +73,8 @@ export const uploadEmployeeDocument = createAsyncThunk(
                 },
             });
             return response.data as IEmployeeDocumentDetail;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Upload thất bại");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Upload thất bại"));
         }
     }
 );
@@ -95,8 +96,8 @@ export const updateEmployeeDocument = createAsyncThunk(
                 },
             });
             return response.data as IEmployeeDocumentDetail;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Cập nhật thất bại");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Cập nhật thất bại"));
         }
     }
 );
@@ -111,8 +112,8 @@ export const fetchDocumentsByEmployee = createAsyncThunk(
                 method: "GET",
             });
             return response.data as IEmployeeDocumentList[];
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Không thể tải danh sách tài liệu");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Không thể tải danh sách tài liệu"));
         }
     }
 );
@@ -127,8 +128,8 @@ export const fetchDocumentById = createAsyncThunk(
                 method: "GET",
             });
             return response.data as IEmployeeDocumentDetail;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Không thể tải tài liệu");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Không thể tải tài liệu"));
         }
     }
 );
@@ -153,8 +154,8 @@ export const downloadEmployeeDocument = createAsyncThunk(
                 if (match) fileName = match[1];
             }
             return { url, fileName };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Tải file thất bại");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Tải file thất bại"));
         }
     }
 );
@@ -169,8 +170,8 @@ export const deleteEmployeeDocument = createAsyncThunk(
                 method: "DELETE",
             });
             return id;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Xóa tài liệu thất bại");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Xóa tài liệu thất bại"));
         }
     }
 );
@@ -188,8 +189,8 @@ export const fetchDocumentsByCategory = createAsyncThunk(
                 method: "GET",
             });
             return response.data as IEmployeeDocumentList[];
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Không thể tải tài liệu theo danh mục");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Không thể tải tài liệu theo danh mục"));
         }
     }
 );

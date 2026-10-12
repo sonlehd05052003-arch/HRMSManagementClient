@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, createSelector } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface LeaveTypeDto {
   leaveTypeId: number;
@@ -48,8 +49,8 @@ export const fetchActiveLeaveTypes = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -63,8 +64,8 @@ export const fetchAllLeaveTypes = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -78,8 +79,8 @@ export const fetchLeaveTypeById = createAsyncThunk(
         method: "GET",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -94,8 +95,8 @@ export const createLeaveType = createAsyncThunk(
         data: dto,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -110,8 +111,8 @@ export const updateLeaveType = createAsyncThunk(
         data: dto,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -126,8 +127,8 @@ export const deleteLeaveType = createAsyncThunk(
         method: "DELETE",
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Something went wrong");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
     }
   }
 );

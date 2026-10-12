@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 // ── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -85,8 +86,8 @@ export const fetchAllEmployees = createAsyncThunk(
         try {
             const response = await request({ url: "/Employee", method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -97,8 +98,8 @@ export const fetchActiveEmployees = createAsyncThunk(
         try {
             const response = await request({ url: "/Employee/active", method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -109,8 +110,8 @@ export const fetchEmployeeById = createAsyncThunk(
         try {
             const response = await request({ url: `/Employee/${id}`, method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -121,8 +122,8 @@ export const createEmployee = createAsyncThunk(
         try {
             const response = await request({ url: "/Employee", method: "POST", data });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -133,8 +134,8 @@ export const updateEmployee = createAsyncThunk(
         try {
             const response = await request({ url: `/Employee/${id}`, method: "PUT", data });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -147,8 +148,8 @@ export const updateEmployeeStatus = createAsyncThunk(
             if (disabledBy !== undefined) params.disabledBy = disabledBy;
             await request({ url: `/Employee/${id}/status`, method: "PATCH", params });
             return { id, status };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -159,8 +160,8 @@ export const fetchApprovalAnalysis = createAsyncThunk(
         try {
             const response = await request({ url: "/Employee/approval-analysis", method: "GET" });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );

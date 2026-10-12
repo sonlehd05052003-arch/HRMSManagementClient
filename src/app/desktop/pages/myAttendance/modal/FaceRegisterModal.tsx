@@ -4,6 +4,7 @@ import Webcam from "react-webcam";
 import { CameraOutlined, RetweetOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../../store";
 import { registerFace } from "../../../../../store/attendanceSlide";
+import { errorText } from "../../../../../utils/apiError";
 
 const { Text } = Typography;
 
@@ -45,8 +46,8 @@ const FaceRegisterModal: React.FC<FaceRegisterModalProps> = ({ open, onCancel, o
             await dispatch(registerFace({ referenceImageBase64: image })).unwrap();
             message.success("Đăng ký khuôn mặt thành công!");
             onSuccess();
-        } catch (error: any) {
-            message.error(error || "Lỗi đăng ký khuôn mặt");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi đăng ký khuôn mặt"));
         } finally {
             setLoading(false);
         }

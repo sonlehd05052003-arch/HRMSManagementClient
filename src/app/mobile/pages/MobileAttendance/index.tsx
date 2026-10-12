@@ -21,6 +21,7 @@ import {
 import CameraCaptureModal from "../../../desktop/pages/myAttendance/modal/CameraCaptureModal";
 import MobilePageWrapper from "../../components/MobilePageWrapper";
 import MobileCard from "../../components/MobileCard";
+import { errorText, isFormValidationError } from "../../../../utils/apiError";
 
 // ── Payroll period helpers (same logic as desktop) ────────────────────────────
 interface PayrollPeriod { label: string; value: string; fromDate: string; toDate: string; }
@@ -118,9 +119,9 @@ const MobileAttendance = () => {
             message.success("Phiếu giải trình đã được gửi. Đang chờ Quản lý duyệt.");
             setModalOpen(false);
             handleFetchHistory();
-        } catch (error: any) {
-            if (error?.errorFields) return;
-            message.error(error?.message || "Gửi giải trình thất bại.");
+        } catch (error) {
+            if (isFormValidationError(error)) return;
+            message.error(errorText(error, "Gửi giải trình thất bại."));
         }
     };
 
@@ -205,7 +206,7 @@ const MobileAttendance = () => {
             message.success("Check-in thành công!");
             setCheckInOpen(false);
             dispatch(fetchMyToday());
-        } catch (err: any) { message.error(err || "Check-in thất bại"); }
+        } catch (err) { message.error(errorText(err, "Check-in thất bại")); }
     };
 
     const handleCheckOut = async (faceImage: string) => {
@@ -216,7 +217,7 @@ const MobileAttendance = () => {
             message.success("Check-out thành công!");
             setCheckOutOpen(false);
             dispatch(fetchMyToday());
-        } catch (err: any) { message.error(err || "Check-out thất bại"); }
+        } catch (err) { message.error(errorText(err, "Check-out thất bại")); }
     };
 
     useAndroidBack(checkInOpen,   () => setCheckInOpen(false));

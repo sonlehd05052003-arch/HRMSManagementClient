@@ -4,6 +4,7 @@ import dayjs from "dayjs"
 import { useAppDispatch, useAppSelector } from "../../../../store"
 import { createPayrollPeriod } from "../../../../store/payrollSlide"
 import { fetchPayrollSettings, selectPayrollSettings } from "../../../../store/systemSettingSlide"
+import { errorText } from "../../../../utils/apiError";
 
 interface Props {
   visible: boolean
@@ -69,8 +70,8 @@ const CreatePeriodModal = ({ visible, onCancel, onSuccess }: Props) => {
 
       message.success("Tạo kỳ lương thành công!")
       onSuccess()
-    } catch (err: any) {
-      message.error(err.message || "Không thể tạo kỳ lương")
+    } catch (err) {
+      message.error(errorText(err, "Không thể tạo kỳ lương"))
     }
   }
 

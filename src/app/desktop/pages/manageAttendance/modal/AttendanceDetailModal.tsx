@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { LockOutlined, UnlockOutlined, HistoryOutlined } from "@ant-design/icons";
 import AttendanceLogsModal from "./AttendanceLogsModal";
+import { errorText } from "../../../../../utils/apiError";
 
 const { Text } = Typography;
 
@@ -37,8 +38,8 @@ const AttendanceDetailModal = ({ open, onClose, employeeId, employeeName, date }
         try {
             await dispatch(lockAttendance(detail.attendanceId)).unwrap();
             message.success("Đã khóa bản ghi chấm công.");
-        } catch (err: any) {
-            message.error(typeof err === "string" ? err : "Khóa bản ghi thất bại.");
+        } catch (err) {
+            message.error(errorText(err, "Khóa bản ghi thất bại."));
         }
     };
 
@@ -47,8 +48,8 @@ const AttendanceDetailModal = ({ open, onClose, employeeId, employeeName, date }
         try {
             await dispatch(unlockAttendance(detail.attendanceId)).unwrap();
             message.success("Đã mở khóa bản ghi chấm công.");
-        } catch (err: any) {
-            const errMsg = typeof err === "string" ? err : "Mở khóa bản ghi thất bại.";
+        } catch (err) {
+            const errMsg = errorText(err, "Mở khóa bản ghi thất bại.");
             message.error(errMsg);
             if (errMsg.includes("kỳ lương")) setIsPayrollLocked(true);
         }

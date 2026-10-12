@@ -29,6 +29,7 @@ import GuidanceCard from "./components/GuidanceCard";
 import PayrollSettingsCard from "./components/PayrollSettingsCard";
 import CompanySettingsCard from "./components/CompanySettingsCard";
 import PayrollCalculationSettingsCard from "./components/PayrollCalculationSettingsCard";
+import { errorText } from "../../../../utils/apiError";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -98,8 +99,8 @@ const SystemSettingPage: React.FC = () => {
             await dispatch(updateLocationSettings(values)).unwrap();
             message.success("Cấu hình vị trí đã được lưu");
             dispatch(fetchLocationSettings());
-        } catch (error: any) {
-            message.error(error || "Lỗi lưu cấu hình vị trí");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi lưu cấu hình vị trí"));
         }
     };
 
@@ -108,8 +109,8 @@ const SystemSettingPage: React.FC = () => {
             await dispatch(updateCompanySettings(values)).unwrap();
             message.success("Thông tin công ty đã được lưu");
             dispatch(fetchCompanySettings());
-        } catch (error: any) {
-            message.error(error || "Lỗi lưu thông tin công ty");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi lưu thông tin công ty"));
         }
     };
 
@@ -118,8 +119,8 @@ const SystemSettingPage: React.FC = () => {
             await dispatch(updatePayrollSettings(values)).unwrap();
             message.success("Cấu hình kỳ lương đã được lưu");
             dispatch(fetchPayrollSettings());
-        } catch (error: any) {
-            message.error(error || "Lỗi lưu cấu hình kỳ lương");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi lưu cấu hình kỳ lương"));
         }
     };
 
@@ -128,8 +129,8 @@ const SystemSettingPage: React.FC = () => {
             await dispatch(updatePayrollCalcSettings(values)).unwrap();
             message.success("Cấu hình tính lương đã được lưu");
             dispatch(fetchPayrollCalcSettings());
-        } catch (error: any) {
-            message.error(error || "Lỗi lưu cấu hình tính lương");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi lưu cấu hình tính lương"));
         }
     };
 
@@ -143,8 +144,8 @@ const SystemSettingPage: React.FC = () => {
             message.success("Cấu hình phê duyệt đã được lưu");
             dispatch(fetchApprovalSettings());
             dispatch(fetchApprovalAnalysis());
-        } catch (error: any) {
-            message.error(error || "Lỗi lưu cấu hình phê duyệt");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi lưu cấu hình phê duyệt"));
         }
     };
 

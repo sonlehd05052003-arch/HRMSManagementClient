@@ -5,6 +5,7 @@ import { CameraOutlined, RetweetOutlined, CheckCircleOutlined, UserOutlined } fr
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { adminRegisterFace, selectFaceLoading } from "../../../../store/faceSlide";
 import { message } from "antd";
+import { errorText } from "../../../../utils/apiError";
 
 const { Text } = Typography;
 
@@ -36,8 +37,8 @@ const HRFaceRegisterModal: React.FC<Props> = ({ open, employeeId, employeeName, 
             await dispatch(adminRegisterFace({ employeeId, referenceImageBase64: image })).unwrap();
             message.success(`Đã đăng ký khuôn mặt cho ${employeeName}!`);
             onSuccess();
-        } catch (error: any) {
-            message.error(error || "Lỗi đăng ký khuôn mặt");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi đăng ký khuôn mặt"));
         }
     };
 

@@ -10,6 +10,7 @@ import {
     selectAttendanceLoading, type AttendanceResponseDto
 } from "../../../../../store/attendanceSlide";
 import dayjs from "dayjs";
+import { errorText, isFormValidationError } from "../../../../../utils/apiError";
 
 const { Text, Paragraph } = Typography;
 
@@ -80,9 +81,9 @@ const ExplanationApprovalTable = () => {
             message.success(successMessage);
             setModalOpen(false);
             handleRefresh();
-        } catch (error: any) {
-            if (error?.errorFields) return;
-            message.error(error?.message || "Xử lý thất bại.");
+        } catch (error) {
+            if (isFormValidationError(error)) return;
+            message.error(errorText(error, "Xử lý thất bại."));
         }
     };
 

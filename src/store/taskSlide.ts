@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface ITask {
     taskId: number;
@@ -59,8 +60,8 @@ export const fetchAllTasks = createAsyncThunk(
                 method: "GET",
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -75,8 +76,8 @@ export const fetchTaskById = createAsyncThunk(
                 method: "GET",
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -92,8 +93,8 @@ export const createTask = createAsyncThunk(
                 data,
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -109,8 +110,8 @@ export const updateTask = createAsyncThunk(
                 data,
             });
             return { id, data, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -126,8 +127,8 @@ export const approveTask = createAsyncThunk(
                 data: { comments },
             });
             return { id, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -143,8 +144,8 @@ export const rejectTask = createAsyncThunk(
                 data: { reason },
             });
             return { id, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -159,8 +160,8 @@ export const cancelTask = createAsyncThunk(
                 method: "DELETE",
             });
             return { id, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );

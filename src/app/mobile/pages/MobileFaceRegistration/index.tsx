@@ -12,6 +12,7 @@ import {
 } from "../../../../store/faceSlide";
 import HRFaceRegisterModal from "../../../desktop/pages/manageFaceRegistration/HRFaceRegisterModal";
 import MobilePageWrapper from "../../components/MobilePageWrapper";
+import { errorText } from "../../../../utils/apiError";
 
 const MobileFaceRegistration: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -48,8 +49,8 @@ const MobileFaceRegistration: React.FC = () => {
             await dispatch(adminDeleteFace(employeeId)).unwrap();
             message.success(`Đã xóa khuôn mặt của ${name}`);
             dispatch(fetchAllEmployeesFaceStatus());
-        } catch (error: any) {
-            message.error(error || "Xóa thất bại");
+        } catch (error) {
+            message.error(errorText(error, "Xóa thất bại"));
         }
     };
 

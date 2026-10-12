@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, Input, InputNumber, message, Popconfi
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import { addAllowance, removeAllowance, selectCurrentRecord } from "../../../../../store/payrollSlide"
+import { errorText } from "../../../../../utils/apiError";
 
 const AllowanceSection = ({ recordId, isEditable }: { recordId: number; isEditable: boolean }) => {
   const dispatch = useAppDispatch()
@@ -20,8 +21,8 @@ const AllowanceSection = ({ recordId, isEditable }: { recordId: number; isEditab
       message.success("Đã thêm phụ cấp thành công!")
       setShowAdd(false)
       form.resetFields()
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi thêm phụ cấp")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi thêm phụ cấp"))
     }
   }
 
@@ -29,8 +30,8 @@ const AllowanceSection = ({ recordId, isEditable }: { recordId: number; isEditab
     try {
       await dispatch(removeAllowance({ recordId, allowanceId })).unwrap()
       message.success("Đã xóa phụ cấp!")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi xóa")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi xóa"))
     }
   }
 

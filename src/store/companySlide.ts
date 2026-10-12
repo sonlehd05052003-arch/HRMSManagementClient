@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface ICompany {
   companyId: number;
@@ -77,16 +78,14 @@ export const companyScopeHeader = (state: any): Record<string, string> => {
     : {};
 };
 
-const errorOf = (error: any, fallback: string) =>
-  error.response?.data?.message || error.response?.data?.title || fallback;
 
 // GET /api/Company
 export const fetchCompanies = createAsyncThunk("company/fetchAll", async (_, { rejectWithValue }) => {
   try {
     const response = await request({ url: "/Company", method: "GET" });
     return response.data as ICompany[];
-  } catch (error: any) {
-    return rejectWithValue(errorOf(error, "Không tải được danh sách công ty"));
+  } catch (error) {
+    return rejectWithValue(apiErrorMessage(error, "Không tải được danh sách công ty"));
   }
 });
 
@@ -97,8 +96,8 @@ export const createCompany = createAsyncThunk(
     try {
       const response = await request({ url: "/Company", method: "POST", data });
       return response.data as ICreateCompanyResult;
-    } catch (error: any) {
-      return rejectWithValue(errorOf(error, "Tạo công ty thất bại"));
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Tạo công ty thất bại"));
     }
   }
 );
@@ -110,8 +109,8 @@ export const updateCompany = createAsyncThunk(
     try {
       const response = await request({ url: `/Company/${companyId}`, method: "PUT", data });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(errorOf(error, "Cập nhật công ty thất bại"));
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Cập nhật công ty thất bại"));
     }
   }
 );
@@ -127,8 +126,8 @@ export const setCompanyStatus = createAsyncThunk(
         data: { isActive }
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(errorOf(error, "Đổi trạng thái công ty thất bại"));
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Đổi trạng thái công ty thất bại"));
     }
   }
 );
@@ -143,8 +142,8 @@ export const resetCompanyAdminPassword = createAsyncThunk(
         method: "POST"
       });
       return response.data as IResetAdminPasswordResult;
-    } catch (error: any) {
-      return rejectWithValue(errorOf(error, "Đặt lại mật khẩu thất bại"));
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Đặt lại mật khẩu thất bại"));
     }
   }
 );

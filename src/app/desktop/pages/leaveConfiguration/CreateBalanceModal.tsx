@@ -6,6 +6,7 @@ import {
 } from "../../../../store/leaveBalanceSlide";
 import { selectLeaveTypes } from "../../../../store/leaveTypeSlide";
 import { selectEmployees } from "../../../../store/employeeSlide";
+import { errorText } from "../../../../utils/apiError";
 
 const { Option } = Select;
 
@@ -35,8 +36,8 @@ const CreateBalanceModal = ({ visible, onClose }: CreateBalanceModalProps) => {
             const result = await dispatch(createLeaveBalance(values)).unwrap();
             message.success(result.message || "Khởi tạo số dư thành công.");
             onClose(true);
-        } catch (err: any) {
-            message.error(err.message || "Không thể khởi tạo số dư. Có thể bản ghi đã tồn tại.");
+        } catch (err) {
+            message.error(errorText(err, "Không thể khởi tạo số dư. Có thể bản ghi đã tồn tại."));
         }
     };
 

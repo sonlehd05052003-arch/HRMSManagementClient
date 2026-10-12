@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import axios from "axios";
+import { apiErrorMessage, errorText } from "../utils/apiError";
 
 // ── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -85,18 +87,18 @@ export const exportReport = createAsyncThunk(
                     message: "Tải báo cáo xuống thành công." 
                 };
             }
-        } catch (error: any) {
-            // Error handling for blob responses is tricky:
-            if (error.response && error.response.data instanceof Blob) {
+        } catch (error) {
+            // The request asked for a blob, so an error body arrives as a Blob holding the JSON
+            if (axios.isAxiosError(error) && error.response?.data instanceof Blob) {
                 const text = await error.response.data.text();
                 try {
                     const json = JSON.parse(text);
                     return rejectWithValue(json.message || "Xuất báo cáo thất bại.");
-                } catch (e) {
+                } catch {
                     return rejectWithValue("Xuất báo cáo thất bại.");
                 }
             }
-            return rejectWithValue(error.response?.data?.message || error.message || "Xuất báo cáo thất bại.");
+            return rejectWithValue(apiErrorMessage(error, errorText(error, "Xuất báo cáo thất bại.")));
         }
     }
 );

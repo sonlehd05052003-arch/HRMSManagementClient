@@ -4,6 +4,7 @@ import { EditOutlined, SaveOutlined, CloseOutlined, InfoCircleOutlined } from "@
 import { useAppDispatch } from "../../../../../store"
 import { updateBonus } from "../../../../../store/payrollSlide"
 import type { IPayrollRecord } from "../../../../../types/payroll"
+import { errorText } from "../../../../../utils/apiError";
 
 const { Text, Title } = Typography
 
@@ -43,8 +44,8 @@ const SalaryBreakdown = ({ record, isEditable }: Props) => {
       await dispatch(updateBonus({ recordId: record.payrollRecordId, bonusAmount: bonusValue })).unwrap()
       message.success("Đã cập nhật thưởng!")
       setEditingBonus(false)
-    } catch (err: any) {
-      message.error(err.message || "Lỗi cập nhật thưởng")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi cập nhật thưởng"))
     } finally {
       setSavingBonus(false)
     }

@@ -41,6 +41,7 @@ import { EUserRole } from "../../../../../interface/app"
 import type { IPayrollRecord } from "../../../../../types/payroll"
 import URL from "../../../../../constants/url"
 import SummaryCards from "./SummaryCards"
+import { errorText } from "../../../../../utils/apiError";
 
 const { Title, Text } = Typography
 
@@ -130,8 +131,8 @@ const PayrollPeriodDetail = () => {
       await dispatch(calculateAllEmployees(periodId)).unwrap()
       await dispatch(fetchPayrollPeriodById(periodId))
       message.success("Đã hoàn tất tính lương cho toàn bộ nhân viên!")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi tính lương")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi tính lương"))
     }
   }
 
@@ -139,8 +140,8 @@ const PayrollPeriodDetail = () => {
     try {
       const res = await dispatch(generatePayslipsForPeriod(periodId)).unwrap()
       message.success(res.message || "Đã tạo phiếu lương!")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi tạo phiếu lương")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi tạo phiếu lương"))
     }
   }
 
@@ -148,8 +149,8 @@ const PayrollPeriodDetail = () => {
     try {
       await dispatch(approvePayrollPeriod(periodId)).unwrap()
       message.success("Kỳ lương đã được duyệt và khóa dữ liệu.")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi duyệt kỳ lương")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi duyệt kỳ lương"))
     }
   }
 
@@ -163,8 +164,8 @@ const PayrollPeriodDetail = () => {
       message.success("Đã từ chối kỳ lương. HR cần tính toán lại.")
       setRejectModal(false)
       setRejectReason("")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi từ chối kỳ lương")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi từ chối kỳ lương"))
     }
   }
 
@@ -173,8 +174,8 @@ const PayrollPeriodDetail = () => {
       await dispatch(triggerAttendanceReview(periodId)).unwrap()
       message.success("Đã kích hoạt giai đoạn review chấm công. Email đã được gửi cho nhân viên.")
       await dispatch(fetchPayrollPeriodById(periodId))
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi kích hoạt review")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi kích hoạt review"))
     }
   }
 
@@ -187,8 +188,8 @@ const PayrollPeriodDetail = () => {
       a.download = `Payroll_Thang${period?.month}_${period?.year}.xlsx`
       a.click()
       window.URL.revokeObjectURL(url)
-    } catch (err: any) {
-      message.error(err.message || "Lỗi xuất Excel")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi xuất Excel"))
     }
   }
 

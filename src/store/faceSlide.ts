@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 // ── DTOs ────────────────────────────────────────────────────────────────────
 
@@ -39,8 +40,8 @@ export const fetchAllEmployeesFaceStatus = createAsyncThunk(
                 method: "GET"
             });
             return response.data as EmployeeFaceStatusDto[];
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi tải danh sách");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi tải danh sách"));
         }
     }
 );
@@ -55,8 +56,8 @@ export const adminRegisterFace = createAsyncThunk(
                 data: { referenceImageBase64: dto.referenceImageBase64 }
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi đăng ký khuôn mặt");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi đăng ký khuôn mặt"));
         }
     }
 );
@@ -70,8 +71,8 @@ export const adminDeleteFace = createAsyncThunk(
                 method: "DELETE"
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi xóa hồ sơ khuôn mặt");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi xóa hồ sơ khuôn mặt"));
         }
     }
 );

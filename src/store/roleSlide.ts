@@ -2,6 +2,7 @@ import { companyScopeHeader } from "./companySlide";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface IRole {
     roleId: number;
@@ -53,8 +54,8 @@ export const fetchAllRoles = createAsyncThunk(
                 },
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -74,8 +75,8 @@ export const createRole = createAsyncThunk(
                 },
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -92,8 +93,8 @@ export const fetchPermissionCatalog = createAsyncThunk(
                 headers: { ...companyScopeHeader(state), },
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -110,8 +111,8 @@ export const fetchRolePermissions = createAsyncThunk(
                 headers: { ...companyScopeHeader(state), },
             });
             return response.data as string[];
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -129,8 +130,8 @@ export const updateRolePermissions = createAsyncThunk(
                 headers: { ...companyScopeHeader(state), },
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );
@@ -150,8 +151,8 @@ export const changeRoleStatus = createAsyncThunk(
                 },
             });
             return { id, isActive, message: response.data };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Something went wrong");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Something went wrong"));
         }
     }
 );

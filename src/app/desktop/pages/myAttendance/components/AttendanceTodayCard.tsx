@@ -6,6 +6,7 @@ import { checkIn, checkOut, fetchMyToday, selectMyToday, selectAttendanceLoading
 import { fetchLocationSettings, selectLocationSettings } from "../../../../../store/systemSettingSlide";
 import dayjs from "dayjs";
 import CameraCaptureModal from "../modal/CameraCaptureModal";
+import { errorText } from "../../../../../utils/apiError";
 
 const { Text } = Typography;
 
@@ -94,8 +95,8 @@ const AttendanceTodayCard = () => {
             message.success("Check-in thành công");
             setCheckInOpen(false);
             dispatch(fetchMyToday());
-        } catch (error: any) {
-            message.error(error || "Check-in thất bại");
+        } catch (error) {
+            message.error(errorText(error, "Check-in thất bại"));
         }
     };
 
@@ -113,8 +114,8 @@ const AttendanceTodayCard = () => {
             message.success("Check-out thành công");
             setCheckOutOpen(false);
             dispatch(fetchMyToday());
-        } catch (error: any) {
-            message.error(error || "Lỗi check-out");
+        } catch (error) {
+            message.error(errorText(error, "Lỗi check-out"));
         }
     };
 

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, isPending, isRejected, type PayloadAction } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 // ── DTO Interfaces ───────────────────────────────────────────────────────────────
 
@@ -162,8 +163,8 @@ export const checkIn = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi check-in");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi check-in"));
         }
     }
 );
@@ -178,8 +179,8 @@ export const checkOut = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi check-out");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi check-out"));
         }
     }
 );
@@ -193,8 +194,8 @@ export const fetchMyToday = createAsyncThunk(
                 method: "GET"
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy dữ liệu chấm công hôm nay");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy dữ liệu chấm công hôm nay"));
         }
     }
 );
@@ -208,8 +209,8 @@ export const checkFaceRegistration = createAsyncThunk(
                 method: "GET"
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi kiểm tra trạng thái đăng ký");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi kiểm tra trạng thái đăng ký"));
         }
     }
 );
@@ -224,8 +225,8 @@ export const registerFace = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi đăng ký khuôn mặt");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi đăng ký khuôn mặt"));
         }
     }
 );
@@ -240,8 +241,8 @@ export const fetchMyHistory = createAsyncThunk(
                 params
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy lịch sử chấm công");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy lịch sử chấm công"));
         }
     }
 );
@@ -256,8 +257,8 @@ export const addLocationReason = createAsyncThunk(
                 data: { reason }
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi cập nhật lý do vị trí");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi cập nhật lý do vị trí"));
         }
     }
 );
@@ -289,8 +290,8 @@ export const submitExplanation = createAsyncThunk(
                 data: { message, explanationType, leaveTypeId, requestedCheckInTime, requestedCheckOutTime }
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi gửi giải trình");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi gửi giải trình"));
         }
     }
 );
@@ -322,8 +323,8 @@ export const submitAbsentExplanation = createAsyncThunk(
                 data: { date: attendanceDate, message, explanationType, leaveTypeId, requestedCheckInTime, requestedCheckOutTime }
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi gửi giải trình vắng mặt");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi gửi giải trình vắng mặt"));
         }
     }
 );
@@ -338,8 +339,8 @@ export const approveExplanation = createAsyncThunk(
                 data: { isApproved, response: responseMessage, manualCheckInTime, manualCheckOutTime }
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi duyệt giải trình");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi duyệt giải trình"));
         }
     }
 );
@@ -356,8 +357,8 @@ export const fetchAttendanceByDate = createAsyncThunk(
                 params: { date }
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy dữ liệu");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy dữ liệu"));
         }
     }
 );
@@ -373,8 +374,8 @@ export const searchAttendance = createAsyncThunk(
                 params
             });
             return response.data as IPagedResult<AttendanceResponseDto>;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi tìm kiếm chấm công");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi tìm kiếm chấm công"));
         }
     }
 );
@@ -389,8 +390,8 @@ export const fetchPendingExplanations = createAsyncThunk(
                 params: { ...params, explanationStatus: "Pending" }
             });
             return response.data as IPagedResult<AttendanceResponseDto>;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi tải phiếu giải trình");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi tải phiếu giải trình"));
         }
     }
 );
@@ -404,8 +405,8 @@ export const fetchAttendanceDetail = createAsyncThunk(
                 method: "GET"
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy chi tiết chấm công");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy chi tiết chấm công"));
         }
     }
 );
@@ -420,8 +421,8 @@ export const manualAdjustAttendance = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi điều chỉnh chấm công");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi điều chỉnh chấm công"));
         }
     }
 );
@@ -436,8 +437,8 @@ export const manualCreateAttendance = createAsyncThunk(
                 data: dto
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi tạo chấm công");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi tạo chấm công"));
         }
     }
 );
@@ -451,8 +452,8 @@ export const lockAttendance = createAsyncThunk(
                 method: "PUT"
             });
             return { attendanceId, message: response.data.message };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi khóa chấm công");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi khóa chấm công"));
         }
     }
 );
@@ -466,8 +467,8 @@ export const unlockAttendance = createAsyncThunk(
                 method: "PUT"
             });
             return { attendanceId, message: response.data.message };
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi mở khóa chấm công");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi mở khóa chấm công"));
         }
     }
 );
@@ -482,8 +483,8 @@ export const fetchAttendanceLogs = createAsyncThunk(
                 params
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || "Lỗi lấy lịch sử check-in");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Lỗi lấy lịch sử check-in"));
         }
     }
 );

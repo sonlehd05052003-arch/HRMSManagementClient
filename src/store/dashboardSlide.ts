@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage } from "../utils/apiError";
 
 export interface IDashboardStats {
     totalUsers: number;
@@ -122,8 +123,8 @@ export const fetchAdminDashboardData = createAsyncThunk(
                 params 
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Failed to fetch dashboard data");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Failed to fetch dashboard data"));
         }
     }
 );
@@ -138,8 +139,8 @@ export const fetchHrDashboardData = createAsyncThunk(
                 params 
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Failed to fetch HR dashboard data");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Failed to fetch HR dashboard data"));
         }
     }
 );
@@ -154,8 +155,8 @@ export const fetchManagerDashboardData = createAsyncThunk(
                 params 
             });
             return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data || "Failed to fetch Manager dashboard data");
+        } catch (error) {
+            return rejectWithValue(apiErrorMessage(error, "Failed to fetch Manager dashboard data"));
         }
     }
 );

@@ -3,6 +3,7 @@ import { Card, Table, Button, Modal, Form, Input, InputNumber, message, Popconfi
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import { addDeduction, removeDeduction, selectCurrentRecord } from "../../../../../store/payrollSlide"
+import { errorText } from "../../../../../utils/apiError";
 
 const DeductionSection = ({ recordId, isEditable }: { recordId: number; isEditable: boolean }) => {
   const dispatch = useAppDispatch()
@@ -20,8 +21,8 @@ const DeductionSection = ({ recordId, isEditable }: { recordId: number; isEditab
       message.success("Đã thêm khoản khấu trừ!")
       setShowAdd(false)
       form.resetFields()
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi thêm")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi thêm"))
     }
   }
 
@@ -29,8 +30,8 @@ const DeductionSection = ({ recordId, isEditable }: { recordId: number; isEditab
     try {
       await dispatch(removeDeduction({ recordId, deductionId })).unwrap()
       message.success("Đã xóa khoản khấu trừ!")
-    } catch (err: any) {
-      message.error(err.message || "Lỗi khi xóa")
+    } catch (err) {
+      message.error(errorText(err, "Lỗi khi xóa"))
     }
   }
 

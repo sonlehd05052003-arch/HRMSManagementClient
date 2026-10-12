@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { EUserRole, type DynamicKeyObject } from "../interface/app";
 import { request } from "../utils/request";
 import type { RootState } from "./index";
+import { apiErrorMessage, apiErrorStatus } from "../utils/apiError";
 
 /**
  * Profile of the signed-in user, as returned by the login / me endpoints. Kept in memory only: the JWT
@@ -53,8 +54,8 @@ export const fetchCurrentUser = createAsyncThunk("auth/fetchCurrentUser", async 
   try {
     const response = await request({ url: `/Auth/me`, method: "GET" });
     return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.status ?? 0);
+  } catch (error) {
+    return rejectWithValue(apiErrorStatus(error));
   }
 });
 
@@ -67,8 +68,8 @@ export const actionLogin = createAsyncThunk(
         method: "POST",
         data,
       });
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Login failed");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Login failed"));
     }
   }
 );
@@ -93,8 +94,8 @@ export const changePassword = createAsyncThunk(
         data
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Failed to change password");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Failed to change password"));
     }
   }
 );
@@ -109,8 +110,8 @@ export const forgotPassword = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Failed to send OTP");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Failed to send OTP"));
     }
   }
 );
@@ -125,8 +126,8 @@ export const resetPassword = createAsyncThunk(
         data,
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Failed to reset password");
+    } catch (error) {
+      return rejectWithValue(apiErrorMessage(error, "Failed to reset password"));
     }
   }
 );

@@ -3,6 +3,7 @@ import { Modal, Form, Input, Button, Steps, message } from "antd";
 import { MailOutlined, LockOutlined, KeyOutlined, ArrowRightOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../store";
 import { forgotPassword, resetPassword } from "../../../../store/authSlide";
+import { errorText } from "../../../../utils/apiError";
 
 interface ForgotPasswordModalProps {
     open: boolean;
@@ -23,8 +24,8 @@ const ForgotPasswordModal = ({ open, onCancel }: ForgotPasswordModalProps) => {
             message.success("Nếu tài khoản tồn tại, mã OTP đã được gửi đến email đăng ký.");
             setEmailOrUsername(values.emailOrUsername);
             setCurrentStep(1);
-        } catch (error: any) {
-            message.error(error.message || "Không thể gửi OTP. Vui lòng thử lại.");
+        } catch (error) {
+            message.error(errorText(error, "Không thể gửi OTP. Vui lòng thử lại."));
         } finally {
             setLoading(false);
         }
@@ -44,8 +45,8 @@ const ForgotPasswordModal = ({ open, onCancel }: ForgotPasswordModalProps) => {
             form.resetFields();
             setCurrentStep(0);
             onCancel();
-        } catch (error: any) {
-            message.error(error.message || "Đặt lại mật khẩu thất bại.");
+        } catch (error) {
+            message.error(errorText(error, "Đặt lại mật khẩu thất bại."));
         } finally {
             setLoading(false);
         }
