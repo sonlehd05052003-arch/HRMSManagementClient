@@ -2,15 +2,27 @@ import { Layout, Typography, Tabs } from "antd";
 import { TableOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import AttendanceTable from "./components/AttendanceTable";
 import ExplanationApprovalTable from "./components/ExplanationApprovalTable";
-import { useAppSelector } from "../../../../store";
-import { selectAdminAttendance } from "../../../../store/attendanceSlide";
+import { useEffect } from "react";
+import dayjs from "dayjs";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { fetchPendingExplanations, selectPendingExplanationsTotal } from "../../../../store/attendanceSlide";
 
 const { Content } = Layout;
 const { Title } = Typography;
 
 const ManageAttendance = () => {
-    const records = useAppSelector(selectAdminAttendance);
-    const pendingCount = records.filter(r => r.explanationStatus === "Pending").length;
+    const dispatch = useAppDispatch();
+    // The tab badge needs the count before the explanations tab is opened
+    const pendingCount = useAppSelector(selectPendingExplanationsTotal);
+
+    useEffect(() => {
+        dispatch(fetchPendingExplanations({
+            fromDate: dayjs().subtract(90, "day").format("YYYY-MM-DD"),
+            toDate: dayjs().format("YYYY-MM-DD"),
+            page: 1,
+            pageSize: 10,
+        }));
+    }, [dispatch]);
 
     return (
         <Layout className="bg-transparent p-4 min-h-screen">

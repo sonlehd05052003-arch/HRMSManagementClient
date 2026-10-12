@@ -4,7 +4,7 @@ import { SearchOutlined, EditOutlined, EyeOutlined, PlusOutlined, LockOutlined, 
 
 const { Text } = Typography;
 import { useAppDispatch, useAppSelector } from "../../../../../store";
-import { searchAttendance, selectAdminAttendance, selectAttendanceLoading, lockAttendance, unlockAttendance } from "../../../../../store/attendanceSlide";
+import { searchAttendance, selectAdminAttendance, selectAdminAttendanceTotal, selectAttendanceLoading, lockAttendance, unlockAttendance, type IAttendanceSearchParams } from "../../../../../store/attendanceSlide";
 import { fetchAllEmployees, selectEmployees } from "../../../../../store/employeeSlide";
 import { selectInfoLogin } from "../../../../../store/authSlide";
 import { EUserRole } from "../../../../../interface/app";
@@ -19,17 +19,15 @@ const { RangePicker } = DatePicker;
 const AttendanceTable = () => {
     const dispatch = useAppDispatch();
     const records = useAppSelector(selectAdminAttendance);
+    const total = useAppSelector(selectAdminAttendanceTotal);
     const loading = useAppSelector(selectAttendanceLoading);
     const allEmployees = useAppSelector(selectEmployees);
     const infoLogin = useAppSelector(selectInfoLogin);
 
+    // The server already limits a manager's rows to their direct reports; this list only feeds the filter
     const employees = infoLogin?.role === EUserRole.MANAGE
         ? allEmployees.filter(e => e.managerId === infoLogin.employeeId)
         : allEmployees;
-
-    const allowedEmployeeIds = infoLogin?.role === EUserRole.MANAGE
-        ? new Set(employees.map(e => e.employeeId))
-        : null;
 
     const managerProfile = infoLogin?.role === EUserRole.MANAGE
         ? allEmployees.find(e => e.employeeId === infoLogin.employeeId)
@@ -39,6 +37,21 @@ const AttendanceTable = () => {
     const [selectedEmployee, setSelectedEmployee] = useState<number | undefined>(undefined);
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
     const [refreshing, setRefreshing] = useState(false);
+
+    // Paging asks the server for another page of the filters last applied, not of what is half-edited in the inputs
+    const [appliedFilters, setAppliedFilters] = useState<IAttendanceSearchParams>({
+        fromDate: dayjs().startOf('month').format("YYYY-MM-DD"),
+        toDate: dayjs().format("YYYY-MM-DD"),
+    });
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(15);
+
+    const load = (filters: IAttendanceSearchParams, nextPage: number, nextPageSize = pageSize) => {
+        setAppliedFilters(filters);
+        setPage(nextPage);
+        setPageSize(nextPageSize);
+        return dispatch(searchAttendance({ ...filters, page: nextPage, pageSize: nextPageSize }));
+    };
 
     // Modals config
     const [detailModal, setDetailModal] = useState({ open: false, employeeId: 0, employeeName: "", date: "" });
@@ -52,12 +65,12 @@ const AttendanceTable = () => {
     }, [dispatch]);
 
     const handleSearch = () => {
-        dispatch(searchAttendance({
+        load({
             fromDate: dateRange[0]?.format("YYYY-MM-DD"),
             toDate: dateRange[1]?.format("YYYY-MM-DD"),
             employeeId: selectedEmployee,
             status: statusFilter
-        }));
+        }, 1);
     };
 
     const handleRefresh = async () => {
@@ -69,24 +82,19 @@ const AttendanceTable = () => {
         setRefreshing(true);
         await Promise.all([
             dispatch(fetchAllEmployees()),
-            dispatch(searchAttendance({
-                fromDate: defaultFrom.format("YYYY-MM-DD"),
-                toDate: defaultTo.format("YYYY-MM-DD"),
-                employeeId: undefined,
-                status: undefined
-            }))
+            load({ fromDate: defaultFrom.format("YYYY-MM-DD"), toDate: defaultTo.format("YYYY-MM-DD") }, 1)
         ]);
         setRefreshing(false);
     };
 
     const handleToday = () => {
         setDateRange([dayjs(), dayjs()]);
-        dispatch(searchAttendance({
+        load({
             fromDate: dayjs().format("YYYY-MM-DD"),
             toDate: dayjs().format("YYYY-MM-DD"),
             employeeId: selectedEmployee,
             status: statusFilter
-        }));
+        }, 1);
     };
 
     const handleToggleLock = async (record: any) => {
@@ -233,19 +241,15 @@ const AttendanceTable = () => {
         }
     ];
 
-    const displayRecords = allowedEmployeeIds
-        ? records.filter(r => allowedEmployeeIds.has(r.employeeId))
-        : records;
-
     return (
         <Card
             title={
                 <Space>
                     <CalendarOutlined className="text-blue-500" />
                     <span>Quản lý chấm công</span>
-                    {displayRecords.length > 0 && (
+                    {total > 0 && (
                         <Text type="secondary" style={{ fontSize: 13, fontWeight: 400 }}>
-                            — {displayRecords.length} bản ghi
+                            — {total} bản ghi
                         </Text>
                     )}
                 </Space>
@@ -312,10 +316,19 @@ const AttendanceTable = () => {
 
             <Table
                 columns={columns}
-                dataSource={displayRecords}
+                dataSource={records}
                 loading={loading}
                 rowKey={(record) => record.attendanceId > 0 ? record.attendanceId : `virtual-${record.attendanceDate}-${record.employeeId}`}
-                pagination={{ pageSize: 15, showTotal: (total) => `Tổng ${total} bản ghi` }}
+                pagination={{
+                    current: page,
+                    pageSize,
+                    total,
+                    showSizeChanger: true,
+                    pageSizeOptions: [15, 30, 50, 100],
+                    showTotal: (count) => `Tổng ${count} bản ghi`,
+                    onChange: (nextPage, nextPageSize) =>
+                        load(appliedFilters, nextPageSize !== pageSize ? 1 : nextPage, nextPageSize),
+                }}
                 scroll={{ x: 1150 }}
                 bordered
             />

@@ -100,8 +100,31 @@ export interface ManualCreateAttendanceDto {
     remarks?: string;
 }
 
+/** One page of a server-side paged list (GET /Attendance/search-page). */
+export interface IPagedResult<T> {
+    items: T[];
+    total: number;
+    page: number;
+    pageSize: number;
+}
+
+export interface IAttendanceSearchParams {
+    fromDate?: string;
+    toDate?: string;
+    employeeId?: number;
+    status?: string;
+    explanationStatus?: string;
+    page?: number;
+    pageSize?: number;
+}
+
 interface IAttendanceState {
+    /** The page of the attendance table currently shown, and how many rows match in total */
     records: AttendanceResponseDto[];
+    recordsTotal: number;
+    /** Explanations waiting for review: their own list, so the two tabs do not overwrite each other */
+    pendingExplanations: AttendanceResponseDto[];
+    pendingExplanationsTotal: number;
     selectedDetail: AttendanceDetailResponseDto | null;
     logs: AttendanceLogResponseDto[];
     myToday: AttendanceDetailResponseDto | null;
@@ -115,6 +138,9 @@ interface IAttendanceState {
 
 const initialState: IAttendanceState = {
     records: [],
+    recordsTotal: 0,
+    pendingExplanations: [],
+    pendingExplanationsTotal: 0,
     selectedDetail: null,
     logs: [],
     myToday: null,
@@ -336,18 +362,35 @@ export const fetchAttendanceByDate = createAsyncThunk(
     }
 );
 
+// The server returns one page; a manager only gets their direct reports
 export const searchAttendance = createAsyncThunk(
     "attendance/search",
-    async (params: { fromDate?: string; toDate?: string; employeeId?: number; status?: string }, { rejectWithValue }) => {
+    async (params: IAttendanceSearchParams, { rejectWithValue }) => {
         try {
             const response = await request({
-                url: "/Attendance/search",
+                url: "/Attendance/search-page",
                 method: "GET",
                 params
             });
-            return response.data;
+            return response.data as IPagedResult<AttendanceResponseDto>;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || "Lỗi tìm kiếm chấm công");
+        }
+    }
+);
+
+export const fetchPendingExplanations = createAsyncThunk(
+    "attendance/fetchPendingExplanations",
+    async (params: { fromDate: string; toDate: string; page: number; pageSize: number }, { rejectWithValue }) => {
+        try {
+            const response = await request({
+                url: "/Attendance/search-page",
+                method: "GET",
+                params: { ...params, explanationStatus: "Pending" }
+            });
+            return response.data as IPagedResult<AttendanceResponseDto>;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || "Lỗi tải phiếu giải trình");
         }
     }
 );
@@ -465,7 +508,13 @@ export const attendanceSlice = createSlice({
             // View All / Search
             .addCase(searchAttendance.fulfilled, (state, action) => {
                 state.loading = false;
-                state.records = action.payload;
+                state.records = action.payload.items;
+                state.recordsTotal = action.payload.total;
+            })
+            .addCase(fetchPendingExplanations.fulfilled, (state, action) => {
+                state.loading = false;
+                state.pendingExplanations = action.payload.items;
+                state.pendingExplanationsTotal = action.payload.total;
             })
             .addCase(fetchAttendanceByDate.fulfilled, (state, action) => {
                 state.loading = false;
@@ -504,6 +553,7 @@ export const attendanceSlice = createSlice({
                 state.loading = false;
                 state.successMessage = "Tạo chấm công thành công";
                 state.records.unshift(action.payload);
+                state.recordsTotal += 1;
             })
             
             // Lock/Unlock
@@ -555,6 +605,12 @@ export const attendanceSlice = createSlice({
                 const index = state.records.findIndex(r => r.attendanceId === updatedRecord.attendanceId);
                 if (index !== -1) {
                     state.records[index] = updatedRecord;
+                }
+                // Reviewed: no longer waiting
+                const pendingIndex = state.pendingExplanations.findIndex(r => r.attendanceId === updatedRecord.attendanceId);
+                if (pendingIndex !== -1) {
+                    state.pendingExplanations.splice(pendingIndex, 1);
+                    state.pendingExplanationsTotal = Math.max(0, state.pendingExplanationsTotal - 1);
                 }
             })
             
@@ -610,6 +666,9 @@ export const selectAttendanceError = (state: RootState) => state.attendance.erro
 export const selectAttendanceSuccess = (state: RootState) => state.attendance.successMessage;
 
 export const selectAdminAttendance = (state: RootState) => state.attendance.records; 
+export const selectAdminAttendanceTotal = (state: RootState) => state.attendance.recordsTotal;
+export const selectPendingExplanations = (state: RootState) => state.attendance.pendingExplanations;
+export const selectPendingExplanationsTotal = (state: RootState) => state.attendance.pendingExplanationsTotal;
 export const fetchAdminAttendance = searchAttendance;
 
 export default attendanceSlice.reducer;

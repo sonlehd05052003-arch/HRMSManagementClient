@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Button, Space, Card, Tag, Modal, Input, message, Form, Alert, Badge, Typography, TimePicker, Row, Col, Tooltip } from "antd";
 import {
     ReloadOutlined, CheckCircleOutlined, CloseCircleOutlined,
@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import {
-    searchAttendance, approveExplanation, selectAdminAttendance,
+    fetchPendingExplanations, approveExplanation, selectPendingExplanations, selectPendingExplanationsTotal,
     selectAttendanceLoading, type AttendanceResponseDto
 } from "../../../../../store/attendanceSlide";
 import dayjs from "dayjs";
@@ -18,31 +18,39 @@ const formatWindow = (value?: string) => (value ? dayjs(value).format("HH:mm") :
 
 const ExplanationApprovalTable = () => {
     const dispatch = useAppDispatch();
-    const allRecords = useAppSelector(selectAdminAttendance);
+    // The server filters to pending explanations and sends one page; it used to send 90 days of attendance
+    const pendingRecords = useAppSelector(selectPendingExplanations);
+    const pendingTotal = useAppSelector(selectPendingExplanationsTotal);
     const loading = useAppSelector(selectAttendanceLoading);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<AttendanceResponseDto | null>(null);
     const [form] = Form.useForm();
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
 
-    const pendingRecords = useMemo(
-        () => allRecords.filter(r => r.explanationStatus === "Pending"),
-        [allRecords]
-    );
+    const fetchPage = (nextPage: number) => dispatch(fetchPendingExplanations({
+        fromDate: dayjs().subtract(90, "day").format("YYYY-MM-DD"),
+        toDate: dayjs().format("YYYY-MM-DD"),
+        page: nextPage,
+        pageSize,
+    }));
+
+    const loadPage = (nextPage: number) => {
+        setPage(nextPage);
+        fetchPage(nextPage);
+    };
 
     useEffect(() => {
-        dispatch(searchAttendance({
+        dispatch(fetchPendingExplanations({
             fromDate: dayjs().subtract(90, "day").format("YYYY-MM-DD"),
             toDate: dayjs().format("YYYY-MM-DD"),
+            page: 1,
+            pageSize,
         }));
     }, [dispatch]);
 
-    const handleRefresh = () => {
-        dispatch(searchAttendance({
-            fromDate: dayjs().subtract(90, "day").format("YYYY-MM-DD"),
-            toDate: dayjs().format("YYYY-MM-DD"),
-        }));
-    };
+    const handleRefresh = () => loadPage(page);
 
     const handleOpenReview = (record: AttendanceResponseDto) => {
         setSelectedRecord(record);
@@ -168,22 +176,22 @@ const ExplanationApprovalTable = () => {
                 <Space>
                     <ClockCircleOutlined style={{ color: "#fa8c16" }} />
                     <span>Giải trình chấm công chờ duyệt</span>
-                    <Badge count={pendingRecords.length} showZero color="#fa8c16" />
+                    <Badge count={pendingTotal} showZero color="#fa8c16" />
                 </Space>
             }
             extra={<Button icon={<ReloadOutlined />} onClick={handleRefresh} loading={loading}>Làm mới</Button>}
         >
-            {pendingRecords.length === 0 && !loading && (
+            {pendingTotal === 0 && !loading && (
                 <Alert type="success" showIcon message="Không có phiếu giải trình nào đang chờ duyệt." />
             )}
 
-            {pendingRecords.length > 0 && (
+            {pendingTotal > 0 && (
                 <Table
                     columns={columns}
                     dataSource={pendingRecords}
                     rowKey="attendanceId"
                     loading={loading}
-                    pagination={{ pageSize: 10 }}
+                    pagination={{ current: page, pageSize, total: pendingTotal, onChange: loadPage }}
                     bordered
                 />
             )}
