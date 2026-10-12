@@ -48,7 +48,7 @@ const EditEmployee = () => {
                     dispatch(fetchAllEmployees()),
                     dispatch(fetchAllUsers())
                 ]);
-            } catch (error) {
+            } catch {
                 message.error("Không thể tải dữ liệu nhân viên!");
                 navigate(URL.ManageEmployee);
             } finally {
@@ -287,7 +287,7 @@ const EditEmployee = () => {
                                 label="Lương cơ bản" 
                                 rules={[
                                     { required: true, message: "Vui lòng nhập lương cơ bản" },
-                                    ({ }) => ({
+                                    () => ({
                                         validator(_, value) {
                                             if (value === undefined || value === null || value === '') {
                                                 return Promise.resolve();

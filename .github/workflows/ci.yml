@@ -21,6 +21,10 @@ jobs:
       - name: Install
         run: npm ci
 
+      # Fails on any lint error, and on more warnings than the remaining any/hook debt (see eslint.config.js)
+      - name: Lint
+        run: npm run lint:ci
+
       # tsc -b && vite build: fails on type errors as well as build errors
       - name: Build
         run: npm run build

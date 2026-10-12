@@ -34,7 +34,7 @@ const HeaderBar = () => {
                     url: '/Auth/ping',
                     method: 'GET'
                 });
-            } catch (error) {
+            } catch {
                 clearInterval(pingTimer);
             }
         }, 10000); // Ping every 10 seconds

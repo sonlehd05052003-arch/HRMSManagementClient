@@ -98,7 +98,7 @@ const ManageOvertimeRequest = () => {
         {
             title: "Thao tác",
             key: "action",
-            align: 'center' as 'center',
+            align: 'center' as const,
             render: (_: any, record: any) => (
                 <Button 
                     type="primary" 

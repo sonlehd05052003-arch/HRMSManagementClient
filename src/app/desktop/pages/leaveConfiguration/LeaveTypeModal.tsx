@@ -61,7 +61,7 @@ const LeaveTypeModal = ({ visible, onClose, editingLeaveType }: LeaveTypeModalPr
                     onClose();
                 }
             }
-        } catch (err: any) {
+        } catch {
             // Error is handled by useEffect above
         }
     };

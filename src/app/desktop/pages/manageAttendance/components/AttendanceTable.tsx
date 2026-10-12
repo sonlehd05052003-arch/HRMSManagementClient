@@ -13,6 +13,7 @@ import AttendanceDetailModal from "../modal/AttendanceDetailModal";
 import ManualAdjustModal from "../modal/ManualAdjustModal";
 import ManualCreateModal from "../modal/ManualCreateModal";
 import AttendanceLogsModal from "../modal/AttendanceLogsModal";
+import { errorText } from "../../../../../utils/apiError";
 
 const { RangePicker } = DatePicker;
 
@@ -59,11 +60,6 @@ const AttendanceTable = () => {
     const [createModal, setCreateModal] = useState(false);
     const [logsModal, setLogsModal] = useState({ open: false, employeeId: 0, employeeName: "", date: "" });
 
-    useEffect(() => {
-        handleSearch();
-        dispatch(fetchAllEmployees());
-    }, [dispatch]);
-
     const handleSearch = () => {
         load({
             fromDate: dateRange[0]?.format("YYYY-MM-DD"),
@@ -72,6 +68,13 @@ const AttendanceTable = () => {
             status: statusFilter
         }, 1);
     };
+
+    useEffect(() => {
+        dispatch(searchAttendance({ ...appliedFilters, page: 1, pageSize }));
+        dispatch(fetchAllEmployees());
+        // First load only: later searches go through handleSearch and paging
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch]);
 
     const handleRefresh = async () => {
         const defaultFrom = dayjs().startOf('month');
@@ -106,8 +109,8 @@ const AttendanceTable = () => {
                 await dispatch(lockAttendance(record.attendanceId)).unwrap();
                 message.success("Đã khóa bản ghi chấm công.");
             }
-        } catch (err: any) {
-            message.error(typeof err === "string" ? err : "Thao tác thất bại.");
+        } catch (err) {
+            message.error(errorText(err, "Thao tác thất bại."));
         }
     };
 
