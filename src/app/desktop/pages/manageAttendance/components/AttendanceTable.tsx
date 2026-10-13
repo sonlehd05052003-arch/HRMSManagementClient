@@ -160,6 +160,7 @@ const AttendanceTable = () => {
                 if (status === "Incomplete") color = "blue";
                 if (status === "PaidLeave") color = "cyan";
                 if (status === "UnpaidLeave") color = "purple";
+                if (status === "Holiday") color = "magenta";
                 
                 const isInvalidLocation = record.location?.includes("[INVALID]");
                 return (
@@ -300,6 +301,7 @@ const AttendanceTable = () => {
                             { label: "Chưa hoàn tất", value: "Incomplete" },
                             { label: "Nghỉ phép có lương", value: "PaidLeave" },
                             { label: "Nghỉ phép không lương", value: "UnpaidLeave" },
+                            { label: "Ngày lễ", value: "Holiday" },
                         ]}
                     />
                     <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>

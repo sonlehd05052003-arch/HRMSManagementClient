@@ -66,6 +66,7 @@ const CELL_STYLE: Record<string, { bg: string; border: string; text: string }> =
     Incomplete:     { bg: "bg-indigo-50",  border: "border-indigo-200",  text: "text-indigo-700"  },
     PaidLeave:      { bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700" },
     UnpaidLeave:    { bg: "bg-violet-50",  border: "border-violet-200",  text: "text-violet-700"  },
+    Holiday:        { bg: "bg-rose-50",    border: "border-rose-200",    text: "text-rose-700"    },
     LateEarlyLeave: { bg: "bg-orange-50",  border: "border-orange-200",  text: "text-orange-700"  },
     default:        { bg: "bg-gray-50",    border: "border-gray-100",    text: "text-gray-400"    },
 };
@@ -77,6 +78,7 @@ const STATUS_LABEL: Record<string, string> = {
     Incomplete:     "Thiếu giờ",
     PaidLeave:      "Nghỉ phép",
     UnpaidLeave:    "Nghỉ NL",
+    Holiday:        "Nghỉ lễ",
     LateEarlyLeave: "Về sớm",
 };
 

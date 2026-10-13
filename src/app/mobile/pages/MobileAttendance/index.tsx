@@ -52,6 +52,7 @@ const STATUS_MAP: Record<string, { label: string; color: string }> = {
     Incomplete:      { label: "Thiếu giờ",   color: "processing" },
     PaidLeave:       { label: "Nghỉ phép",   color: "cyan"       },
     UnpaidLeave:     { label: "Nghỉ không lương", color: "purple" },
+    Holiday:         { label: "Nghỉ lễ",     color: "magenta"    },
     LateEarlyLeave:  { label: "Về sớm",      color: "orange"     },
 };
 

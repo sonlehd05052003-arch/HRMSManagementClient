@@ -14,7 +14,8 @@ import {
 } from "../../../../../store/leaveRequestSlide";
 import { fetchMyBalance } from "../../../../../store/leaveBalanceSlide";
 import { fetchActiveLeaveTypes, selectActiveLeaveTypes } from "../../../../../store/leaveTypeSlide";
-import dayjs from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
+import { countLeaveDays, holidayDatesBetween } from "../../../../../utils/holidays";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 
@@ -102,11 +103,18 @@ const LeaveRequestForm = () => {
         }
     };
 
-    const handleDateChange = (dates: any) => {
-        if (dates && dates[0] && dates[1]) {
-            const diff = dates[1].diff(dates[0], 'day') + 1;
-            form.setFieldsValue({ numberOfDays: diff });
+    // Leave days are working days only: weekends and public holidays are not taken from the balance
+    // (the field stays editable, e.g. for half days)
+    const handleDateChange = async (dates: [Dayjs | null, Dayjs | null] | null) => {
+        const [start, end] = dates ?? [];
+        if (!start || !end) return;
+        let holidays = new Set<string>();
+        try {
+            holidays = await holidayDatesBetween(start, end);
+        } catch {
+            // Without the calendar, count weekdays only
         }
+        form.setFieldsValue({ numberOfDays: countLeaveDays(start, end, holidays) });
     };
 
     // Hàm kiểm tra ngày đã được đăng ký chưa

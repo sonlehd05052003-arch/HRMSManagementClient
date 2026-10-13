@@ -7,7 +7,8 @@ import {
     SettingOutlined,
     QuestionCircleOutlined,
     DollarOutlined,
-    BankOutlined
+    BankOutlined,
+    CalendarOutlined
 } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
@@ -28,6 +29,7 @@ import ApprovalAnalysisTable from "./components/ApprovalAnalysisTable";
 import GuidanceCard from "./components/GuidanceCard";
 import PayrollSettingsCard from "./components/PayrollSettingsCard";
 import CompanySettingsCard from "./components/CompanySettingsCard";
+import HolidaysCard from "./components/HolidaysCard";
 import PayrollCalculationSettingsCard from "./components/PayrollCalculationSettingsCard";
 import { errorText } from "../../../../utils/apiError";
 
@@ -300,6 +302,15 @@ const SystemSettingPage: React.FC = () => {
                             </div>
                         </Col>
                     </Row>
+                </div>
+            )
+        },
+        {
+            key: "holidays",
+            label: <Space className="px-4"><CalendarOutlined />Lịch nghỉ lễ</Space>,
+            children: (
+                <div className="animate-in fade-in duration-500">
+                    <HolidaysCard />
                 </div>
             )
         },

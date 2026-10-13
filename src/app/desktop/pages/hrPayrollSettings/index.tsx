@@ -7,6 +7,7 @@ import {
     selectSystemSettingLoading, updatePayrollSettings
 } from "../../../../store/systemSettingSlide";
 import PayrollSettingsCard from "../manageSystemSettings/components/PayrollSettingsCard";
+import HolidaysCard from "../manageSystemSettings/components/HolidaysCard";
 import { errorText } from "../../../../utils/apiError";
 
 const { Title, Paragraph } = Typography;
@@ -54,6 +55,10 @@ const HRPayrollSettingsPage: React.FC = () => {
                     onFinish={onPayrollFinish}
                     onRefresh={() => dispatch(fetchPayrollSettings())}
                 />
+
+                <div className="mt-8">
+                    <HolidaysCard />
+                </div>
             </div>
         </div>
     );
