@@ -14,6 +14,8 @@ import {
 } from "../../../../store/employeeSlide";
 import { selectInfoLogin } from "../../../../store/authSlide";
 import DocumentsTab from "../manageEmployee/tabs/DocumentsTab";
+import ContractsTab from "../manageEmployee/tabs/ContractsTab";
+import { FileProtectOutlined } from "@ant-design/icons";
 import { EUserRole } from "../../../../interface/app";
 
 const { Title, Text } = Typography;
@@ -123,6 +125,13 @@ const MyProfile = () => {
                     </Row>
                 </div>
             ),
+        },
+        {
+            key: "contracts",
+            label: (
+                <Space><FileProtectOutlined />Hợp đồng</Space>
+            ),
+            children: <ContractsTab employeeId={employee.employeeId} canManage={false} />,
         },
         {
             key: "documents",

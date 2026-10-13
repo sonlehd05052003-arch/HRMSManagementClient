@@ -15,6 +15,8 @@ import {
     selectEmployeeLoading,
 } from "../../../../store/employeeSlide";
 import DocumentsTab from "./tabs/DocumentsTab";
+import ContractsTab from "./tabs/ContractsTab";
+import { FileProtectOutlined } from "@ant-design/icons";
 import URL from "../../../../constants/url";
 
 const { Title, Text } = Typography;
@@ -112,6 +114,13 @@ const EmployeeDetail = () => {
                     </Row>
                 </div>
             ),
+        },
+        {
+            key: "contracts",
+            label: (
+                <Space><FileProtectOutlined />Hợp đồng</Space>
+            ),
+            children: <ContractsTab employeeId={employee.employeeId} canManage={true} />,
         },
         {
             key: "documents",

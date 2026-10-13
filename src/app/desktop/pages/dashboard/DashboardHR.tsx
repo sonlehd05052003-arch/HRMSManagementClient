@@ -1,3 +1,4 @@
+import { CONTRACT_TYPES } from "../../../../constants/contracts";
 import { Row, Col, Card, Statistic, DatePicker, Typography, Space, List, Badge, Spin, Tag } from "antd";
 import {
      TeamOutlined, UserAddOutlined, UserDeleteOutlined,
@@ -119,7 +120,7 @@ const DashboardHR = () => {
                                                         <List.Item>
                                                             <List.Item.Meta
                                                                 title={item.employeeName}
-                                                                description={<Space><Tag color="blue">Probation</Tag><Text type="secondary">{dayjs(item.date).format("MMM DD, YYYY")}</Text></Space>}
+                                                                description={<Space><Tag color="blue">{CONTRACT_TYPES.Probation}</Tag><Text type="secondary">{dayjs(item.date).format("DD/MM/YYYY")}</Text></Space>}
                                                             />
                                                         </List.Item>
                                                     )}
@@ -133,7 +134,7 @@ const DashboardHR = () => {
                                                         <List.Item>
                                                             <List.Item.Meta
                                                                 title={item.employeeName}
-                                                                description={<Space><Tag color="orange">{item.detail}</Tag><Text type="secondary">{dayjs(item.date).format("MMM DD, YYYY")}</Text></Space>}
+                                                                description={<Space><Tag color="orange">{(item.detail && CONTRACT_TYPES[item.detail]) ?? item.detail}</Tag><Text type="secondary">{dayjs(item.date).format("DD/MM/YYYY")}</Text></Space>}
                                                             />
                                                         </List.Item>
                                                     )}
