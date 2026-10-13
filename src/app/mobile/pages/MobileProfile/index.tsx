@@ -74,7 +74,7 @@ const MobileProfile = () => {
                     size={80}
                     style={{ backgroundColor: avatarColor, fontSize: 32, fontWeight: "bold" }}
                 >
-                    {employee ? employee.firstName?.[0]?.toUpperCase() : initial}
+                    {employee ? employee.lastName?.[0]?.toUpperCase() : initial}
                 </Avatar>
                 <h2 className="text-lg font-bold text-gray-800 mt-3">
                     {employee?.fullName ?? infoLogin?.userName ?? "—"}

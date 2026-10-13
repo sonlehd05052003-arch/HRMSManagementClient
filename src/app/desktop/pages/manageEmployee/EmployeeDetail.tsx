@@ -155,7 +155,7 @@ const EmployeeDetail = () => {
                                 size={45}
                                 style={{ backgroundColor: "#1890ff", fontSize: 22, fontWeight: 600 }}
                             >
-                                {employee.firstName?.[0]?.toUpperCase()}
+                                {employee.lastName?.[0]?.toUpperCase()}
                             </Avatar>
                             <div>
                                 <Title level={4} style={{ margin: 0 }}>{employee.fullName}</Title>

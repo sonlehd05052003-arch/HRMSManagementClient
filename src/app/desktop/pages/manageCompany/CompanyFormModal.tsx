@@ -124,12 +124,12 @@ const CompanyFormModal = ({ open, company, onClose, onSaved }: Props) => {
             </Text>
             <Row gutter={16}>
               <Col xs={24} sm={12}>
-                <Form.Item name={["admin", "lastName"]} label="Họ" rules={[{ required: true, message: "Nhập họ" }, { max: 50 }]}>
+                <Form.Item name={["admin", "firstName"]} label="Họ" rules={[{ required: true, message: "Nhập họ" }, { max: 50 }]}>
                   <Input />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={12}>
-                <Form.Item name={["admin", "firstName"]} label="Tên" rules={[{ required: true, message: "Nhập tên" }, { max: 50 }]}>
+                <Form.Item name={["admin", "lastName"]} label="Tên" rules={[{ required: true, message: "Nhập tên" }, { max: 50 }]}>
                   <Input />
                 </Form.Item>
               </Col>
