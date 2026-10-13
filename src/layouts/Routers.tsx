@@ -66,6 +66,7 @@ const LeaveConfiguration = lazy(() => import("../app/desktop/pages/leaveConfigur
 const MyOvertimeRequest = lazy(() => import("../app/desktop/pages/myOvertimeRequest/index"));
 const ManageOvertimeRequest = lazy(() => import("../app/desktop/pages/manageOvertimeRequest/index"));
 const ManageSystemSettings = lazy(() => import("../app/desktop/pages/manageSystemSettings/index"));
+const AuditLog = lazy(() => import("../app/desktop/pages/auditLog/index"));
 const HRPayrollSettings = lazy(() => import("../app/desktop/pages/hrPayrollSettings/index"));
 const ManageFaceRegistration = lazy(() => import("../app/desktop/pages/manageFaceRegistration/index"));
 const MyProfile = lazy(() => import("../app/desktop/pages/myProfile/index"));
@@ -268,6 +269,12 @@ const privateResourceItem = [
     {
         key: URL.ManageSystemSettings,
         element: <ManageSystemSettings />,
+        layout: DEFAULT_LAYOUT,
+        private: true,
+    },
+    {
+        key: URL.AuditLog,
+        element: <AuditLog />,
         layout: DEFAULT_LAYOUT,
         private: true,
     },

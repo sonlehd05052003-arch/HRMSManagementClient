@@ -39,6 +39,7 @@ const URL = {
     MyOvertimeRequest: "/overtime/my",
     ManageOvertimeRequest: "/overtime/manage",
     ManageSystemSettings: "/admin/system-settings",
+    AuditLog: "/admin/audit-log",
     HRPayrollSettings: "/hr/payroll-settings",
     ManageFaceRegistration: "/hr/manage-face-registration",
     MyProfile: "/my-profile",
