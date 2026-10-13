@@ -17,7 +17,7 @@ import {
 } from "../../../../store/taskSlide";
 import { selectInfoLogin } from "../../../../store/authSlide";
 import { EUserRole } from "../../../../interface/app";
-import TaskCondition from "./TaskCondition";
+import TaskCondition, { type DueRange } from "./TaskCondition";
 import AddTaskModal from "./modal/AddTaskModal";
 import dayjs from "dayjs";
 import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
@@ -33,6 +33,7 @@ const ManageTask: React.FC = () => {
     const [searchText, setSearchText] = useState("");
     const [priorityFilter, setPriorityFilter] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
+    const [dueRange, setDueRange] = useState<DueRange>(null);
 
     const [selectedTask, setSelectedTask] = useState<any>(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -93,8 +94,12 @@ const ManageTask: React.FC = () => {
 
         const matchesPriority = priorityFilter ? task.priority === priorityFilter : true;
         const matchesStatus = statusFilter ? task.status === statusFilter : true;
+        // A due-date range only keeps tasks that have a due date inside it
+        const [dueFrom, dueTo] = dueRange ?? [];
+        const matchesDue = !dueFrom || !dueTo || (!!task.dueDate
+            && !dayjs(task.dueDate).isBefore(dueFrom, "day") && !dayjs(task.dueDate).isAfter(dueTo, "day"));
 
-        return matchesSearch && matchesPriority && matchesStatus;
+        return matchesSearch && matchesPriority && matchesStatus && matchesDue;
     });
 
     const getPriorityColor = (priority: string) => {
@@ -223,6 +228,7 @@ const ManageTask: React.FC = () => {
                     setSearchText("");
                     setPriorityFilter(null);
                     setStatusFilter(null);
+                    setDueRange(null);
                 }}
             >
                 <TaskCondition
@@ -232,6 +238,8 @@ const ManageTask: React.FC = () => {
                     setPriorityFilter={setPriorityFilter}
                     statusFilter={statusFilter}
                     setStatusFilter={setStatusFilter}
+                    dueRange={dueRange}
+                    setDueRange={setDueRange}
                 />
             </FilterCard>
 

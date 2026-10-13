@@ -1,8 +1,12 @@
 import React from 'react';
+import type { Dayjs } from 'dayjs';
 import { Input, Select, DatePicker, Row, Col } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { RangePicker } = DatePicker;
+
+/** Due-date range of the filter; null or a missing end means no date filter */
+export type DueRange = [Dayjs | null, Dayjs | null] | null;
 
 interface TaskConditionProps {
     searchText: string;
@@ -11,12 +15,15 @@ interface TaskConditionProps {
     setPriorityFilter: (val: string | null) => void;
     statusFilter: string | null;
     setStatusFilter: (val: string | null) => void;
+    dueRange: DueRange;
+    setDueRange: (val: DueRange) => void;
 }
 
 const TaskCondition: React.FC<TaskConditionProps> = ({
     searchText, setSearchText,
     priorityFilter, setPriorityFilter,
-    statusFilter, setStatusFilter
+    statusFilter, setStatusFilter,
+    dueRange, setDueRange
 }) => {
     return (
         <Row gutter={[16, 16]}>
@@ -58,7 +65,13 @@ const TaskCondition: React.FC<TaskConditionProps> = ({
                 </Select>
             </Col>
             <Col xs={24} sm={12} md={6}>
-                <RangePicker style={{ width: '100%' }} />
+                <RangePicker
+                    style={{ width: '100%' }}
+                    format="DD/MM/YYYY"
+                    placeholder={['Hạn từ ngày', 'đến ngày']}
+                    value={dueRange}
+                    onChange={setDueRange}
+                />
             </Col>
         </Row>
     );
