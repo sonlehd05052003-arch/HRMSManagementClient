@@ -4,6 +4,10 @@ import { ClearOutlined, FilterOutlined, UnorderedListOutlined } from "@ant-desig
 
 const { Title, Text } = Typography;
 
+/** Space between the blocks of a list page. Set inline: Tailwind's margin utilities live in a CSS layer that antd's
+ * own Card styles (margin: 0) override, so a className like "mb-4" has no effect on an antd component. */
+const BLOCK_GAP = 16;
+
 /*
  * Layout shared by every list page, so they all look the same:
  *
@@ -19,7 +23,7 @@ interface PageHeaderProps {
 }
 
 export const PageHeader = ({ title, subtitle, actions }: PageHeaderProps) => (
-    <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
+    <div className="flex items-start justify-between gap-3 flex-wrap" style={{ marginBottom: BLOCK_GAP }}>
         <div className="min-w-0">
             <Title level={4} style={{ margin: 0 }}>{title}</Title>
             {subtitle && <Text type="secondary">{subtitle}</Text>}
@@ -39,7 +43,8 @@ interface FilterCardProps {
 export const FilterCard = ({ children, onReset, extra }: FilterCardProps) => (
     <Card
         size="small"
-        className="mb-4 rounded-xl shadow-sm"
+        className="rounded-xl shadow-sm"
+        style={{ marginBottom: BLOCK_GAP }}
         title={<Space><FilterOutlined className="text-indigo-500" /><span>Bộ lọc</span></Space>}
         extra={(onReset || extra) && (
             <Space>
