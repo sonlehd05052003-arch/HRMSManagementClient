@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 *.md
 *.claude
+
+# Playwright: saved sign-in sessions and run output
+e2e/.auth/
+test-results/
+playwright-report/
+blob-report/

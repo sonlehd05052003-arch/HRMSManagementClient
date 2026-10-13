@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button, Popconfirm, Tooltip } from "antd";
 import { DeleteOutlined, UndoOutlined } from "@ant-design/icons";
 
@@ -27,24 +28,30 @@ const StatusToggleButton = ({
     deactivateTooltip = "Ngừng sử dụng",
     restoreTitle = "Khôi phục mục này?",
     restoreTooltip = "Khôi phục",
-}: StatusToggleButtonProps) => (
-    <Popconfirm
-        title={active ? deactivateTitle : restoreTitle}
-        description={active ? deactivateDescription : undefined}
-        okText={active ? "Ngừng sử dụng" : "Khôi phục"}
-        okButtonProps={{ danger: active }}
-        cancelText="Hủy"
-        onConfirm={onToggle}
-    >
-        <Tooltip title={active ? deactivateTooltip : restoreTooltip}>
-            <Button
-                danger={active}
-                loading={loading}
-                icon={active ? <DeleteOutlined /> : <UndoOutlined />}
-                aria-label={active ? deactivateTooltip : restoreTooltip}
-            />
-        </Tooltip>
-    </Popconfirm>
-);
+}: StatusToggleButtonProps) => {
+    // The hover tooltip sits right where the confirmation opens and covered its buttons; hide it meanwhile
+    const [confirming, setConfirming] = useState(false);
+
+    return (
+        <Popconfirm
+            title={active ? deactivateTitle : restoreTitle}
+            description={active ? deactivateDescription : undefined}
+            okText={active ? "Ngừng sử dụng" : "Khôi phục"}
+            okButtonProps={{ danger: active }}
+            cancelText="Hủy"
+            onConfirm={onToggle}
+            onOpenChange={setConfirming}
+        >
+            <Tooltip title={active ? deactivateTooltip : restoreTooltip} open={confirming ? false : undefined}>
+                <Button
+                    danger={active}
+                    loading={loading}
+                    icon={active ? <DeleteOutlined /> : <UndoOutlined />}
+                    aria-label={active ? deactivateTooltip : restoreTooltip}
+                />
+            </Tooltip>
+        </Popconfirm>
+    );
+};
 
 export default StatusToggleButton;

@@ -4,8 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 
 // Forward API calls to the local backend so other devices on the LAN only need to reach Vite.
+// API_PROXY_TARGET points it elsewhere, e.g. the API instance the end-to-end tests start.
 const apiProxy = {
-  '/api': { target: 'http://localhost:5103', changeOrigin: true },
+  '/api': { target: process.env.API_PROXY_TARGET ?? 'http://localhost:5103', changeOrigin: true },
 }
 
 // https://vite.dev/config/
