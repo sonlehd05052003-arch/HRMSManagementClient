@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "lint:ci": "eslint . --max-warnings 364",
+    "lint:ci": "eslint . --max-warnings 363",
     "preview": "vite preview",
     "dev:lan": "vite --host --mode lan"
   },

@@ -50,10 +50,11 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
 
-    const onFinish = async (values: any) => {
+    const onFinish = async (values: { username: string; password: string }) => {
         setLoading(true);
         try {
-            const res: any = await dispatch(actionLogin(values));
+            // Spaces typed or pasted around the password are dropped; spaces inside it are kept
+            const res: any = await dispatch(actionLogin({ username: values.username, password: values.password.trim() }));
             if (!actionLogin.fulfilled.match(res)) {
                 handleError(res.payload || 'Tài khoản hoặc mật khẩu không đúng');
             }
@@ -213,6 +214,8 @@ const LoginPage = () => {
                                     <Form.Item
                                         label={<span className="text-slate-600 font-semibold text-sm">Tên đăng nhập</span>}
                                         name="username"
+                                        // Usernames never contain spaces: drop them as they are typed or pasted
+                                        normalize={(value?: string) => value?.replace(/\s/g, '')}
                                         rules={[{ required: true, message: 'Vui lòng nhập tài khoản' }]}
                                         className="mb-5"
                                     >
@@ -226,7 +229,7 @@ const LoginPage = () => {
                                     <Form.Item
                                         label={<span className="text-slate-600 font-semibold text-sm">Mật khẩu</span>}
                                         name="password"
-                                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
+                                        rules={[{ required: true, whitespace: true, message: 'Vui lòng nhập mật khẩu' }]}
                                         className="mb-7"
                                     >
                                         <Input.Password
