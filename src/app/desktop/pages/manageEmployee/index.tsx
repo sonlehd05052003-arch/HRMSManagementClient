@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Button, Tag, Space, Select, message, Typography, Tooltip } from "antd";
-import { PlusOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, EyeOutlined, UploadOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
     fetchAllEmployees, updateEmployeeStatus,
@@ -9,6 +9,7 @@ import {
 } from "../../../../store/employeeSlide";
 import type { IEmployeeList } from "../../../../store/employeeSlide";
 import Condition from "./Condition";
+import ImportEmployees from "./ImportEmployees";
 import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 import URL from "../../../../constants/url";
 
@@ -34,6 +35,7 @@ const ManageEmployee = () => {
     const [genderFilter, setGenderFilter] = useState<string | null>(null);
     const [departmentFilter, setDepartmentFilter] = useState<string | null>(null);
     const [phoneSearch, setPhoneSearch] = useState("");
+    const [importOpen, setImportOpen] = useState(false);
 
     useEffect(() => { dispatch(fetchAllEmployees()); }, [dispatch]);
 
@@ -124,9 +126,14 @@ const ManageEmployee = () => {
             <PageHeader
                 title="Quản lý nhân viên"
                 actions={
-                    <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(URL.AddEmployee)}>
-                        Thêm nhân viên
-                    </Button>
+                    <Space>
+                        <Button icon={<UploadOutlined />} onClick={() => setImportOpen(true)}>
+                            Nhập từ Excel
+                        </Button>
+                        <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(URL.AddEmployee)}>
+                            Thêm nhân viên
+                        </Button>
+                    </Space>
                 }
             />
             <FilterCard
@@ -163,6 +170,11 @@ const ManageEmployee = () => {
                     }}
                 />
             </TableCard>
+            <ImportEmployees
+                open={importOpen}
+                onClose={() => setImportOpen(false)}
+                onImported={() => dispatch(fetchAllEmployees())}
+            />
         </div>
     );
 };
