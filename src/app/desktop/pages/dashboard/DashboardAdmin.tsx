@@ -14,6 +14,13 @@ import { motion } from "framer-motion";
 const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;
 
+const TASK_STATUS: Record<string, string> = {
+    Completed: "Lần chạy gần nhất thành công",
+    Running: "Đang chạy",
+    Failed: "Lần chạy gần nhất lỗi",
+    Pending: "Chưa chạy",
+};
+
 const DashboardAdmin = () => {
     const dispatch = useAppDispatch();
     const data = useAppSelector(selectDashboardData);
@@ -164,6 +171,7 @@ const DashboardAdmin = () => {
                                     >
                                         <List
                                             dataSource={data?.alerts || []}
+                                            locale={{ emptyText: "Không có việc gì cần xử lý." }}
                                             renderItem={(item) => (
                                                 <List.Item style={{ padding: '10px 0', borderBottom: '1px solid #f1f5f9' }}>
                                                     <Space>
@@ -194,13 +202,14 @@ const DashboardAdmin = () => {
                                     >
                                         <List
                                             dataSource={data?.scheduledTasks || []}
+                                            locale={{ emptyText: "Chưa có tác vụ định kỳ nào." }}
                                             renderItem={(item) => (
                                                 <List.Item
                                                     style={{ padding: '10px 0' }}
                                                     extra={
                                                         <Badge
-                                                            status={item.status === "Completed" ? "success" : item.status === "Running" ? "processing" : "default"}
-                                                            text={<Text style={{ fontSize: 12, color: '#64748b' }}>{item.status}</Text>}
+                                                            status={item.status === "Completed" ? "success" : item.status === "Running" ? "processing" : item.status === "Failed" ? "error" : "default"}
+                                                            text={<Text style={{ fontSize: 12, color: '#64748b' }}>{TASK_STATUS[item.status] ?? item.status}</Text>}
                                                         />
                                                     }
                                                 >
