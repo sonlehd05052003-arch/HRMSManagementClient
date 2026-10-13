@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Table, Button, Tag, Space, Card, Switch, Typography, Tooltip, Input, Modal, Popconfirm, message } from "antd";
+import { Table, Button, Tag, Space, Card, Typography, Tooltip, Input, Modal, message } from "antd";
+import StatusToggleButton from "../../components/statusToggleButton";
 import { PlusOutlined, EditOutlined, BankOutlined, TeamOutlined, UserOutlined, SearchOutlined, KeyOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -194,24 +195,16 @@ const ManageCompany = () => {
               onClick={() => setResettingCompany(c)}
             />
           </Tooltip>
-          {c.isActive ? (
-            <Popconfirm
-              title="Khóa công ty này?"
-              description="Toàn bộ tài khoản của công ty sẽ bị đăng xuất và không đăng nhập được."
-              okText="Khóa"
-              okButtonProps={{ danger: true }}
-              cancelText="Hủy"
-              onConfirm={() => handleToggleStatus(c)}
-            >
-              <Tooltip title="Đang hoạt động — bấm để khóa">
-                <Switch size="small" checked loading={togglingId === c.companyId} />
-              </Tooltip>
-            </Popconfirm>
-          ) : (
-            <Tooltip title="Đã khóa — bấm để mở khóa">
-              <Switch size="small" checked={false} loading={togglingId === c.companyId} onChange={() => handleToggleStatus(c)} />
-            </Tooltip>
-          )}
+          <StatusToggleButton
+            active={c.isActive}
+            loading={togglingId === c.companyId}
+            onToggle={() => handleToggleStatus(c)}
+            deactivateTitle="Khóa công ty này?"
+            deactivateDescription="Toàn bộ tài khoản của công ty sẽ bị đăng xuất và không đăng nhập được."
+            deactivateTooltip="Khóa công ty"
+            restoreTitle="Mở khóa công ty này?"
+            restoreTooltip="Mở khóa công ty"
+          />
         </Space>
       ),
     },

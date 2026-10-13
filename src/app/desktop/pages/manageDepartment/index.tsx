@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Card, Space, Input, Switch, message, Tooltip, Typography } from "antd";
+import { Table, Button, Card, Space, Input, Tag, message, Tooltip, Typography } from "antd";
 import { PlusOutlined, EyeOutlined } from "@ant-design/icons";
+import StatusToggleButton from "../../components/statusToggleButton";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchAllDepartments, selectDepartments, selectDepartmentLoading, deactivateDepartment, activateDepartment } from "../../../../store/departmentSlide";
 import AddDepartmentModal from "./modal/AddDepartmentModal";
@@ -84,27 +85,29 @@ const ManageDepartment = () => {
             dataIndex: "isActive",
             key: "isActive",
             width: 100,
-            render: (isActive: boolean, record: any) => (
-                 <Switch
-                    size="small"
-                    loading={togglingId === record.departmentId}
-                    checked={isActive}
-                    onChange={() => handleToggleStatus(record)}
-                 />
+            render: (isActive: boolean) => (
+                <Tag color={isActive ? "green" : "default"}>{isActive ? "Hoạt động" : "Ngừng sử dụng"}</Tag>
             ),
         },
         {
             title: "Thao tác",
             key: "action",
-            width: 80,
+            width: 110,
             render: (_: any, record: any) => (
-                <Space size="middle">
+                <Space size="small">
                     <Tooltip title="Xem chi tiết">
-                        <Button 
-                            icon={<EyeOutlined />} 
-                            onClick={() => navigate(`/hr/manage-department/${record.departmentId}`)} 
+                        <Button
+                            icon={<EyeOutlined />}
+                            onClick={() => navigate(`/hr/manage-department/${record.departmentId}`)}
                         />
                     </Tooltip>
+                    <StatusToggleButton
+                        active={record.isActive}
+                        loading={togglingId === record.departmentId}
+                        onToggle={() => handleToggleStatus(record)}
+                        deactivateTitle="Ngừng sử dụng phòng ban này?"
+                        restoreTitle="Khôi phục phòng ban này?"
+                    />
                 </Space>
             ),
         },

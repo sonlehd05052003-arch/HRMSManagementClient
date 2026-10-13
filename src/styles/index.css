@@ -218,3 +218,37 @@ body,
 .mobile-layout button {
     min-height: 44px;
 }
+
+/* ── One size for every row action and every pager ───────────────────────────
+   Pages set size="small", "middle" or nothing on their table buttons; inside a table row or a card header
+   every button is 32px high, icon-only buttons are 32×32, and action groups have the same spacing. */
+.ant-table-tbody .ant-btn,
+.ant-card-extra .ant-btn {
+    height: 32px;
+    min-width: 32px;
+    padding-inline: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.ant-table-tbody .ant-btn.ant-btn-icon-only,
+.ant-card-extra .ant-btn.ant-btn-icon-only {
+    width: 32px;
+    padding-inline: 0;
+}
+
+.ant-table-tbody .ant-btn .anticon,
+.ant-card-extra .ant-btn .anticon {
+    font-size: 15px;
+}
+
+.ant-table-tbody .ant-space-gap-col-small,
+.ant-table-tbody .ant-space-gap-col-middle,
+.ant-table-tbody .ant-space-gap-col-large {
+    column-gap: 8px;
+}
+
+/* Small tables get a small pager; give it the normal spacing too (item size is set in theme.ts) */
+.ant-pagination.ant-pagination-small {
+    --ant-pagination-item-spacing-actual: 8px;
+}

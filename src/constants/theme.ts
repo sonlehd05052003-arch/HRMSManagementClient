@@ -17,7 +17,11 @@ const theme: ThemeConfig = {
         Table: {
             headerBg: '#f8fafc',
             headerColor: '#1e293b',
-        }
+        },
+        // Tables shrink their pagination to "small"; keep every pager the same size (see index.css)
+        Pagination: {
+            itemSizeSM: 32,
+        },
     }
 };
 

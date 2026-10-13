@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Tag, Space, Card, Switch, message, Typography, Tooltip } from "antd";
+import { Table, Button, Tag, Space, Card, message, Typography, Tooltip } from "antd";
+import StatusToggleButton from "../../components/statusToggleButton";
 import { SafetyCertificateOutlined, CalendarOutlined, TeamOutlined, PlusOutlined, KeyOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
@@ -115,18 +116,20 @@ const ManageRoleContent = () => {
             key: "action",
             width: 150,
             render: (_: any, record: any) => (
-                <Space size="middle">
+                <Space size="small">
                     <Tooltip title="Phân quyền">
                         <Button
                             icon={<KeyOutlined />}
                             onClick={() => navigate(`${URL.ManagePermission}?roleId=${record.roleId}`)}
                         />
                     </Tooltip>
-                    <Switch
-                        size="small"
+                    <StatusToggleButton
+                        active={record.isActive}
                         loading={togglingRoleId === record.roleId}
-                        checked={record.isActive}
-                        onChange={() => handleToggleStatus(record)}
+                        onToggle={() => handleToggleStatus(record)}
+                        deactivateTitle="Ngừng sử dụng vai trò này?"
+                        deactivateDescription="Tài khoản thuộc vai trò này sẽ không còn các quyền của nó."
+                        restoreTitle="Khôi phục vai trò này?"
                     />
                 </Space>
             ),

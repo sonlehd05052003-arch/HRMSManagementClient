@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Card, Space, Input, Switch, message, Tooltip, Typography, Tag } from "antd";
+import { Table, Button, Card, Space, Input, message, Tooltip, Typography, Tag } from "antd";
 import { PlusOutlined, EyeOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import StatusToggleButton from "../../components/statusToggleButton";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchAllPositions, selectPositions, selectPositionLoading, deactivatePosition, activatePosition } from "../../../../store/positionSlide";
 import AddPositionModal from "./modal/AddPositionModal";
@@ -92,27 +93,29 @@ const ManagePosition = () => {
             dataIndex: "isActive",
             key: "isActive",
             width: 100,
-            render: (isActive: boolean, record: any) => (
-                 <Switch
-                    size="small"
-                    loading={togglingId === record.positionId}
-                    checked={isActive}
-                    onChange={() => handleToggleStatus(record)}
-                 />
+            render: (isActive: boolean) => (
+                <Tag color={isActive ? "green" : "default"}>{isActive ? "Hoạt động" : "Ngừng sử dụng"}</Tag>
             ),
         },
         {
             title: "Thao tác",
             key: "action",
-            width: 80,
+            width: 110,
             render: (_: any, record: any) => (
-                <Space size="middle">
+                <Space size="small">
                     <Tooltip title="Xem chi tiết">
-                        <Button 
-                            icon={<EyeOutlined />} 
-                            onClick={() => navigate(`/hr/manage-position/${record.positionId}`)} 
+                        <Button
+                            icon={<EyeOutlined />}
+                            onClick={() => navigate(`/hr/manage-position/${record.positionId}`)}
                         />
                     </Tooltip>
+                    <StatusToggleButton
+                        active={record.isActive}
+                        loading={togglingId === record.positionId}
+                        onToggle={() => handleToggleStatus(record)}
+                        deactivateTitle="Ngừng sử dụng chức vụ này?"
+                        restoreTitle="Khôi phục chức vụ này?"
+                    />
                 </Space>
             ),
         },
