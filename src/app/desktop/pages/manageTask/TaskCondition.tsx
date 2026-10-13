@@ -19,50 +19,48 @@ const TaskCondition: React.FC<TaskConditionProps> = ({
     statusFilter, setStatusFilter
 }) => {
     return (
-        <div style={{ marginBottom: 16 }}>
-            <Row gutter={[16, 16]}>
-                <Col xs={24} sm={12} md={8}>
-                    <Input
-                        placeholder="Tìm theo mã, loại, mô tả..."
-                        prefix={<SearchOutlined />}
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        allowClear
-                    />
-                </Col>
-                <Col xs={24} sm={12} md={4}>
-                    <Select
-                        style={{ width: '100%' }}
-                        placeholder="Lọc độ ưu tiên"
-                        allowClear
-                        value={priorityFilter}
-                        onChange={setPriorityFilter}
-                    >
-                        <Select.Option value="High">Cao</Select.Option>
-                        <Select.Option value="Medium">Trung bình</Select.Option>
-                        <Select.Option value="Low">Thấp</Select.Option>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={12} md={4}>
-                    <Select
-                        style={{ width: '100%' }}
-                        placeholder="Lọc trạng thái"
-                        allowClear
-                        value={statusFilter}
-                        onChange={setStatusFilter}
-                    >
-                        <Select.Option value="Pending">Chờ xử lý</Select.Option>
-                        <Select.Option value="InProgress">Đang thực hiện</Select.Option>
-                        <Select.Option value="Approved">Đã duyệt</Select.Option>
-                        <Select.Option value="Rejected">Từ chối</Select.Option>
-                        <Select.Option value="Cancelled">Đã hủy</Select.Option>
-                    </Select>
-                </Col>
-                <Col xs={24} sm={12} md={6}>
-                    <RangePicker style={{ width: '100%' }} />
-                </Col>
-            </Row>
-        </div>
+        <Row gutter={[16, 16]}>
+            <Col xs={24} sm={12} md={8}>
+                <Input
+                    placeholder="Tìm theo mã, loại, mô tả..."
+                    prefix={<SearchOutlined />}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    allowClear
+                />
+            </Col>
+            <Col xs={24} sm={12} md={4}>
+                <Select
+                    style={{ width: '100%' }}
+                    placeholder="Lọc độ ưu tiên"
+                    allowClear
+                    value={priorityFilter}
+                    onChange={setPriorityFilter}
+                >
+                    <Select.Option value="High">Cao</Select.Option>
+                    <Select.Option value="Medium">Trung bình</Select.Option>
+                    <Select.Option value="Low">Thấp</Select.Option>
+                </Select>
+            </Col>
+            <Col xs={24} sm={12} md={4}>
+                <Select
+                    style={{ width: '100%' }}
+                    placeholder="Lọc trạng thái"
+                    allowClear
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                >
+                    <Select.Option value="Pending">Chờ xử lý</Select.Option>
+                    <Select.Option value="InProgress">Đang thực hiện</Select.Option>
+                    <Select.Option value="Approved">Đã duyệt</Select.Option>
+                    <Select.Option value="Rejected">Từ chối</Select.Option>
+                    <Select.Option value="Cancelled">Đã hủy</Select.Option>
+                </Select>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+                <RangePicker style={{ width: '100%' }} />
+            </Col>
+        </Row>
     );
 };
 

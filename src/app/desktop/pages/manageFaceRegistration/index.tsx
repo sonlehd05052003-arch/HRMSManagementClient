@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-    Card, Table, Button, Input, Space, Tag, Tooltip, Typography,
-    Popconfirm, message, Row, Col, Statistic, Badge, Divider
+    Card, Table, Button, Input, Space, Tag, Tooltip,
+    Popconfirm, message, Row, Col, Statistic, Badge
 } from "antd";
 import {
     SearchOutlined, ReloadOutlined, UserOutlined,
@@ -17,8 +17,7 @@ import {
 import dayjs from "dayjs";
 import HRFaceRegisterModal from "./HRFaceRegisterModal";
 import { errorText } from "../../../../utils/apiError";
-
-const { Title, Paragraph } = Typography;
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
 const ManageFaceRegistrationPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -143,14 +142,10 @@ const ManageFaceRegistrationPage: React.FC = () => {
         <div className="p-6 bg-[#f8fafc] min-h-screen">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-6">
-                    <Title level={2} style={{ marginBottom: 4, fontWeight: 700, color: '#1e293b' }}>
-                        <CameraOutlined className="mr-3 text-indigo-600" />Quản lý Đăng ký Khuôn mặt
-                    </Title>
-                    <Paragraph type="secondary">
-                        HR phụ trách đăng ký và quản lý khuôn mặt cho từng nhân viên. Nhân viên không thể tự đăng ký.
-                    </Paragraph>
-                </div>
+                <PageHeader
+                    title={<><CameraOutlined className="mr-3 text-indigo-600" />Quản lý Đăng ký Khuôn mặt</>}
+                    subtitle="HR phụ trách đăng ký và quản lý khuôn mặt cho từng nhân viên. Nhân viên không thể tự đăng ký."
+                />
 
                 {/* Thống kê */}
                 <Row gutter={16} className="mb-6">
@@ -186,26 +181,32 @@ const ManageFaceRegistrationPage: React.FC = () => {
                     </Col>
                 </Row>
 
-                <Card className="shadow-sm">
-                    {/* Toolbar */}
-                    <div className="flex items-center justify-between mb-4 gap-3">
-                        <Space>
-                            <Input
-                                placeholder="Tìm theo tên, mã NV, phòng ban..."
-                                prefix={<SearchOutlined />}
-                                value={search}
-                                onChange={e => setSearch(e.target.value)}
-                                style={{ width: 300 }}
-                                allowClear
-                            />
-                            <Button
-                                icon={<ReloadOutlined />}
-                                onClick={() => dispatch(fetchAllEmployeesFaceStatus())}
-                                loading={loading}
-                            >
-                                Làm mới
-                            </Button>
-                        </Space>
+                <FilterCard
+                    onReset={() => setSearch("")}
+                    extra={
+                        <Button
+                            icon={<ReloadOutlined />}
+                            onClick={() => dispatch(fetchAllEmployeesFaceStatus())}
+                            loading={loading}
+                        >
+                            Làm mới
+                        </Button>
+                    }
+                >
+                    <Input
+                        placeholder="Tìm theo tên, mã NV, phòng ban..."
+                        prefix={<SearchOutlined />}
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        style={{ width: 300 }}
+                        allowClear
+                    />
+                </FilterCard>
+
+                <TableCard
+                    title="Danh sách nhân viên"
+                    count={filtered.length}
+                    extra={
                         <Badge
                             count={stats.unregistered}
                             showZero={false}
@@ -218,10 +219,8 @@ const ManageFaceRegistrationPage: React.FC = () => {
                                     : "Tất cả nhân viên đã đăng ký"}
                             </span>
                         </Badge>
-                    </div>
-
-                    <Divider style={{ margin: '0 0 16px 0' }} />
-
+                    }
+                >
                     <Table
                         columns={columns}
                         dataSource={filtered}
@@ -231,7 +230,7 @@ const ManageFaceRegistrationPage: React.FC = () => {
                         bordered
                         rowClassName={(r) => !r.isRegistered ? "bg-red-50" : ""}
                     />
-                </Card>
+                </TableCard>
             </div>
 
             <HRFaceRegisterModal

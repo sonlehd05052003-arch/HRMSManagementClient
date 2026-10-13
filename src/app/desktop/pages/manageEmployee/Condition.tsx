@@ -36,7 +36,7 @@ const Condition = ({
     phoneSearch, setPhoneSearch,
     departmentOptions,
 }: ConditionProps) => (
-    <Row gutter={[16, 12]} style={{ marginBottom: 16 }}>
+    <Row gutter={[16, 12]}>
         <Col xs={24} sm={12} md={8}>
             <Input
                 placeholder="Tìm theo tên, mã NV hoặc email..."

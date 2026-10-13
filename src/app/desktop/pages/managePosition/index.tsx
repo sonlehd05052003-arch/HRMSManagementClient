@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Card, Space, Input, message, Tooltip, Typography, Tag } from "antd";
+import { Table, Button, Space, Input, message, Tooltip, Typography, Tag } from "antd";
 import { PlusOutlined, EyeOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import StatusToggleButton from "../../components/statusToggleButton";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchAllPositions, selectPositions, selectPositionLoading, deactivatePosition, activatePosition } from "../../../../store/positionSlide";
 import AddPositionModal from "./modal/AddPositionModal";
 import { useNavigate } from "react-router-dom";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ManagePosition = () => {
     const dispatch = useAppDispatch();
@@ -123,26 +124,24 @@ const ManagePosition = () => {
 
     return (
         <div className="p-2">
-            <Card
-                title={
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Title level={4} style={{ margin: 0 }}>Quản lý chức vụ</Title>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
-                            Thêm chức vụ mới
-                        </Button>
-                    </div>
+            <PageHeader
+                title="Quản lý chức vụ"
+                actions={
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
+                        Thêm chức vụ mới
+                    </Button>
                 }
-            >
-                <div style={{ marginBottom: 16 }}>
-                    <Input.Search
-                        placeholder="Tìm kiếm theo mã hoặc tên chức vụ..."
-                        allowClear
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        style={{ width: 300 }}
-                    />
-                </div>
-
+            />
+            <FilterCard onReset={() => setSearchText("")}>
+                <Input.Search
+                    placeholder="Tìm kiếm theo mã hoặc tên chức vụ..."
+                    allowClear
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    style={{ width: 300 }}
+                />
+            </FilterCard>
+            <TableCard title="Danh sách chức vụ" count={filteredPositions.length}>
                 <Table
                     columns={columns}
                     dataSource={filteredPositions}
@@ -161,7 +160,7 @@ const ManagePosition = () => {
                         ) : "Không có dữ liệu"
                     }}
                 />
-            </Card>
+            </TableCard>
 
             <AddPositionModal
                 open={isAddModalOpen}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Tag, Space, Card, message, Typography, Tooltip } from "antd";
+import { Table, Button, Tag, Space, message, Tooltip } from "antd";
 import StatusToggleButton from "../../components/statusToggleButton";
 import { SafetyCertificateOutlined, CalendarOutlined, TeamOutlined, PlusOutlined, KeyOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -11,8 +11,7 @@ import Condition from "./Condition";
 import AddRoleModal from "./modal/AddRoleModal";
 import CompanyScopeSelect, { SuperAdminOnly } from "../../components/companyScopeSelect";
 import { useConfigScope } from "../../components/companyScopeSelect/hooks";
-
-const { Title } = Typography;
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
 const ManageRoleContent = () => {
     const dispatch = useAppDispatch();
@@ -138,26 +137,31 @@ const ManageRoleContent = () => {
 
     return (
         <div className="p-2">
-            <Card
-                title={
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Title level={4} style={{ margin: 0 }}>Quản lý Vai trò</Title>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
-                            Thêm vai trò
-                        </Button>
-                    </div>
+            <PageHeader
+                title="Quản lý Vai trò"
+                actions={
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
+                        Thêm vai trò
+                    </Button>
                 }
+            />
+            <div style={{ marginBottom: 16 }}>
+                <CompanyScopeSelect />
+            </div>
+            <FilterCard
+                onReset={() => {
+                    setSearchText("");
+                    setStatusFilter(null);
+                }}
             >
-                <div style={{ marginBottom: 16 }}>
-                    <CompanyScopeSelect />
-                </div>
                 <Condition
                     searchText={searchText}
                     setSearchText={setSearchText}
                     statusFilter={statusFilter}
                     setStatusFilter={setStatusFilter}
                 />
-
+            </FilterCard>
+            <TableCard title="Danh sách vai trò" count={filteredRoles.length}>
                 <Table
                     columns={columns}
                     dataSource={filteredRoles}
@@ -165,7 +169,7 @@ const ManageRoleContent = () => {
                     loading={loading}
                     pagination={{ pageSize: 10 }}
                 />
-            </Card>
+            </TableCard>
             <AddRoleModal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
         </div>
     );

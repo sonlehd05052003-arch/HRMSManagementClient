@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Tag, Space, Card, message, Typography, Tooltip } from "antd";
+import { Table, Button, Tag, Space, message, Tooltip } from "antd";
 import { PlusOutlined, EditOutlined, UserOutlined, KeyOutlined, DeleteOutlined, UndoOutlined } from "@ant-design/icons";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -18,8 +18,7 @@ import Condition from "./Condition";
 import AddAccountModal from "./modal/AddAccountModal";
 import EditAccountModal from "./modal/EditAccountModal";
 import ResetPasswordModal from "./modal/ResetPasswordModal";
-
-const { Title } = Typography;
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
 const ManageAccount = () => {
     const dispatch = useAppDispatch();
@@ -189,21 +188,26 @@ const ManageAccount = () => {
 
     return (
         <div className="p-2">
-            <Card
-                title={
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Title level={4} style={{ margin: 0 }}>Quản lý Tài khoản</Title>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-                            Thêm tài khoản
-                        </Button>
-                    </div>
+            <PageHeader
+                title="Quản lý Tài khoản"
+                actions={
+                    <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+                        Thêm tài khoản
+                    </Button>
                 }
+            />
+            {isSuperAdmin && (
+                <div style={{ marginBottom: 16 }}>
+                    <CompanyScopeSelect />
+                </div>
+            )}
+            <FilterCard
+                onReset={() => {
+                    setSearchText("");
+                    setRoleFilter(null);
+                    setStatusFilter(null);
+                }}
             >
-                {isSuperAdmin && (
-                    <div style={{ marginBottom: 16 }}>
-                        <CompanyScopeSelect />
-                    </div>
-                )}
                 <Condition
                     searchText={searchText}
                     setSearchText={setSearchText}
@@ -212,7 +216,8 @@ const ManageAccount = () => {
                     statusFilter={statusFilter}
                     setStatusFilter={setStatusFilter}
                 />
-
+            </FilterCard>
+            <TableCard title="Danh sách tài khoản" count={filteredUsers.length}>
                 <Table
                     columns={columns}
                     dataSource={filteredUsers}
@@ -222,7 +227,7 @@ const ManageAccount = () => {
                     scroll={{ x: 1000 }}
                     size="middle"
                 />
-            </Card>
+            </TableCard>
 
             <AddAccountModal
                 open={isAddModalOpen}

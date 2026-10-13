@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Space, DatePicker, Select, Tag, Card, Tooltip, message, Typography } from "antd";
-import { SearchOutlined, EditOutlined, EyeOutlined, PlusOutlined, LockOutlined, UnlockOutlined, HistoryOutlined, ExclamationCircleOutlined, ReloadOutlined, TeamOutlined, CalendarOutlined } from "@ant-design/icons";
+import { Table, Button, Space, DatePicker, Select, Tag, Tooltip, message, Typography } from "antd";
+import { SearchOutlined, EditOutlined, EyeOutlined, PlusOutlined, LockOutlined, UnlockOutlined, HistoryOutlined, ExclamationCircleOutlined, TeamOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 import { useAppDispatch, useAppSelector } from "../../../../../store";
@@ -14,6 +14,7 @@ import ManualAdjustModal from "../modal/ManualAdjustModal";
 import ManualCreateModal from "../modal/ManualCreateModal";
 import AttendanceLogsModal from "../modal/AttendanceLogsModal";
 import { errorText } from "../../../../../utils/apiError";
+import { FilterCard, TableCard } from "../../../components/listPage";
 
 const { RangePicker } = DatePicker;
 
@@ -37,7 +38,6 @@ const AttendanceTable = () => {
     const [dateRange, setDateRange] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([dayjs().startOf('month'), dayjs()]);
     const [selectedEmployee, setSelectedEmployee] = useState<number | undefined>(undefined);
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
-    const [refreshing, setRefreshing] = useState(false);
 
     // Paging asks the server for another page of the filters last applied, not of what is half-edited in the inputs
     const [appliedFilters, setAppliedFilters] = useState<IAttendanceSearchParams>({
@@ -82,12 +82,10 @@ const AttendanceTable = () => {
         setDateRange([defaultFrom, defaultTo]);
         setSelectedEmployee(undefined);
         setStatusFilter(undefined);
-        setRefreshing(true);
         await Promise.all([
             dispatch(fetchAllEmployees()),
             load({ fromDate: defaultFrom.format("YYYY-MM-DD"), toDate: defaultTo.format("YYYY-MM-DD") }, 1)
         ]);
-        setRefreshing(false);
     };
 
     const handleToday = () => {
@@ -246,21 +244,7 @@ const AttendanceTable = () => {
     ];
 
     return (
-        <Card
-            title={
-                <Space>
-                    <CalendarOutlined className="text-blue-500" />
-                    <span>Quản lý chấm công</span>
-                    {total > 0 && (
-                        <Text type="secondary" style={{ fontSize: 13, fontWeight: 400 }}>
-                            — {total} bản ghi
-                        </Text>
-                    )}
-                </Space>
-            }
-            className="shadow-sm rounded-xl"
-            style={{ overflow: 'hidden' }}
-        >
+        <>
             {managerProfile && (
                 <div className="mb-4 flex items-center gap-3 flex-wrap px-3 py-2.5 bg-blue-50 rounded-lg border border-blue-100">
                     <TeamOutlined className="text-blue-500 text-base" />
@@ -271,7 +255,19 @@ const AttendanceTable = () => {
                     <Text type="secondary">Đang quản lý <strong>{employees.length}</strong> nhân viên</Text>
                 </div>
             )}
-            <div style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #f1f5f9' }}>
+            <FilterCard
+                onReset={handleRefresh}
+                extra={
+                    <>
+                        <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
+                            Lọc
+                        </Button>
+                        <Button onClick={handleToday}>
+                            Hôm nay
+                        </Button>
+                    </>
+                }
+            >
                 <Space wrap style={{ rowGap: 8 }}>
                     <RangePicker
                         value={dateRange}
@@ -304,39 +300,37 @@ const AttendanceTable = () => {
                             { label: "Ngày lễ", value: "Holiday" },
                         ]}
                     />
-                    <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
-                        Lọc
-                    </Button>
-                    <Button onClick={handleToday}>
-                        Hôm nay
-                    </Button>
-                    <Button icon={<ReloadOutlined />} onClick={handleRefresh} loading={refreshing}>
-                        Làm mới
-                    </Button>
+                </Space>
+            </FilterCard>
+
+            <TableCard
+                title="Danh sách chấm công"
+                count={total}
+                extra={
                     <Button type="primary" danger icon={<PlusOutlined />} onClick={() => setCreateModal(true)}>
                         Tạo chấm công Manual
                     </Button>
-                </Space>
-            </div>
-
-            <Table
-                columns={columns}
-                dataSource={records}
-                loading={loading}
-                rowKey={(record) => record.attendanceId > 0 ? record.attendanceId : `virtual-${record.attendanceDate}-${record.employeeId}`}
-                pagination={{
-                    current: page,
-                    pageSize,
-                    total,
-                    showSizeChanger: true,
-                    pageSizeOptions: [15, 30, 50, 100],
-                    showTotal: (count) => `Tổng ${count} bản ghi`,
-                    onChange: (nextPage, nextPageSize) =>
-                        load(appliedFilters, nextPageSize !== pageSize ? 1 : nextPage, nextPageSize),
-                }}
-                scroll={{ x: 1150 }}
-                bordered
-            />
+                }
+            >
+                <Table
+                    columns={columns}
+                    dataSource={records}
+                    loading={loading}
+                    rowKey={(record) => record.attendanceId > 0 ? record.attendanceId : `virtual-${record.attendanceDate}-${record.employeeId}`}
+                    pagination={{
+                        current: page,
+                        pageSize,
+                        total,
+                        showSizeChanger: true,
+                        pageSizeOptions: [15, 30, 50, 100],
+                        showTotal: (count) => `Tổng ${count} bản ghi`,
+                        onChange: (nextPage, nextPageSize) =>
+                            load(appliedFilters, nextPageSize !== pageSize ? 1 : nextPage, nextPageSize),
+                    }}
+                    scroll={{ x: 1150 }}
+                    bordered
+                />
+            </TableCard>
 
             <AttendanceDetailModal
                 open={detailModal.open}
@@ -364,7 +358,7 @@ const AttendanceTable = () => {
                 date={logsModal.date}
                 onClose={() => setLogsModal({ ...logsModal, open: false })}
             />
-        </Card>
+        </>
     );
 };
 

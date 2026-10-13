@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag, Card, Typography, message, Space, Button, Tooltip, Modal, Descriptions } from "antd";
+import { Table, Tag, Typography, message, Space, Button, Tooltip, Modal, Descriptions } from "antd";
 import {
     ClockCircleOutlined,
     CheckCircleOutlined,
@@ -20,8 +20,9 @@ import { EUserRole } from "../../../../interface/app";
 import TaskCondition from "./TaskCondition";
 import AddTaskModal from "./modal/AddTaskModal";
 import dayjs from "dayjs";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ManageTask: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -207,21 +208,23 @@ const ManageTask: React.FC = () => {
 
     return (
         <div className="p-4">
-            <div className="mb-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                    <Title level={3}>{isEmployee ? "Công việc được giao" : "Quản lý công việc"}</Title>
-                    <Text type="secondary">
-                        {isEmployee ? "Danh sách các công việc bạn cần thực hiện." : "Quản lý các công việc và yêu cầu phê duyệt trong hệ thống."}
-                    </Text>
-                </div>
-                {canCreateTask && (
+            <PageHeader
+                title={isEmployee ? "Công việc được giao" : "Quản lý công việc"}
+                subtitle={isEmployee ? "Danh sách các công việc bạn cần thực hiện." : "Quản lý các công việc và yêu cầu phê duyệt trong hệ thống."}
+                actions={canCreateTask && (
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
                         Tạo công việc
                     </Button>
                 )}
-            </div>
+            />
 
-            <Card>
+            <FilterCard
+                onReset={() => {
+                    setSearchText("");
+                    setPriorityFilter(null);
+                    setStatusFilter(null);
+                }}
+            >
                 <TaskCondition
                     searchText={searchText}
                     setSearchText={setSearchText}
@@ -230,7 +233,9 @@ const ManageTask: React.FC = () => {
                     statusFilter={statusFilter}
                     setStatusFilter={setStatusFilter}
                 />
+            </FilterCard>
 
+            <TableCard title="Danh sách công việc" count={filteredTasks.length}>
                 <Table
                     columns={columns.filter(Boolean) as any}
                     dataSource={filteredTasks}
@@ -246,7 +251,7 @@ const ManageTask: React.FC = () => {
                         return isOverdue ? 'overdue-row' : '';
                     }}
                 />
-            </Card>
+            </TableCard>
 
             <Modal
                 title={`Chi tiết công việc #${selectedTask?.taskId}`}

@@ -15,7 +15,7 @@ const Condition = ({
     setStatusFilter,
 }: ConditionProps) => {
     return (
-        <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+        <Row gutter={[16, 16]}>
             <Col xs={24} sm={16} md={12}>
                 <Input
                     placeholder="Tìm theo tên vai trò hoặc mô tả"

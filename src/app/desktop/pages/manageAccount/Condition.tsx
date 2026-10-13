@@ -23,7 +23,7 @@ const Condition = ({
     const roles = useAppSelector(selectRoles);
 
     return (
-        <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+        <Row gutter={[16, 16]}>
             <Col xs={24} sm={12} md={8}>
                 <Input
                     placeholder="Tìm theo tên đăng nhập hoặc email"

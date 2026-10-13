@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Tag, Space, Card, message, Typography, Tooltip } from "antd";
+import { Table, Button, Tag, Space, message, Tooltip } from "antd";
 import { PlusOutlined, EyeOutlined, EditOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
@@ -17,8 +17,7 @@ import ReviewHRProcedureModal from "./modal/ReviewHRProcedureModal";
 import RejectHRProcedureModal from "./modal/RejectHRProcedureModal";
 import { selectInfoLogin } from "../../../../store/authSlide";
 import { EUserRole } from "../../../../interface/app";
-
-const { Title } = Typography;
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
 const STATUS_COLOR: Record<string, string> = {
     Approved: "green",
@@ -164,23 +163,28 @@ const ManageHRProcedure = () => {
 
     return (
         <div className="p-2">
-            <Card
-                title={
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Title level={4} style={{ margin: 0 }}>Quản lý Thủ tục HR</Title>
-                        {canCreate && (
-                            <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddOpen(true)}>
-                                Tạo thủ tục mới
-                            </Button>
-                        )}
-                    </div>
-                }
+            <PageHeader
+                title="Quản lý Thủ tục HR"
+                actions={canCreate && (
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddOpen(true)}>
+                        Tạo thủ tục mới
+                    </Button>
+                )}
+            />
+            <FilterCard
+                onReset={() => {
+                    setSearchText("");
+                    setStatusFilter(null);
+                    setTypeFilter(null);
+                }}
             >
                 <Condition
                     searchText={searchText} setSearchText={setSearchText}
                     statusFilter={statusFilter} setStatusFilter={setStatusFilter}
                     typeFilter={typeFilter} setTypeFilter={setTypeFilter}
                 />
+            </FilterCard>
+            <TableCard title="Danh sách thủ tục HR" count={filtered.length}>
                 <Table
                     columns={columns} 
                     dataSource={filtered} 
@@ -190,7 +194,7 @@ const ManageHRProcedure = () => {
                     scroll={{ x: 1200 }} 
                     size="middle"
                 />
-            </Card>
+            </TableCard>
 
             <AddHRProcedureModal 
                 open={isAddOpen} 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, DatePicker, Select, Space, Table, Tag, Typography, message } from "antd";
+import { Button, DatePicker, Select, Space, Table, Tag, Typography, message } from "antd";
 import { HistoryOutlined, ReloadOutlined, SearchOutlined } from "@ant-design/icons";
 import dayjs, { type Dayjs } from "dayjs";
 import { request } from "../../../../utils/request";
@@ -7,6 +7,7 @@ import { apiErrorMessage } from "../../../../utils/apiError";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchAllUsers, selectUsers } from "../../../../store/userSlide";
 import type { IPagedResult } from "../../../../store/attendanceSlide";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
@@ -175,59 +176,81 @@ const AuditLogPage = () => {
     ];
 
     return (
-        <Card
-            title={<Space><HistoryOutlined className="text-blue-500" /><span>Nhật ký thay đổi dữ liệu</span></Space>}
-            className="shadow-sm rounded-xl"
-        >
-            <Text type="secondary" className="block mb-4">
-                Mọi thay đổi về lương, chấm công, số dư phép, nhân viên, vai trò và cấu hình đều được ghi lại tự động.
-                Mở một dòng để xem từng trường đã đổi từ giá trị nào sang giá trị nào.
-            </Text>
-
-            <Space wrap className="mb-4" style={{ rowGap: 8 }}>
-                <RangePicker value={range} onChange={setRange} format="DD/MM/YYYY" />
-                <Select
-                    placeholder="Tất cả dữ liệu" allowClear style={{ width: 190 }}
-                    value={tableName} onChange={setTableName}
-                    options={tables.map(t => ({ value: t, label: TABLE_LABELS[t] ?? t }))}
-                />
-                <Select
-                    placeholder="Mọi hành động" allowClear style={{ width: 150 }}
-                    value={action} onChange={setAction}
-                    options={Object.entries(ACTIONS).map(([value, { label }]) => ({ value, label }))}
-                />
-                <Select
-                    placeholder="Mọi người dùng" allowClear showSearch style={{ width: 220 }}
-                    optionFilterProp="label"
-                    value={userId} onChange={setUserId}
-                    options={users.map(u => ({ value: u.userId, label: u.username }))}
-                />
-                <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Lọc</Button>
-                <Button icon={<ReloadOutlined />} onClick={() => load(applied, page, pageSize)}>Làm mới</Button>
-            </Space>
-
-            <Table
-                rowKey="auditId"
-                columns={columns}
-                dataSource={data.items}
-                loading={loading}
-                scroll={{ x: 840 }}
-                expandable={{ expandedRowRender: (log: IAuditLog) => <ChangeDetail log={log} /> }}
-                pagination={{
-                    current: page,
-                    pageSize,
-                    total: data.total,
-                    showSizeChanger: true,
-                    pageSizeOptions: [20, 50, 100],
-                    showTotal: (count) => `Tổng ${count} thay đổi`,
-                    onChange: (nextPage, nextPageSize) => {
-                        setPage(nextPageSize !== pageSize ? 1 : nextPage);
-                        setPageSize(nextPageSize);
-                    },
-                }}
-                bordered
+        <div>
+            <PageHeader
+                title={<Space><HistoryOutlined className="text-blue-500" /><span>Nhật ký thay đổi dữ liệu</span></Space>}
+                subtitle={
+                    <>
+                        Mọi thay đổi về lương, chấm công, số dư phép, nhân viên, vai trò và cấu hình đều được ghi lại tự động.
+                        Mở một dòng để xem từng trường đã đổi từ giá trị nào sang giá trị nào.
+                    </>
+                }
             />
-        </Card>
+
+            <FilterCard
+                onReset={() => {
+                    setRange([dayjs().subtract(7, "day"), dayjs()]);
+                    setTableName(undefined);
+                    setAction(undefined);
+                    setUserId(undefined);
+                    setPage(1);
+                    setApplied({
+                        fromDate: dayjs().subtract(7, "day").format("YYYY-MM-DD"),
+                        toDate: dayjs().format("YYYY-MM-DD"),
+                    });
+                }}
+                extra={
+                    <>
+                        <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Lọc</Button>
+                        <Button icon={<ReloadOutlined />} onClick={() => load(applied, page, pageSize)}>Làm mới</Button>
+                    </>
+                }
+            >
+                <Space wrap style={{ rowGap: 8 }}>
+                    <RangePicker value={range} onChange={setRange} format="DD/MM/YYYY" />
+                    <Select
+                        placeholder="Tất cả dữ liệu" allowClear style={{ width: 190 }}
+                        value={tableName} onChange={setTableName}
+                        options={tables.map(t => ({ value: t, label: TABLE_LABELS[t] ?? t }))}
+                    />
+                    <Select
+                        placeholder="Mọi hành động" allowClear style={{ width: 150 }}
+                        value={action} onChange={setAction}
+                        options={Object.entries(ACTIONS).map(([value, { label }]) => ({ value, label }))}
+                    />
+                    <Select
+                        placeholder="Mọi người dùng" allowClear showSearch style={{ width: 220 }}
+                        optionFilterProp="label"
+                        value={userId} onChange={setUserId}
+                        options={users.map(u => ({ value: u.userId, label: u.username }))}
+                    />
+                </Space>
+            </FilterCard>
+
+            <TableCard title="Danh sách thay đổi" count={data.total}>
+                <Table
+                    rowKey="auditId"
+                    columns={columns}
+                    dataSource={data.items}
+                    loading={loading}
+                    scroll={{ x: 840 }}
+                    expandable={{ expandedRowRender: (log: IAuditLog) => <ChangeDetail log={log} /> }}
+                    pagination={{
+                        current: page,
+                        pageSize,
+                        total: data.total,
+                        showSizeChanger: true,
+                        pageSizeOptions: [20, 50, 100],
+                        showTotal: (count) => `Tổng ${count} thay đổi`,
+                        onChange: (nextPage, nextPageSize) => {
+                            setPage(nextPageSize !== pageSize ? 1 : nextPage);
+                            setPageSize(nextPageSize);
+                        },
+                    }}
+                    bordered
+                />
+            </TableCard>
+        </div>
     );
 };
 

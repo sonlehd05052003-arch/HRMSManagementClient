@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Button, Tag, Space, Card, Select, message, Typography, Tooltip } from "antd";
+import { Table, Button, Tag, Space, Select, message, Typography, Tooltip } from "antd";
 import { PlusOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
@@ -9,9 +9,9 @@ import {
 } from "../../../../store/employeeSlide";
 import type { IEmployeeList } from "../../../../store/employeeSlide";
 import Condition from "./Condition";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 import URL from "../../../../constants/url";
 
-const { Title } = Typography;
 
 const STATUS_COLOR: Record<string, string> = {
     Active: "green",
@@ -121,15 +121,22 @@ const ManageEmployee = () => {
 
     return (
         <div className="p-2">
-            <Card
-                title={
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Title level={4} style={{ margin: 0 }}>Quản lý nhân viên</Title>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(URL.AddEmployee)}>
-                            Thêm nhân viên
-                        </Button>
-                    </div>
+            <PageHeader
+                title="Quản lý nhân viên"
+                actions={
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(URL.AddEmployee)}>
+                        Thêm nhân viên
+                    </Button>
                 }
+            />
+            <FilterCard
+                onReset={() => {
+                    setSearchText("");
+                    setPhoneSearch("");
+                    setStatusFilter(null);
+                    setGenderFilter(null);
+                    setDepartmentFilter(null);
+                }}
             >
                 <Condition
                     searchText={searchText} setSearchText={setSearchText}
@@ -139,6 +146,8 @@ const ManageEmployee = () => {
                     phoneSearch={phoneSearch} setPhoneSearch={setPhoneSearch}
                     departmentOptions={departmentOptions}
                 />
+            </FilterCard>
+            <TableCard title="Danh sách nhân viên" count={filtered.length}>
                 <Table
                     columns={columns} dataSource={filtered} rowKey={(record) => record.employeeId || (record as any).id}
                     loading={loading} pagination={{ pageSize: 10 }}
@@ -153,7 +162,7 @@ const ManageEmployee = () => {
                         ) : "Không có dữ liệu nhân viên"
                     }}
                 />
-            </Card>
+            </TableCard>
         </div>
     );
 };

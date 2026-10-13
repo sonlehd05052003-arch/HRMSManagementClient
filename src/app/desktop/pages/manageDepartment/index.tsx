@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Card, Space, Input, Tag, message, Tooltip, Typography } from "antd";
+import { Table, Button, Space, Input, Tag, message, Tooltip, Typography } from "antd";
 import { PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import StatusToggleButton from "../../components/statusToggleButton";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchAllDepartments, selectDepartments, selectDepartmentLoading, deactivateDepartment, activateDepartment } from "../../../../store/departmentSlide";
 import AddDepartmentModal from "./modal/AddDepartmentModal";
 import { useNavigate } from "react-router-dom";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ManageDepartment = () => {
     const dispatch = useAppDispatch();
@@ -115,26 +116,24 @@ const ManageDepartment = () => {
 
     return (
         <div className="p-2">
-            <Card
-                title={
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Title level={4} style={{ margin: 0 }}>Quản lý phòng ban</Title>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
-                            Thêm phòng ban mới
-                        </Button>
-                    </div>
+            <PageHeader
+                title="Quản lý phòng ban"
+                actions={
+                    <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
+                        Thêm phòng ban mới
+                    </Button>
                 }
-            >
-                <div style={{ marginBottom: 16 }}>
-                    <Input.Search
-                        placeholder="Tìm kiếm theo mã hoặc tên phòng ban..."
-                        allowClear
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        style={{ width: 300 }}
-                    />
-                </div>
-
+            />
+            <FilterCard onReset={() => setSearchText("")}>
+                <Input.Search
+                    placeholder="Tìm kiếm theo mã hoặc tên phòng ban..."
+                    allowClear
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    style={{ width: 300 }}
+                />
+            </FilterCard>
+            <TableCard title="Danh sách phòng ban" count={filteredDepartments.length}>
                 <Table
                     columns={columns}
                     dataSource={filteredDepartments}
@@ -153,7 +152,7 @@ const ManageDepartment = () => {
                         ) : "Không có dữ liệu"
                     }}
                 />
-            </Card>
+            </TableCard>
 
             <AddDepartmentModal
                 open={isAddModalOpen}

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Card, Space, Input, message, Tooltip, Typography, Tag } from "antd";
+import { Table, Button, Space, Input, message, Tooltip, Typography, Tag } from "antd";
 import { PlusOutlined, EditOutlined, ClockCircleOutlined, SettingOutlined, StopOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchAllShifts, selectShifts, selectShiftLoading, deactivateShift, activateShift, type IShift } from "../../../../store/shiftSlide";
 import { useNavigate } from "react-router-dom";
 import URL from "../../../../constants/url";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ManageShift = () => {
     const dispatch = useAppDispatch();
@@ -148,30 +149,28 @@ const ManageShift = () => {
 
     return (
         <div className="p-2 bg-gray-50/50 min-h-full">
-            <Card
-                className="shadow-sm border-0 rounded-xl overflow-hidden"
+            <PageHeader
                 title={
-                    <div className="flex justify-between items-center py-2">
-                        <div>
-                            <Title level={4} style={{ margin: 0 }} className="flex items-center gap-2">
-                                <SettingOutlined className="text-indigo-600" />
-                                Quản Lý Ca Làm Việc
-                            </Title>
-                            <Text type="secondary" className="text-sm">Thiết lập giờ giấc và quy định chấm công cho nhân viên</Text>
-                        </div>
-                        <Button 
-                            type="primary" 
-                            size="large"
-                            icon={<PlusOutlined />} 
-                            onClick={() => navigate(URL.AddShift)}
-                            className="bg-indigo-600 hover:bg-indigo-700 rounded-lg h-10 px-6"
-                        >
-                            Thêm Ca Mới
-                        </Button>
-                    </div>
+                    <span className="flex items-center gap-2">
+                        <SettingOutlined className="text-indigo-600" />
+                        Quản Lý Ca Làm Việc
+                    </span>
                 }
-            >
-                <div className="mb-6 flex justify-between gap-4">
+                subtitle="Thiết lập giờ giấc và quy định chấm công cho nhân viên"
+                actions={
+                    <Button
+                        type="primary"
+                        size="large"
+                        icon={<PlusOutlined />}
+                        onClick={() => navigate(URL.AddShift)}
+                        className="bg-indigo-600 hover:bg-indigo-700 rounded-lg h-10 px-6"
+                    >
+                        Thêm Ca Mới
+                    </Button>
+                }
+            />
+            <FilterCard onReset={() => setSearchText("")}>
+                <div className="flex justify-between gap-4">
                     <Input.Search
                         placeholder="Tìm theo mã hoặc tên ca..."
                         allowClear
@@ -181,7 +180,8 @@ const ManageShift = () => {
                         size="large"
                     />
                 </div>
-
+            </FilterCard>
+            <TableCard title="Danh sách ca làm việc" count={filteredShifts.length}>
                 <Table
                     columns={columns}
                     dataSource={filteredShifts}
@@ -203,7 +203,7 @@ const ManageShift = () => {
                         ) : "Chưa có dữ liệu"
                     }}
                 />
-            </Card>
+            </TableCard>
         </div>
     );
 };

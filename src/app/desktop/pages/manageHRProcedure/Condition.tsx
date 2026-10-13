@@ -18,7 +18,7 @@ const Condition = ({
     typeFilter, setTypeFilter
 }: ConditionProps) => {
     return (
-        <Space style={{ marginBottom: 16, display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <Space style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             <Input
                 placeholder="Tìm thủ tục theo mã, tên NV..."
                 prefix={<SearchOutlined />}

@@ -1,5 +1,5 @@
 import { UserOutlined, PlusOutlined, CalendarOutlined, EditOutlined, DeleteOutlined, StopOutlined, CheckCircleOutlined } from "@ant-design/icons";
-import { Table, Button, Card, Space, Select, DatePicker, Typography, Tag, Avatar, Popconfirm, message, Tooltip } from "antd";
+import { Table, Button, Space, Select, DatePicker, Typography, Tag, Avatar, Popconfirm, message, Tooltip } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchShiftAssignments, selectAssignments, selectShiftAssignmentLoading, deactivateShiftAssignment, activateShiftAssignment, deleteShiftAssignment, type IShiftAssignment } from "../../../../store/shiftAssignmentSlide";
 import { selectEmployees, fetchActiveEmployees } from "../../../../store/employeeSlide";
@@ -7,8 +7,9 @@ import AssignShiftModal from "./modal/AssignShiftModal";
 import EditAssignmentModal from "./modal/EditAssignmentModal";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ManageShiftAssignment = () => {
     const dispatch = useAppDispatch();
@@ -179,30 +180,33 @@ const ManageShiftAssignment = () => {
 
     return (
         <div className="p-2 bg-gray-50/50 min-h-full">
-            <Card
-                className="shadow-sm border-0 rounded-xl overflow-hidden"
+            <PageHeader
                 title={
-                    <div className="flex justify-between items-center py-2">
-                        <div>
-                            <Title level={4} style={{ margin: 0 }} className="flex items-center gap-2">
-                                <CalendarOutlined className="text-indigo-600" />
-                                Phân Ca Làm Việc
-                            </Title>
-                            <Text type="secondary" className="text-sm">Giao ca làm việc cho nhân viên theo từng ngày</Text>
-                        </div>
-                        <Button 
-                            type="primary" 
-                            size="large"
-                            icon={<PlusOutlined />} 
-                            onClick={() => setIsAssignModalOpen(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 rounded-lg h-10 px-6"
-                        >
-                            Phân Ca Mới
-                        </Button>
-                    </div>
+                    <span className="flex items-center gap-2">
+                        <CalendarOutlined className="text-indigo-600" />
+                        Phân Ca Làm Việc
+                    </span>
                 }
+                subtitle="Giao ca làm việc cho nhân viên theo từng ngày"
+                actions={
+                    <Button
+                        type="primary"
+                        size="large"
+                        icon={<PlusOutlined />}
+                        onClick={() => setIsAssignModalOpen(true)}
+                        className="bg-indigo-600 hover:bg-indigo-700 rounded-lg h-10 px-6"
+                    >
+                        Phân Ca Mới
+                    </Button>
+                }
+            />
+            <FilterCard
+                onReset={() => {
+                    setSelectedDate(dayjs());
+                    setSelectedEmployeeId(undefined);
+                }}
             >
-                <div className="mb-6 flex flex-wrap gap-4 items-center">
+                <div className="flex flex-wrap gap-4 items-center">
                     <div className="flex items-center gap-2">
                         <Text strong>Chọn ngày:</Text>
                         <DatePicker 
@@ -221,12 +225,14 @@ const ManageShiftAssignment = () => {
                             placeholder="Tất cả nhân viên"
                             size="large"
                             className="w-64"
+                            value={selectedEmployeeId}
                             onChange={handleEmployeeChange}
                             options={employees.map(e => ({ value: e.employeeId, label: e.fullName }))}
                         />
                     </div>
                 </div>
-
+            </FilterCard>
+            <TableCard title="Danh sách phân ca" count={assignments.length}>
                 <Table
                     columns={columns}
                     dataSource={assignments}
@@ -247,7 +253,7 @@ const ManageShiftAssignment = () => {
                         )
                     }}
                 />
-            </Card>
+            </TableCard>
 
             <AssignShiftModal
                 open={isAssignModalOpen}

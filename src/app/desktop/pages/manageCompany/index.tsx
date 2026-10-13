@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Table, Button, Tag, Space, Card, Typography, Tooltip, Input, Modal, message } from "antd";
+import { Table, Button, Tag, Space, Typography, Tooltip, Input, Modal, message } from "antd";
 import StatusToggleButton from "../../components/statusToggleButton";
 import { PlusOutlined, EditOutlined, BankOutlined, TeamOutlined, UserOutlined, SearchOutlined, KeyOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -16,8 +16,9 @@ import {
 } from "../../../../store/companySlide";
 import CompanyFormModal from "./CompanyFormModal";
 import ResetAdminPasswordModal from "./ResetAdminPasswordModal";
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
 
-const { Title, Text, Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 
 /** Temporary passwords are only returned once by the API, so show them in a copyable dialog. */
 const showTemporaryPassword = (title: string, intro: string, username: string, password: string) => {
@@ -212,17 +213,16 @@ const ManageCompany = () => {
 
   return (
     <div className="p-2">
-      <Card
-        title={
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <Title level={4} style={{ margin: 0 }}>Quản lý công ty</Title>
-            <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-              Thêm công ty
-            </Button>
-          </div>
+      <PageHeader
+        title="Quản lý công ty"
+        actions={
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+            Thêm công ty
+          </Button>
         }
-      >
-        <Space style={{ marginBottom: 16 }} wrap>
+      />
+      <FilterCard onReset={() => setSearchText("")}>
+        <Space wrap>
           <Input
             allowClear
             prefix={<SearchOutlined />}
@@ -235,7 +235,8 @@ const ManageCompany = () => {
             {companies.length} công ty · {companies.filter((c) => c.isActive).length} đang hoạt động
           </Text>
         </Space>
-
+      </FilterCard>
+      <TableCard title="Danh sách công ty" count={filtered.length}>
         <Table
           columns={columns}
           dataSource={filtered}
@@ -244,7 +245,7 @@ const ManageCompany = () => {
           pagination={{ pageSize: 10 }}
           scroll={{ x: 1000 }}
         />
-      </Card>
+      </TableCard>
 
       <CompanyFormModal open={formOpen} company={editing} onClose={() => setFormOpen(false)} onSaved={handleSaved} />
       <ResetAdminPasswordModal
