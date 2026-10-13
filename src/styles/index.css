@@ -1,3 +1,7 @@
+/* antd's styles go in their own layer (StyleProvider in main.tsx), below Tailwind's utilities: otherwise any
+   utility class on an antd component (mb-4, rounded-xl...) loses to antd's own rules and silently does nothing. */
+@layer theme, base, antd, components, utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 

@@ -8,12 +8,15 @@ import SessionGate from './layouts/SessionGate'
 import "./styles/index.css"
 
 import { ConfigProvider, App } from 'antd'
+import { StyleProvider } from '@ant-design/cssinjs'
 
 import theme from './constants/theme'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
+      {/* layer: antd's CSS goes in @layer antd, ordered below Tailwind's utilities in index.css */}
+      <StyleProvider layer>
       <ConfigProvider theme={theme}>
         <SessionGate>
           <BrowserRouter>
@@ -23,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
           </BrowserRouter>
         </SessionGate>
       </ConfigProvider>
+      </StyleProvider>
     </Provider>
   </StrictMode>
 )
