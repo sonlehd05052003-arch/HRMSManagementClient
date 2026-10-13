@@ -14,9 +14,6 @@ export interface IDashboardStats {
     attendanceRate: number;
     overtimeHours: number;
     systemUptime: string;
-    errorRate: number;
-    databaseSize: string;
-    apiResponseTime: number;
 }
 
 export interface IRecentActivity {

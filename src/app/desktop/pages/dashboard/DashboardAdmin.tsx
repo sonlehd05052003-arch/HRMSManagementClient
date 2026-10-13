@@ -2,8 +2,8 @@ import { Row, Col, Card, Statistic, DatePicker, Typography, Space, List, Badge, 
 import { 
     UserOutlined, TeamOutlined, ApartmentOutlined, FileTextOutlined, 
     CheckCircleOutlined, ClockCircleOutlined, RiseOutlined, 
-    MonitorOutlined, WarningOutlined, DatabaseOutlined, RocketOutlined,
-    GlobalOutlined, SafetyCertificateOutlined, CodeOutlined
+    MonitorOutlined, WarningOutlined, RocketOutlined,
+    SafetyCertificateOutlined, CodeOutlined
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -47,9 +47,6 @@ const DashboardAdmin = () => {
         { title: "Tỉ lệ chuyên cần", value: `${stats?.attendanceRate ?? 0}%`, icon: <CheckCircleOutlined />, color: "#3b82f6", desc: "Trung bình có mặt trong kỳ" },
         { title: "Giờ tăng ca", value: stats?.overtimeHours, icon: <RocketOutlined />, color: "#ef4444", desc: "Tổng giờ OT đã duyệt" },
         { title: "Thời gian hoạt động", value: stats?.systemUptime, icon: <MonitorOutlined />, color: "#84cc16", desc: "Kể từ lần khởi động lại" },
-        { title: "Tỉ lệ lỗi", value: `${((stats?.errorRate ?? 0) * 100).toFixed(2)}%`, icon: <WarningOutlined />, color: "#ef4444", desc: "Tỉ lệ lỗi API request" },
-        { title: "Dung lượng Database", value: stats?.databaseSize, icon: <DatabaseOutlined />, color: "#6b7280", desc: "Tổng dung lượng sử dụng" },
-        { title: "Thời gian phản hồi API", value: `${stats?.apiResponseTime}ms`, icon: <GlobalOutlined />, color: "#0ea5e9", desc: "Độ trễ trung bình máy chủ" },
     ];
 
     const container = {
