@@ -1,4 +1,5 @@
 import { Avatar, Dropdown } from "antd";
+import NotificationBell from "../../app/desktop/components/notificationBell";
 import { UserOutlined, LogoutOutlined, KeyOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { actionLogout, selectInfoLogin, selectIsLogin } from "../../store/authSlide";
@@ -51,6 +52,8 @@ const MobileHeader = () => {
                     <span className="text-blue-600 font-bold text-lg leading-none">HRMS Management</span>
                 </div>
 
+                <div className="flex items-center gap-1">
+                <NotificationBell />
                 <Dropdown
                     menu={{
                         items: [
@@ -94,6 +97,7 @@ const MobileHeader = () => {
                         </Avatar>
                     </div>
                 </Dropdown>
+                </div>
             </header>
 
             <ChangePasswordModal

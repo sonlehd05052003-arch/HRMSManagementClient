@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import URL from '../../../../constants/url';
 import { useEffect, useState } from 'react';
 import ChangePasswordModal from '../../pages/auth/ChangePasswordModal';
+import NotificationBell from '../notificationBell';
 
 import { stringToColor, getInitial } from '../../../../utils/common';
 import { request } from '../../../../utils/request';
@@ -50,6 +51,9 @@ const HeaderBar = () => {
             className="flex items-center justify-end h-16 sticky top-0 z-10"
             style={{ background: '#fff', padding: '0 24px', boxShadow: '0 4px 8px rgba(0,0,0,0.04)', clipPath: 'inset(0 0 -20px 0)' }}
         >
+            <div className="mr-3">
+                <NotificationBell />
+            </div>
 
             <Dropdown
                 menu={{
