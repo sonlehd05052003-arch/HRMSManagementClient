@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
-import { Card, Table, Typography, Row, Col, Statistic, Tag, Empty, Select } from "antd"
-import { DollarOutlined, TeamOutlined, RiseOutlined, CheckCircleOutlined, CalendarOutlined } from "@ant-design/icons"
+import { Table, Typography, Tag, Empty, Select, Space } from "antd"
+import { DollarOutlined, TeamOutlined, RiseOutlined, CalendarOutlined } from "@ant-design/icons"
 import type { ColumnsType } from "antd/es/table"
 import { useAppDispatch, useAppSelector } from "../../../../store"
 import { fetchPayrollPeriods, selectPayrollPeriods, selectPayrollLoading } from "../../../../store/payrollSlide"
 import type { IPayrollPeriod } from "../../../../types/payroll"
+import { FilterCard, PageHeader, StatRow, TableCard } from "../../components/listPage"
 
-const { Title, Text } = Typography
+const { Text } = Typography
 const fmt = (v: number) => (v || 0).toLocaleString("vi-VN")
 
 const PayrollReport = () => {
@@ -41,12 +42,15 @@ const PayrollReport = () => {
     {
       title: "Kỳ lương",
       key: "period",
+      width: 240,
       render: (_, r) => (
         <div>
           <Text strong>Tháng {r.month}/{r.year}</Text>
-          <div className="text-xs text-gray-400">
-            Duyệt: {r.approvedDate ? new Date(r.approvedDate).toLocaleDateString("vi-VN") : "—"}
-            {r.approvedByName && ` · ${r.approvedByName}`}
+          <div>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              Duyệt: {r.approvedDate ? new Date(r.approvedDate).toLocaleDateString("vi-VN") : "—"}
+              {r.approvedByName && ` · ${r.approvedByName}`}
+            </Text>
           </div>
         </div>
       ),
@@ -55,120 +59,75 @@ const PayrollReport = () => {
       title: "Nhân viên",
       dataIndex: "totalEmployees",
       align: "center",
+      width: 130,
       render: (v) => <Tag color="blue">{v} người</Tag>,
     },
     {
       title: "Tổng Gross",
       dataIndex: "totalGrossPay",
       align: "right",
-      render: (v) => `${fmt(v)} đ`,
+      width: 170,
+      render: (v) => <span style={{ whiteSpace: "nowrap" }}>{fmt(v)} đ</span>,
     },
     {
       title: "Tổng BH (10.5%)",
       dataIndex: "totalInsurance",
       align: "right",
-      render: (v) => <Text type="danger">−{fmt(v)} đ</Text>,
+      width: 170,
+      render: (v) => <Text type="danger" style={{ whiteSpace: "nowrap" }}>−{fmt(v)} đ</Text>,
     },
     {
       title: "Tổng thuế TNCN",
       dataIndex: "totalTax",
       align: "right",
-      render: (v) => <Text type="danger">−{fmt(v)} đ</Text>,
+      width: 170,
+      render: (v) => <Text type="danger" style={{ whiteSpace: "nowrap" }}>−{fmt(v)} đ</Text>,
     },
     {
       title: "Tổng thực lĩnh (Net)",
       dataIndex: "totalNetPay",
       align: "right",
+      width: 190,
       render: (v) => (
-        <Text strong className="text-green-600">{fmt(v)} đ</Text>
+        <Text strong className="text-green-600" style={{ whiteSpace: "nowrap" }}>{fmt(v)} đ</Text>
       ),
     },
   ]
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header + bộ lọc năm */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <Title level={2} className="mb-1">Báo cáo quỹ lương</Title>
-          <Text type="secondary">Phân tích và tổng hợp quỹ lương theo các kỳ đã được duyệt</Text>
-        </div>
-        <div className="flex items-center gap-2">
+    <div className="p-2">
+      <PageHeader
+        title="Báo cáo quỹ lương"
+        subtitle="Phân tích và tổng hợp quỹ lương theo các kỳ đã được duyệt"
+      />
+
+      <FilterCard>
+        <Space wrap>
           <CalendarOutlined className="text-gray-500" />
           <Select
             value={currentYear}
             onChange={(v) => setSelectedYear(v)}
-            style={{ width: 110 }}
+            style={{ width: 140 }}
             options={availableYears.map(y => ({ label: `Năm ${y}`, value: y }))}
             placeholder="Chọn năm"
           />
-        </div>
-      </div>
+        </Space>
+      </FilterCard>
 
-      {/* Summary cards */}
-      <Row gutter={[16, 16]} className="mb-6">
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="shadow-sm border-l-4 border-green-500">
-            <Statistic
-              title={`Tổng thực lĩnh năm ${currentYear}`}
-              value={totalNetPaid}
-              precision={0}
-              valueStyle={{ color: "#3f8600" }}
-              prefix={<DollarOutlined />}
-              suffix="đ"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="shadow-sm border-l-4 border-orange-500">
-            <Statistic
-              title={`Tổng Gross năm ${currentYear}`}
-              value={totalGross}
-              precision={0}
-              valueStyle={{ color: "#fa8c16" }}
-              prefix={<DollarOutlined />}
-              suffix="đ"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="shadow-sm border-l-4 border-blue-500">
-            <Statistic
-              title="Thực lĩnh trung bình / kỳ"
-              value={avgNetPerPeriod}
-              precision={0}
-              valueStyle={{ color: "#1890ff" }}
-              prefix={<RiseOutlined />}
-              suffix="đ"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="shadow-sm border-l-4 border-purple-500">
-            <Statistic
-              title={`Số kỳ đã duyệt năm ${currentYear}`}
-              value={filteredPeriods.length}
-              prefix={<TeamOutlined />}
-              suffix="/ 12 kỳ"
-            />
-            {lastPeriod && (
-              <div className="text-xs text-gray-400 mt-1">
-                Gần nhất: Tháng {lastPeriod.month}/{lastPeriod.year}
-              </div>
-            )}
-          </Card>
-        </Col>
-      </Row>
+      <StatRow items={[
+        { title: `Tổng thực lĩnh năm ${currentYear}`, value: Math.round(totalNetPaid), color: "#3f8600", prefix: <DollarOutlined />, suffix: "đ" },
+        { title: `Tổng Gross năm ${currentYear}`, value: Math.round(totalGross), color: "#fa8c16", prefix: <DollarOutlined />, suffix: "đ" },
+        { title: "Thực lĩnh trung bình / kỳ", value: avgNetPerPeriod, color: "#1890ff", prefix: <RiseOutlined />, suffix: "đ" },
+        { title: `Số kỳ đã duyệt năm ${currentYear}`, value: filteredPeriods.length, prefix: <TeamOutlined />, suffix: "/ 12 kỳ" },
+      ]} />
 
       {/* Bảng lịch sử */}
-      <Card
-        title={
-          <div className="flex items-center gap-2">
-            <CheckCircleOutlined className="text-green-500" />
-            <span>Lịch sử quỹ lương năm {currentYear} (đã duyệt)</span>
-          </div>
-        }
-        className="shadow-sm rounded-xl"
+      <TableCard
+        title={`Lịch sử quỹ lương năm ${currentYear} (đã duyệt)`}
+        count={filteredPeriods.length}
+        extra={lastPeriod && (
+          <Text type="secondary">Gần nhất: Tháng {lastPeriod.month}/{lastPeriod.year}</Text>
+        )}
       >
         {filteredPeriods.length === 0 && !loading ? (
           <Empty
@@ -177,11 +136,12 @@ const PayrollReport = () => {
           />
         ) : (
           <Table
-            columns={columns}
+            columns={columns.map(c => ({ ...c, onHeaderCell: () => ({ style: { whiteSpace: "nowrap" as const } }) }))}
             dataSource={filteredPeriods}
             loading={loading}
             rowKey="periodId"
             pagination={false}
+            scroll={{ x: 1070 }}
             summary={() => filteredPeriods.length > 1 ? (
               <Table.Summary.Row className="bg-gray-50 font-semibold">
                 <Table.Summary.Cell index={0}><Text strong>Tổng năm {currentYear}</Text></Table.Summary.Cell>
@@ -202,7 +162,7 @@ const PayrollReport = () => {
             ) : undefined}
           />
         )}
-      </Card>
+      </TableCard>
     </div>
   )
 }

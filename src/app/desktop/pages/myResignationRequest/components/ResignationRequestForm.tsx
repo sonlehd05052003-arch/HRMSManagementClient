@@ -1,4 +1,4 @@
-import { Card, Form, DatePicker, Input, Button, Select, Alert, message, Modal } from "antd";
+import { Form, DatePicker, Input, Button, Select, Alert, message, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import {
@@ -12,6 +12,8 @@ import {
 } from "../../../../../store/resignationRequestSlide";
 import { fetchAllEmployees, selectEmployees } from "../../../../../store/employeeSlide";
 import dayjs from "dayjs";
+import { FileTextOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -68,16 +70,13 @@ const ResignationRequestForm = () => {
 
     return (
         <>
-            <Card
-                title="Nộp đơn xin thôi việc"
-                className="shadow-lg border-none rounded-2xl bg-white/70 backdrop-blur-md"
-            >
+            <SectionCard title="Nộp đơn xin thôi việc" icon={<FileTextOutlined />} gap={0}>
                 <Alert
                     message="Lưu ý quan trọng"
                     description="Bạn phải báo trước ít nhất 30 ngày. Sau khi nộp đơn, quản lý trực tiếp sẽ xem xét và phê duyệt."
                     type="warning"
                     showIcon
-                    className="mb-4"
+                    style={{ marginBottom: 16 }}
                 />
 
                 <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -89,7 +88,6 @@ const ResignationRequestForm = () => {
                     >
                         <DatePicker
                             className="w-full"
-                            size="large"
                             disabledDate={disabledDate}
                             format="DD/MM/YYYY"
                             placeholder="Chọn ngày làm việc cuối"
@@ -102,14 +100,12 @@ const ResignationRequestForm = () => {
                             maxLength={1000}
                             showCount
                             placeholder="Mô tả lý do bạn muốn thôi việc (không bắt buộc)..."
-                            className="rounded-lg"
                         />
                     </Form.Item>
 
                     <Form.Item name="handoverToEmployeeId" label="Bàn giao công việc cho">
                         <Select
                             placeholder="Chọn nhân viên nhận bàn giao (không bắt buộc)"
-                            size="large"
                             allowClear
                             showSearch
                             optionFilterProp="children"
@@ -128,7 +124,6 @@ const ResignationRequestForm = () => {
                             maxLength={2000}
                             showCount
                             placeholder="Mô tả các công việc, tài liệu, hệ thống, tài khoản cần bàn giao..."
-                            className="rounded-lg"
                         />
                     </Form.Item>
 
@@ -138,12 +133,11 @@ const ResignationRequestForm = () => {
                         htmlType="submit"
                         block
                         loading={loading}
-                        className="h-12 text-md font-bold rounded-xl mt-2"
                     >
                         Gửi đơn xin thôi việc
                     </Button>
                 </Form>
-            </Card>
+            </SectionCard>
 
             <Modal
                 title="⚠️ Cảnh báo task chưa hoàn thành"
@@ -155,7 +149,7 @@ const ResignationRequestForm = () => {
                 centered
             >
                 <div className="py-4 text-center">
-                    <p className="text-gray-800 text-lg font-medium mb-2">
+                    <p className="font-medium mb-2">
                         Đơn xin thôi việc đã được gửi thành công.
                     </p>
                     <Alert

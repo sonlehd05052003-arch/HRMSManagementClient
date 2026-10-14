@@ -1,6 +1,7 @@
 import React from "react";
-import { Card, Table, Tag, Badge, Button, Space, Alert, Typography } from "antd";
-import { ReloadOutlined, AimOutlined } from "@ant-design/icons";
+import { Table, Tag, Badge, Button, Alert, Typography } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
+import { TableCard } from "../../../components/listPage";
 
 const { Text } = Typography;
 
@@ -14,8 +15,8 @@ const ApprovalAnalysisTable: React.FC<ApprovalAnalysisTableProps> = ({
     data, loading, onRefresh
 }) => {
     const columns = [
-        { title: 'Mã NV', dataIndex: 'employeeCode', key: 'employeeCode' },
-        { title: 'Họ Tên', dataIndex: 'fullName', key: 'fullName' },
+        { title: 'Mã NV', dataIndex: 'employeeCode', key: 'employeeCode', width: 100 },
+        { title: 'Họ Tên', dataIndex: 'fullName', key: 'fullName', ellipsis: true },
         {
             title: 'Quản lý trực tiếp',
             dataIndex: 'managerName',
@@ -52,8 +53,9 @@ const ApprovalAnalysisTable: React.FC<ApprovalAnalysisTableProps> = ({
     ];
 
     return (
-        <Card
-            title={<Space><AimOutlined /><span>Phân tích Lộ trình Phê duyệt (Audit)</span></Space>}
+        <TableCard
+            title="Phân tích Lộ trình Phê duyệt (Audit)"
+            count={data.length}
             extra={
                 <Button
                     icon={<ReloadOutlined />}
@@ -69,7 +71,7 @@ const ApprovalAnalysisTable: React.FC<ApprovalAnalysisTableProps> = ({
                 description="Báo cáo này giúp bạn kiểm tra xem mỗi nhân viên sẽ gửi đơn cho ai. Hãy chú ý các trường hợp 'DefaultFallback' hoặc 'SystemAdminFallback' - đây là những nhân viên chưa có sếp trực tiếp."
                 type="info"
                 showIcon
-                className="!mb-6"
+                style={{ marginBottom: 16 }}
             />
             <Table
                 dataSource={data}
@@ -78,7 +80,7 @@ const ApprovalAnalysisTable: React.FC<ApprovalAnalysisTableProps> = ({
                 pagination={{ pageSize: 5 }}
                 columns={columns}
             />
-        </Card>
+        </TableCard>
     );
 };
 

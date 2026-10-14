@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Select, Tree, Button, Space, Spin, Empty, Tag, Typography, message } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
+import { MenuOutlined, SaveOutlined } from "@ant-design/icons";
 import type { DataNode } from "antd/es/tree";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
@@ -18,6 +18,7 @@ import CompanyScopeSelect from "../../components/companyScopeSelect";
 import { useConfigScope } from "../../components/companyScopeSelect/hooks";
 import { renderMenuIcon } from "../../../../constants/menuIcons";
 import { flattenTree } from "./menuTreeUtils";
+import { SectionCard } from "../../components/listPage";
 
 const { Text } = Typography;
 
@@ -135,50 +136,58 @@ const RoleMenuTab = () => {
 
   return (
     <>
-      <Space style={{ marginBottom: 16 }} wrap>
+      <div style={{ marginBottom: 16 }}>
         <CompanyScopeSelect />
-        <Select
-          style={{ width: 240 }}
-          placeholder="Chọn vai trò"
-          value={roleId ?? undefined}
-          onChange={setRoleId}
-          options={[
-            { value: SUPERADMIN_ROLE_ID, label: "SUPERADMIN (hệ thống)" },
-            ...roles.map((r) => ({ value: r.roleId, label: r.roleName })),
-          ]}
-        />
-        <Button type="primary" icon={<SaveOutlined />} disabled={roleId == null} loading={saving} onClick={handleSave}>
-          Lưu
-        </Button>
-        {roleId != null && (
-          <>
-            <Button onClick={() => setGranted(new Set(allKeys))}>Chọn tất cả</Button>
-            <Button onClick={() => setGranted(new Set(locked))}>Bỏ chọn tất cả</Button>
-            <Text type="secondary">Đã chọn {granted.size}/{allKeys.length} mục</Text>
-          </>
-        )}
-      </Space>
-
-      {roleId == null ? (
-        <Empty description="Chọn một vai trò để phân menu" />
-      ) : (
-        <Spin spinning={loading}>
-          <Text type="secondary" style={{ display: "block", marginBottom: 8 }}>
-            Tick mục con sẽ tự tick các mục cha; bỏ tick mục cha sẽ bỏ luôn các mục con.
-          </Text>
-          <Tree
-            checkable
-            checkStrictly
-            showIcon
-            defaultExpandAll
-            key={`${roleId}-${allKeys.length}`}
-            treeData={treeData}
-            checkedKeys={{ checked: Array.from(granted), halfChecked: [] }}
-            onCheck={(_, info) => toggle(Number(info.node.key), info.checked)}
-            selectable={false}
+      </div>
+      <SectionCard
+        title="Phân menu theo vai trò"
+        icon={<MenuOutlined />}
+        gap={0}
+        extra={roleId != null && <Text type="secondary">Đã chọn {granted.size}/{allKeys.length} mục</Text>}
+      >
+        <Space style={{ marginBottom: 16 }} wrap>
+          <Select
+            style={{ width: 240 }}
+            placeholder="Chọn vai trò"
+            value={roleId ?? undefined}
+            onChange={setRoleId}
+            options={[
+              { value: SUPERADMIN_ROLE_ID, label: "SUPERADMIN (hệ thống)" },
+              ...roles.map((r) => ({ value: r.roleId, label: r.roleName })),
+            ]}
           />
-        </Spin>
-      )}
+          <Button type="primary" icon={<SaveOutlined />} disabled={roleId == null} loading={saving} onClick={handleSave}>
+            Lưu
+          </Button>
+          {roleId != null && (
+            <>
+              <Button onClick={() => setGranted(new Set(allKeys))}>Chọn tất cả</Button>
+              <Button onClick={() => setGranted(new Set(locked))}>Bỏ chọn tất cả</Button>
+            </>
+          )}
+        </Space>
+
+        {roleId == null ? (
+          <Empty description="Chọn một vai trò để phân menu" />
+        ) : (
+          <Spin spinning={loading}>
+            <Text type="secondary" style={{ display: "block", marginBottom: 8 }}>
+              Tick mục con sẽ tự tick các mục cha; bỏ tick mục cha sẽ bỏ luôn các mục con.
+            </Text>
+            <Tree
+              checkable
+              checkStrictly
+              showIcon
+              defaultExpandAll
+              key={`${roleId}-${allKeys.length}`}
+              treeData={treeData}
+              checkedKeys={{ checked: Array.from(granted), halfChecked: [] }}
+              onCheck={(_, info) => toggle(Number(info.node.key), info.checked)}
+              selectable={false}
+            />
+          </Spin>
+        )}
+      </SectionCard>
     </>
   );
 };

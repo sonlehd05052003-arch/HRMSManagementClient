@@ -212,7 +212,7 @@ const ManageTask: React.FC = () => {
     ];
 
     return (
-        <div className="p-4">
+        <div className="p-2">
             <PageHeader
                 title={isEmployee ? "Công việc được giao" : "Quản lý công việc"}
                 subtitle={isEmployee ? "Danh sách các công việc bạn cần thực hiện." : "Quản lý các công việc và yêu cầu phê duyệt trong hệ thống."}
@@ -251,7 +251,6 @@ const ManageTask: React.FC = () => {
                     loading={loading}
                     pagination={{ pageSize: 10 }}
                     scroll={{ x: 1300 }}
-                    size="middle"
                     rowClassName={(record) => {
                         const isOverdue = record.dueDate &&
                             dayjs(record.dueDate).isBefore(dayjs(), 'day') &&

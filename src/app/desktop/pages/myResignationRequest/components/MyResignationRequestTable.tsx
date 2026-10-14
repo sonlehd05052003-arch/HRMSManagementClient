@@ -8,6 +8,7 @@ import {
     selectResignationRequestLoading,
 } from "../../../../../store/resignationRequestSlide";
 import dayjs from "dayjs";
+import { TableCard } from "../../../components/listPage";
 
 const statusMap: Record<string, { label: string; color: string }> = {
     Pending:   { label: "Chờ duyệt",  color: "orange"  },
@@ -42,26 +43,27 @@ const MyResignationRequestTable = () => {
             title: "Mã đơn",
             dataIndex: "requestNumber",
             key: "requestNumber",
-            render: (text: string) => <span className="font-semibold text-red-600">{text}</span>,
+            render: (text: string) => <span className="font-semibold text-red-600" style={{ whiteSpace: "nowrap" }}>{text}</span>,
         },
         {
             title: "Ngày nộp",
             dataIndex: "submittedDate",
             key: "submittedDate",
-            render: (d: string) => dayjs(d).format("DD/MM/YYYY HH:mm"),
+            render: (d: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(d).format("DD/MM/YYYY HH:mm")}</span>,
         },
         {
             title: "Ngày nghỉ dự kiến",
             dataIndex: "expectedLastWorkingDate",
             key: "expectedLastWorkingDate",
             render: (d: string) => (
-                <span className="font-medium">{dayjs(d).format("DD/MM/YYYY")}</span>
+                <span className="font-medium" style={{ whiteSpace: "nowrap" }}>{dayjs(d).format("DD/MM/YYYY")}</span>
             ),
         },
         {
             title: "Lý do",
             dataIndex: "reason",
             key: "reason",
+            width: 200,
             ellipsis: true,
             render: (text: string) => text || <span className="text-gray-400 italic">Không có</span>,
         },
@@ -82,13 +84,13 @@ const MyResignationRequestTable = () => {
                         <Tag color={s.color}>{s.label}</Tag>
                         {status === "Rejected" && record.rejectionReason && (
                             <Tooltip title={record.rejectionReason}>
-                                <span className="text-xs text-red-500 cursor-pointer truncate max-w-[120px]">
+                                <span className="text-red-500 cursor-pointer truncate max-w-[120px]" style={{ fontSize: 12 }}>
                                     {record.rejectionReason}
                                 </span>
                             </Tooltip>
                         )}
                         {status === "Approved" && record.reviewerComments && (
-                            <span className="text-xs text-gray-400 italic truncate max-w-[120px]">
+                            <span className="text-gray-400 italic truncate max-w-[120px]" style={{ fontSize: 12 }}>
                                 {record.reviewerComments}
                             </span>
                         )}
@@ -100,7 +102,7 @@ const MyResignationRequestTable = () => {
             title: "Ngày duyệt",
             dataIndex: "reviewedDate",
             key: "reviewedDate",
-            render: (d: string) => d ? dayjs(d).format("DD/MM/YYYY") : "—",
+            render: (d: string) => <span style={{ whiteSpace: "nowrap" }}>{d ? dayjs(d).format("DD/MM/YYYY") : "—"}</span>,
         },
         {
             title: "Thao tác",
@@ -115,21 +117,24 @@ const MyResignationRequestTable = () => {
                         cancelText="Đóng"
                         okButtonProps={{ danger: true }}
                     >
-                        <Button size="small" danger ghost>Hủy đơn</Button>
+                        <Button danger ghost>Hủy đơn</Button>
                     </Popconfirm>
                 ) : null,
         },
     ];
 
     return (
-        <Table
-            columns={columns}
-            dataSource={requests || []}
-            loading={loading}
-            rowKey="resignationRequestId"
-            pagination={{ pageSize: 10 }}
-            locale={{ emptyText: "Bạn chưa có đơn xin thôi việc nào." }}
-        />
+        <TableCard title="Lịch sử đơn thôi việc" count={(requests || []).length}>
+            <Table
+                columns={columns}
+                dataSource={requests || []}
+                loading={loading}
+                rowKey="resignationRequestId"
+                pagination={{ pageSize: 10 }}
+                locale={{ emptyText: "Bạn chưa có đơn xin thôi việc nào." }}
+                scroll={{ x: "max-content" }}
+            />
+        </TableCard>
     );
 };
 

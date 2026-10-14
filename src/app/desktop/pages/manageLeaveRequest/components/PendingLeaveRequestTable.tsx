@@ -1,4 +1,4 @@
-import { Table, Button, Space, Modal, Input, message, Tag } from "antd";
+import { Table, Button, Space, Modal, Input, message, Tag, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { 
@@ -9,6 +9,7 @@ import {
     selectLeaveRequestLoading 
 } from "../../../../../store/leaveRequestSlide";
 import dayjs from "dayjs";
+import { TableCard } from "../../../components/listPage";
 
 const { TextArea } = Input;
 
@@ -64,9 +65,9 @@ const PendingLeaveRequestTable = () => {
             key: "employeeName",
             render: (text: string, record: any) => (
                 <Space>
-                    <span className="font-medium text-gray-800">{text}</span>
+                    <span className="font-medium">{text}</span>
                     {record.isTopLevel && (
-                        <Tag color="blue" className="rounded-full px-3 m-0 border-blue-100">
+                        <Tag color="blue" style={{ marginInlineEnd: 0 }}>
                             Management
                         </Tag>
                     )}
@@ -83,10 +84,10 @@ const PendingLeaveRequestTable = () => {
             key: "dates",
             render: (_: any, record: any) => (
                 <div className="flex flex-col">
-                    <span className="text-sm">
+                    <span style={{ whiteSpace: "nowrap" }}>
                         {dayjs(record.startDate).format("DD/MM/YYYY")} - {dayjs(record.endDate).format("DD/MM/YYYY")}
                     </span>
-                    <span className="text-xs text-gray-400">({record.numberOfDays} ngày)</span>
+                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>({record.numberOfDays} ngày)</Typography.Text>
                 </div>
             )
         },
@@ -100,7 +101,7 @@ const PendingLeaveRequestTable = () => {
             title: "Ngày gửi",
             dataIndex: "submittedDate",
             key: "submittedDate",
-            render: (date: string) => dayjs(date).format("DD/MM/YYYY HH:mm")
+            render: (date: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(date).format("DD/MM/YYYY HH:mm")}</span>
         },
         {
             title: "Thao tác",
@@ -109,7 +110,6 @@ const PendingLeaveRequestTable = () => {
                 <Space size="small">
                     <Button 
                         type="primary" 
-                        size="small" 
                         onClick={() => {
                             setSelectedRequestId(record.leaveRequestId);
                             setIsApproveModalOpen(true);
@@ -119,7 +119,6 @@ const PendingLeaveRequestTable = () => {
                     </Button>
                     <Button 
                         danger 
-                        size="small" 
                         onClick={() => {
                             setSelectedRequestId(record.leaveRequestId);
                             setIsRejectModalOpen(true);
@@ -133,17 +132,14 @@ const PendingLeaveRequestTable = () => {
     ];
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold mb-6 flex items-center">
-                <span className="w-2 h-6 bg-blue-500 rounded-full mr-3"></span>
-                Yêu cầu chờ phê duyệt
-            </h3>
+        <TableCard title="Yêu cầu chờ phê duyệt" count={(requests || []).length}>
             <Table 
                 columns={columns} 
                 dataSource={requests || []} 
                 loading={loading} 
                 rowKey="leaveRequestId"
                 pagination={{ pageSize: 10 }}
+                scroll={{ x: "max-content" }}
             />
 
             {/* Approve Modal */}
@@ -155,7 +151,7 @@ const PendingLeaveRequestTable = () => {
                 onCancel={() => setIsApproveModalOpen(false)}
             >
                 <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Ghi chú (tùy chọn)</label>
+                    <label className="block font-medium mb-2">Ghi chú (tùy chọn)</label>
                     <TextArea 
                         rows={4} 
                         placeholder="Nhập ghi chú phê duyệt..." 
@@ -176,7 +172,7 @@ const PendingLeaveRequestTable = () => {
                 okText="Từ chối"
             >
                 <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Lý do từ chối (bắt buộc)</label>
+                    <label className="block font-medium mb-2">Lý do từ chối (bắt buộc)</label>
                     <TextArea 
                         rows={4} 
                         placeholder="Vui lòng nhập lý do từ chối..." 
@@ -186,7 +182,7 @@ const PendingLeaveRequestTable = () => {
                     />
                 </div>
             </Modal>
-        </div>
+        </TableCard>
     );
 };
 

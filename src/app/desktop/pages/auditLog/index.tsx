@@ -88,7 +88,6 @@ const ChangeDetail = ({ log }: { log: IAuditLog }) => {
 
     return (
         <Table
-            size="small"
             pagination={false}
             rowKey="field"
             dataSource={rows}

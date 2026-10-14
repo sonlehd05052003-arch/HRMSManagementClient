@@ -1,4 +1,6 @@
-import { Card, Form, Select, DatePicker, Input, Button, InputNumber, Modal, message, AutoComplete } from "antd";
+import { Form, Select, DatePicker, Input, Button, InputNumber, Modal, message, AutoComplete, Row, Col, Statistic, Typography } from "antd";
+import { FormOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 import { useEffect, useState, useMemo } from "react";
 import { SUGGESTIONS_LEAVE_REASON } from "../../../../../constants/explanationTemplates";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
@@ -164,13 +166,13 @@ const LeaveRequestForm = () => {
     };
 
     return (
-        <Card title="Đăng ký nghỉ phép" className="shadow-lg border-none rounded-2xl bg-white/70 backdrop-blur-md">
+        <SectionCard title="Đăng ký nghỉ phép" icon={<FormOutlined />} gap={0}>
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 <Form.Item name="leaveTypeID" label="Loại nghỉ phép" rules={[{ required: true, message: 'Vui lòng chọn loại nghỉ phép' }]}>
-                    <Select placeholder="Chọn loại nghỉ phép" size="large" className="rounded-lg">
+                    <Select placeholder="Chọn loại nghỉ phép">
                         {(leaveTypes || []).map(item => (
                             <Option key={item.leaveTypeId} value={item.leaveTypeId}>
-                                {item.leaveTypeName} {item.annualEntitlement === 0 ? <span className="text-purple-500 text-xs ml-2">(Sự kiện/Không giới hạn)</span> : ""}
+                                {item.leaveTypeName} {item.annualEntitlement === 0 ? <span className="text-purple-500 ml-2">(Sự kiện/Không giới hạn)</span> : ""}
                             </Option>
                         ))}
                     </Select>
@@ -178,26 +180,25 @@ const LeaveRequestForm = () => {
 
                 <Form.Item name="range" label="Thời gian" rules={[{ required: true, message: 'Vui lòng chọn thời gian' }]}>
                     <RangePicker 
-                        className="w-full h-12 rounded-lg" 
+                        className="w-full" 
                         classNames={{ popup: "custom-range-picker" }}
                         onChange={handleDateChange}
                         disabledDate={disabledDate}
                         cellRender={cellRender}
-                        size="large"
                     />
                 </Form.Item>
 
                 <Form.Item name="numberOfDays" label="Số ngày nghỉ" rules={[{ required: true, message: 'Vui lòng nhập số ngày' }]}>
-                    <InputNumber min={0.5} step={0.5} className="w-full !h-12 flex items-center rounded-lg" size="large" disabled />
+                    <InputNumber min={0.5} step={0.5} className="w-full" disabled />
                 </Form.Item>
 
                 <Form.Item name="reason" label="Lý do" rules={[{ required: true, message: 'Vui lòng nhập lý do' }]}>
                     <AutoComplete options={reasonOptions} style={{ width: "100%" }} popupMatchSelectWidth>
-                        <TextArea rows={4} placeholder="Nhập lý do hoặc chọn gợi ý từ danh sách..." className="rounded-lg" showCount maxLength={500} />
+                        <TextArea rows={4} placeholder="Nhập lý do hoặc chọn gợi ý từ danh sách..." showCount maxLength={500} />
                     </AutoComplete>
                 </Form.Item>
 
-                <Button type="primary" htmlType="submit" block loading={loading} className="h-12 text-md font-bold rounded-xl mt-4 shadow-blue-200 shadow-lg">
+                <Button type="primary" htmlType="submit" block loading={loading}>
                     Gửi yêu cầu
                 </Button>
             </Form>
@@ -213,27 +214,24 @@ const LeaveRequestForm = () => {
                 okText="Vẫn gửi"
                 cancelText="Hủy"
                 centered
-                className="rounded-2xl overflow-hidden"
             >
                 <div className="py-4 text-center">
                     <svg className="w-16 h-16 text-yellow-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
-                    <p className="text-gray-800 text-lg font-medium mb-4">Số dư ngày nghỉ của bạn không đủ.</p>
-                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 grid grid-cols-2 gap-4">
-                        <div>
-                            <p className="text-slate-400 text-sm mb-1 uppercase font-bold tracking-wider">Số dư hiện tại</p>
-                            <p className="text-slate-800 text-2xl font-bold">{formData?.currentBalance} <span className="text-sm font-normal text-slate-400">ngày</span></p>
-                        </div>
-                        <div>
-                            <p className="text-slate-400 text-sm mb-1 uppercase font-bold tracking-wider">Yêu cầu</p>
-                            <p className="text-slate-800 text-2xl font-bold">{formData?.numberOfDays} <span className="text-sm font-normal text-slate-400">ngày</span></p>
-                        </div>
-                    </div>
-                    <p className="mt-6 text-slate-500 italic">Bạn có chắc chắn muốn gửi yêu cầu này không?</p>
+                    <p className="font-medium mb-4">Số dư ngày nghỉ của bạn không đủ.</p>
+                    <Row gutter={16} className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <Col span={12}>
+                            <Statistic title="Số dư hiện tại" value={formData?.currentBalance} suffix="ngày" styles={{ content: { fontSize: 24 } }} />
+                        </Col>
+                        <Col span={12}>
+                            <Statistic title="Yêu cầu" value={formData?.numberOfDays} suffix="ngày" styles={{ content: { fontSize: 24 } }} />
+                        </Col>
+                    </Row>
+                    <Typography.Text type="secondary" italic className="block mt-6">Bạn có chắc chắn muốn gửi yêu cầu này không?</Typography.Text>
                 </div>
             </Modal>
-        </Card>
+        </SectionCard>
     );
 };
 

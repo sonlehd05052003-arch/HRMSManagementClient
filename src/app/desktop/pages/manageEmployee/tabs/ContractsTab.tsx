@@ -5,6 +5,7 @@ import dayjs, { type Dayjs } from "dayjs";
 import { request } from "../../../../../utils/request";
 import { apiErrorMessage, isFormValidationError } from "../../../../../utils/apiError";
 import { CONTRACT_TYPES } from "../../../../../constants/contracts";
+import { SectionCard } from "../../../components/listPage";
 
 const { Text } = Typography;
 
@@ -159,9 +160,9 @@ const ContractsTab = ({ employeeId, canManage }: ContractsTabProps) => {
             title: "Thao tác", key: "actions", width: 100, align: "center" as const,
             render: (_: unknown, record: IEmployeeContract) => record.status === "Terminated" ? null : (
                 <Space size="small">
-                    <Tooltip title="Sửa"><Button size="small" icon={<EditOutlined />} onClick={() => openEditor(record)} /></Tooltip>
+                    <Tooltip title="Sửa"><Button icon={<EditOutlined />} onClick={() => openEditor(record)} /></Tooltip>
                     <Tooltip title="Chấm dứt">
-                        <Button size="small" danger icon={<StopOutlined />} onClick={() => { setTerminating(record); setTerminateDate(dayjs()); }} />
+                        <Button danger icon={<StopOutlined />} onClick={() => { setTerminating(record); setTerminateDate(dayjs()); }} />
                     </Tooltip>
                 </Space>
             ),
@@ -169,12 +170,12 @@ const ContractsTab = ({ employeeId, canManage }: ContractsTabProps) => {
     ];
 
     return (
-        <div>
-            <div className="flex items-center justify-between mb-3">
-                <Space><FileProtectOutlined className="text-blue-500" /><Text strong>Hợp đồng lao động</Text></Space>
-                {canManage && <Button type="primary" icon={<PlusOutlined />} onClick={() => openEditor("new")}>Thêm hợp đồng</Button>}
-            </div>
-
+        <SectionCard
+            title="Hợp đồng lao động"
+            icon={<FileProtectOutlined />}
+            extra={canManage && <Button type="primary" icon={<PlusOutlined />} onClick={() => openEditor("new")}>Thêm hợp đồng</Button>}
+            gap={0}
+        >
             <Table
                 rowKey="contractId"
                 columns={columns}
@@ -266,7 +267,7 @@ const ContractsTab = ({ employeeId, canManage }: ContractsTabProps) => {
                 <Text>Ngày chấm dứt:</Text>
                 <DatePicker className="ml-2" format="DD/MM/YYYY" value={terminateDate} onChange={setTerminateDate} />
             </Modal>
-        </div>
+        </SectionCard>
     );
 };
 

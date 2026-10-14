@@ -1,9 +1,10 @@
 import { useState } from "react"
-import { Card, Table, Button, Modal, Form, Input, InputNumber, message, Popconfirm } from "antd"
+import { Table, Button, Modal, Form, Input, InputNumber, message, Popconfirm } from "antd"
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import { addDeduction, removeDeduction, selectCurrentRecord } from "../../../../../store/payrollSlide"
 import { errorText } from "../../../../../utils/apiError";
+import { SectionCard } from "../../../components/listPage"
 
 const DeductionSection = ({ recordId, isEditable }: { recordId: number; isEditable: boolean }) => {
   const dispatch = useAppDispatch()
@@ -36,25 +37,24 @@ const DeductionSection = ({ recordId, isEditable }: { recordId: number; isEditab
   }
 
   return (
-    <Card
+    <SectionCard
       title="Các khoản khấu trừ"
-      size="small"
+      gap={0}
       extra={
         isEditable && (
-          <Button size="small" type="primary" danger icon={<PlusOutlined />} onClick={() => setShowAdd(true)}>
+          <Button type="primary" danger icon={<PlusOutlined />} onClick={() => setShowAdd(true)}>
             Thêm khấu trừ
           </Button>
         )
       }
     >
       <Table
-        size="small"
         pagination={false}
         dataSource={record?.deductions || []}
         rowKey="deductionId"
         columns={[
           { title: "Nội dung", dataIndex: "deductionName" },
-          { title: "Số tiền", dataIndex: "amount", align: "right", render: (v) => <span className="text-red-500">-{v.toLocaleString()}</span> },
+          { title: "Số tiền", dataIndex: "amount", align: "right", width: 150, render: (v) => <span className="text-red-500">-{v.toLocaleString()}</span> },
           { 
             title: "", 
             key: "action", 
@@ -86,7 +86,7 @@ const DeductionSection = ({ recordId, isEditable }: { recordId: number; isEditab
           </Form.Item>
         </Form>
       </Modal>
-    </Card>
+    </SectionCard>
   )
 }
 

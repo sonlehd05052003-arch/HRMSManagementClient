@@ -8,6 +8,7 @@ import {
     selectLeaveRequestLoading 
 } from "../../../../../store/leaveRequestSlide";
 import dayjs from "dayjs";
+import { TableCard } from "../../../components/listPage";
 
 const MyLeaveRequestTable = () => {
     const dispatch = useAppDispatch();
@@ -36,7 +37,7 @@ const MyLeaveRequestTable = () => {
             title: "Mã yêu cầu",
             dataIndex: "requestNumber",
             key: "requestNumber",
-            render: (text: string) => <span className="font-semibold text-blue-600">{text}</span>
+            render: (text: string) => <span className="font-semibold text-blue-600" style={{ whiteSpace: "nowrap" }}>{text}</span>
         },
         {
             title: "Loại nghỉ",
@@ -47,7 +48,7 @@ const MyLeaveRequestTable = () => {
             title: "Thời gian",
             key: "dates",
             render: (_: any, record: any) => (
-                <span>
+                <span style={{ whiteSpace: "nowrap" }}>
                     {dayjs(record.startDate).format("DD/MM/YYYY")} - {dayjs(record.endDate).format("DD/MM/YYYY")}
                 </span>
             )
@@ -62,6 +63,7 @@ const MyLeaveRequestTable = () => {
             title: "Lý do",
             dataIndex: "reason",
             key: "reason",
+            width: 200,
             ellipsis: true
         },
         {
@@ -89,7 +91,7 @@ const MyLeaveRequestTable = () => {
             title: "Ngày gửi",
             dataIndex: "submittedDate",
             key: "submittedDate",
-            render: (date: string) => dayjs(date).format("DD/MM/YYYY HH:mm")
+            render: (date: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(date).format("DD/MM/YYYY HH:mm")}</span>
         },
         {
             title: "Thao tác",
@@ -103,7 +105,7 @@ const MyLeaveRequestTable = () => {
                             okText="Hủy yêu cầu"
                             cancelText="Đóng"
                         >
-                            <Button size="small" danger ghost>Hủy</Button>
+                            <Button danger ghost>Hủy</Button>
                         </Popconfirm>
                     )}
                 </Space>
@@ -112,13 +114,16 @@ const MyLeaveRequestTable = () => {
     ];
 
     return (
-        <Table 
-            columns={columns} 
-            dataSource={requests || []} 
-            loading={loading} 
-            rowKey="leaveRequestID"
-            pagination={{ pageSize: 10 }}
-        />
+        <TableCard title="Lịch sử nghỉ phép" count={(requests || []).length}>
+            <Table
+                columns={columns}
+                dataSource={requests || []}
+                loading={loading}
+                rowKey="leaveRequestID"
+                pagination={{ pageSize: 10 }}
+                scroll={{ x: "max-content" }}
+            />
+        </TableCard>
     );
 };
 

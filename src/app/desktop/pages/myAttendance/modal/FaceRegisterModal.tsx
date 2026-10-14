@@ -95,7 +95,6 @@ const FaceRegisterModal: React.FC<FaceRegisterModalProps> = ({ open, onCancel, o
                             type="primary"
                             icon={<CameraOutlined />}
                             block
-                            size="large"
                             onClick={capture}
                             disabled={!isCameraReady}
                         >
@@ -123,7 +122,7 @@ const FaceRegisterModal: React.FC<FaceRegisterModalProps> = ({ open, onCancel, o
                 </div>
 
                 <div className="mt-4 text-center">
-                    <Text type="secondary" className="text-sm">
+                    <Text type="secondary">
                         Lưu ý: Chụp ảnh rõ mặt, không đeo khẩu trang và ở nơi đủ ánh sáng.
                     </Text>
                 </div>

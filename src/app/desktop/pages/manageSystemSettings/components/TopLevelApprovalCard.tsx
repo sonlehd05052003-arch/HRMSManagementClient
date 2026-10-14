@@ -1,6 +1,7 @@
 import React from "react";
-import { Card, Form, Button, Select, Space, Alert } from "antd";
+import { Form, Button, Select, Alert } from "antd";
 import { ReloadOutlined, SaveOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 
 const { Option } = Select;
 
@@ -10,14 +11,17 @@ interface TopLevelApprovalCardProps {
     loading: boolean;
     onFinish: (values: any) => Promise<void>;
     onRefresh: () => void;
+    gap?: number;
 }
 
 const TopLevelApprovalCard: React.FC<TopLevelApprovalCardProps> = ({
-    form, users, loading, onFinish, onRefresh
+    form, users, loading, onFinish, onRefresh, gap
 }) => {
     return (
-        <Card
-            title={<Space><SafetyCertificateOutlined /><span>Dự phòng Phê duyệt (Cấp quản lý)</span></Space>}
+        <SectionCard
+            title="Dự phòng Phê duyệt (Cấp quản lý)"
+            icon={<SafetyCertificateOutlined />}
+            gap={gap}
             extra={
                 <Button
                     icon={<ReloadOutlined />}
@@ -32,7 +36,7 @@ const TopLevelApprovalCard: React.FC<TopLevelApprovalCardProps> = ({
                 description="Dùng cho nhân sự quản lý cấp cao nhất (CEO, Manager không có sếp trực tiếp)."
                 type="info"
                 showIcon
-                className="!mb-6"
+                style={{ marginBottom: 16 }}
             />
 
             <Form
@@ -71,7 +75,7 @@ const TopLevelApprovalCard: React.FC<TopLevelApprovalCardProps> = ({
                     </Button>
                 </div>
             </Form>
-        </Card>
+        </SectionCard>
     );
 };
 

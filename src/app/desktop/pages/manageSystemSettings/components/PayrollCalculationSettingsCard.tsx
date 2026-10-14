@@ -1,14 +1,16 @@
-import { Card, Form, InputNumber, Button, Space, Alert, Divider, Row, Col, Tooltip } from "antd"
+import { Form, InputNumber, Button, Space, Alert, Divider, Row, Col, Tooltip, Typography } from "antd"
 import { CalculatorOutlined, ReloadOutlined, SaveOutlined, QuestionCircleOutlined } from "@ant-design/icons"
+import { SectionCard } from "../../../components/listPage";
 
 interface Props {
     form: any
     loading: boolean
     onFinish: (values: any) => void
     onRefresh: () => void
+    gap?: number
 }
 
-const PayrollCalculationSettingsCard = ({ form, loading, onFinish, onRefresh }: Props) => {
+const PayrollCalculationSettingsCard = ({ form, loading, onFinish, onRefresh, gap }: Props) => {
     const totalInsuranceRate = () => {
         const bhxh = form.getFieldValue("bhxhRate") ?? 8
         const bhyt = form.getFieldValue("bhytRate") ?? 1.5
@@ -17,31 +19,27 @@ const PayrollCalculationSettingsCard = ({ form, loading, onFinish, onRefresh }: 
     }
 
     return (
-        <Card
-            title={
-                <Space>
-                    <CalculatorOutlined className="text-indigo-500" />
-                    <span>Cấu hình Tính Lương (Bảo hiểm & Thuế)</span>
-                </Space>
-            }
+        <SectionCard
+            title="Cấu hình Tính Lương (Bảo hiểm & Thuế)"
+            icon={<CalculatorOutlined />}
+            gap={gap}
             extra={
-                <Button icon={<ReloadOutlined />} onClick={onRefresh} size="small">
+                <Button icon={<ReloadOutlined />} onClick={onRefresh}>
                     Làm mới
                 </Button>
             }
-            className="shadow-sm rounded-2xl border border-slate-100"
         >
             <Alert
                 type="info"
                 showIcon
-                className="mb-5"
+                style={{ marginBottom: 16 }}
                 message="Các tỷ lệ được lưu vào SystemSettings và dùng ngay trong lần tính lương tiếp theo. Không cần sửa code khi nhà nước thay đổi quy định."
             />
 
             <Form form={form} layout="vertical" onFinish={onFinish}>
 
                 {/* ── Bảo hiểm NLĐ ── */}
-                <Divider className="text-sm font-semibold text-slate-600">
+                <Divider className="font-semibold text-slate-600">
                     Tỷ lệ Bảo hiểm (phần Người lao động đóng)
                 </Divider>
 
@@ -96,20 +94,20 @@ const PayrollCalculationSettingsCard = ({ form, loading, onFinish, onRefresh }: 
                     </Col>
                 </Row>
 
-                <div className="bg-slate-50 rounded-lg px-4 py-2 mb-5 text-sm">
+                <div className="bg-slate-50 rounded-lg px-4 py-2" style={{ marginBottom: 16 }}>
                     Tổng NLĐ đóng: <strong className="text-indigo-600">{totalInsuranceRate()}%</strong>
                     &emsp;|&emsp;Theo luật: <span className="text-gray-500">8% + 1.5% + 1% = 10.5%</span>
                 </div>
 
                 {/* ── Trần BH ── */}
-                <Divider className="text-sm font-semibold text-slate-600">
+                <Divider className="font-semibold text-slate-600">
                     Mức trần đóng Bảo hiểm
                 </Divider>
 
                 <Alert
                     type="info"
                     showIcon
-                    className="mb-4"
+                    style={{ marginBottom: 16 }}
                     message="Căn cứ tính BH lấy theo mức lương đóng bảo hiểm đã đăng ký của từng nhân viên (khai báo trong hồ sơ nhân viên). Mức trần dưới đây được áp dụng làm giới hạn tối đa."
                 />
 
@@ -134,9 +132,9 @@ const PayrollCalculationSettingsCard = ({ form, loading, onFinish, onRefresh }: 
                 </Form.Item>
 
                 {/* ── Giảm trừ Thuế TNCN ── */}
-                <Divider className="text-sm font-semibold text-slate-600">
+                <Divider className="font-semibold text-slate-600">
                     Giảm trừ Thuế TNCN
-                    <span className="text-xs font-normal text-gray-400 ml-2">(Nghị quyết 954/2020/UBTVQH14)</span>
+                    <Typography.Text type="secondary" style={{ fontSize: 12, fontWeight: 400, marginLeft: 8 }}>(Nghị quyết 954/2020/UBTVQH14)</Typography.Text>
                 </Divider>
 
                 <Row gutter={16}>
@@ -187,16 +185,16 @@ const PayrollCalculationSettingsCard = ({ form, loading, onFinish, onRefresh }: 
                 <Alert
                     type="warning"
                     showIcon
-                    className="!mb-5"
+                    style={{ marginBottom: 16 }}
                     message="Biểu thuế lũy tiến 7 bậc (5%–35%) được cố định trong code theo luật hiện hành. Chỉ giảm trừ bản thân và người phụ thuộc được cấu hình tại đây."
                 />
 
                 {/* ── Hệ số lương tăng ca (OT) ── */}
-                <Divider className="text-sm font-semibold text-slate-600">
+                <Divider className="font-semibold text-slate-600">
                     Hệ số lương tăng ca (OT)
                 </Divider>
 
-                <div className="bg-slate-50 rounded-lg px-4 py-3 mb-4 text-xs text-gray-500">
+                <div className="bg-slate-50 rounded-lg px-4 py-3 text-gray-500" style={{ marginBottom: 16 }}>
                     <table className="w-full">
                         <thead>
                             <tr className="text-gray-400">
@@ -269,7 +267,7 @@ const PayrollCalculationSettingsCard = ({ form, loading, onFinish, onRefresh }: 
                     </Button>
                 </Form.Item>
             </Form>
-        </Card>
+        </SectionCard>
     )
 }
 

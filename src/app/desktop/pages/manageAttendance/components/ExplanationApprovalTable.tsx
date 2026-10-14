@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Space, Card, Tag, Modal, Input, message, Form, Alert, Badge, Typography, TimePicker, Row, Col, Tooltip } from "antd";
+import { Table, Button, Space, Tag, Modal, Input, message, Form, Alert, Typography, TimePicker, Row, Col, Tooltip } from "antd";
 import {
     ReloadOutlined, CheckCircleOutlined, CloseCircleOutlined,
-    FileTextOutlined, ClockCircleOutlined
+    FileTextOutlined
 } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import {
@@ -11,6 +11,7 @@ import {
 } from "../../../../../store/attendanceSlide";
 import dayjs from "dayjs";
 import { errorText, isFormValidationError } from "../../../../../utils/apiError";
+import { TableCard } from "../../../components/listPage";
 
 const { Text, Paragraph } = Typography;
 
@@ -113,19 +114,19 @@ const ExplanationApprovalTable = () => {
 
     const columns = [
         {
-            title: "Nhân viên", dataIndex: "employeeName", key: "employeeName",
+            title: "Nhân viên", dataIndex: "employeeName", key: "employeeName", width: 170, ellipsis: true,
             render: (v: string) => <Text strong>{v}</Text>
         },
         {
-            title: "Ngày", dataIndex: "attendanceDate", key: "attendanceDate",
-            render: (v: string) => dayjs(v).format("DD/MM/YYYY")
+            title: "Ngày", dataIndex: "attendanceDate", key: "attendanceDate", width: 110,
+            render: (v: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(v).format("DD/MM/YYYY")}</span>
         },
         {
-            title: "Check In", dataIndex: "checkInTime", key: "checkInTime",
+            title: "Check In", dataIndex: "checkInTime", key: "checkInTime", width: 100,
             render: (v: string) => v ? dayjs(v).format("HH:mm:ss") : <Tag color="red">Không có</Tag>
         },
         {
-            title: "Check Out", dataIndex: "checkOutTime", key: "checkOutTime",
+            title: "Check Out", dataIndex: "checkOutTime", key: "checkOutTime", width: 100,
             render: (v: string) => v ? dayjs(v).format("HH:mm:ss") : <Tag color="red">Không có</Tag>
         },
         {
@@ -172,14 +173,9 @@ const ExplanationApprovalTable = () => {
     const showLegacyCheckOut = isLegacyRecord && !selectedRecord?.checkOutTime;
 
     return (
-        <Card
-            title={
-                <Space>
-                    <ClockCircleOutlined style={{ color: "#fa8c16" }} />
-                    <span>Giải trình chấm công chờ duyệt</span>
-                    <Badge count={pendingTotal} showZero color="#fa8c16" />
-                </Space>
-            }
+        <TableCard
+            title="Giải trình chấm công chờ duyệt"
+            count={pendingTotal}
             extra={<Button icon={<ReloadOutlined />} onClick={handleRefresh} loading={loading}>Làm mới</Button>}
         >
             {pendingTotal === 0 && !loading && (
@@ -224,7 +220,7 @@ const ExplanationApprovalTable = () => {
                         />
 
                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                            <Text type="secondary" className="block mb-1 text-xs uppercase tracking-wide">Lý do nhân viên giải trình</Text>
+                            <Text type="secondary" className="block mb-1">Lý do nhân viên giải trình</Text>
                             <Text>{selectedRecord.explanationMessage}</Text>
                         </div>
 
@@ -294,7 +290,7 @@ const ExplanationApprovalTable = () => {
                     </Form.Item>
                 </Form>
             </Modal>
-        </Card>
+        </TableCard>
     );
 };
 

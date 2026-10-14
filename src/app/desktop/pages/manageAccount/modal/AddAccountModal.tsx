@@ -38,12 +38,12 @@ const AddAccountModal = ({ open, onCancel, onSuccess }: AddAccountModalProps) =>
     const onFinish = (values: any) => {
         dispatch(createUser(values)).then((res: any) => {
             if (!res.error) {
-                message.success("User created successfully");
+                message.success("Đã tạo tài khoản");
                 form.resetFields();
                 onSuccess();
             } else {
                 const error = res.payload;
-                const msg = typeof error === 'string' ? error : error?.message || "Failed to create user";
+                const msg = typeof error === 'string' ? error : error?.message || "Tạo tài khoản thất bại";
                 message.error(msg);
             }
         });
@@ -51,7 +51,7 @@ const AddAccountModal = ({ open, onCancel, onSuccess }: AddAccountModalProps) =>
 
     return (
         <Modal
-            title="Add New User"
+            title="Thêm tài khoản"
             open={open}
             onCancel={() => {
                 form.resetFields();
@@ -68,12 +68,12 @@ const AddAccountModal = ({ open, onCancel, onSuccess }: AddAccountModalProps) =>
             >
                 <Form.Item
                     name="employeeId"
-                    label="Employee"
-                    rules={[{ required: true, message: "Please select an employee!" }]}
+                    label="Nhân viên"
+                    rules={[{ required: true, message: "Vui lòng chọn nhân viên" }]}
                 >
                     <Select
                         showSearch
-                        placeholder="Select an employee"
+                        placeholder="Chọn nhân viên"
                         optionFilterProp="children"
                         onChange={(value) => {
                             const emp = availableEmployees.find(e => e.employeeId === value);
@@ -94,19 +94,19 @@ const AddAccountModal = ({ open, onCancel, onSuccess }: AddAccountModalProps) =>
                     name="email"
                     label="Email"
                     rules={[
-                        { required: true, message: "Please input the email!" },
-                        { type: "email", message: "Please enter a valid email!" },
+                        { required: true, message: "Vui lòng nhập email" },
+                        { type: "email", message: "Email không hợp lệ" },
                     ]}
                 >
-                    <Input placeholder="Email for account information" />
+                    <Input placeholder="Email nhận thông tin tài khoản" />
                 </Form.Item>
 
                 <Form.Item
                     name="roleId"
-                    label="Role"
-                    rules={[{ required: true, message: "Please select a role!" }]}
+                    label="Vai trò"
+                    rules={[{ required: true, message: "Vui lòng chọn vai trò" }]}
                 >
-                    <Select placeholder="Select a role">
+                    <Select placeholder="Chọn vai trò">
                         {roles.map((role) => (
                             <Select.Option key={role.roleId} value={role.roleId}>
                                 {role.roleName}

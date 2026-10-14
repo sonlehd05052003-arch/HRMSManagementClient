@@ -1,7 +1,7 @@
-import { Form, Input, Select, DatePicker, InputNumber, message, Row, Col, Card, Button, Typography, Space } from "antd";
+import { Form, Input, Select, DatePicker, InputNumber, message, Row, Col, Button, Space } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, IdcardOutlined, SaveOutlined, SolutionOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { createEmployee, fetchAllEmployees, selectEmployeeLoading, selectEmployees } from "../../../../store/employeeSlide";
 import { selectInfoLogin } from "../../../../store/authSlide";
@@ -11,8 +11,7 @@ import { fetchAllUsers, selectUsers } from "../../../../store/userSlide";
 import { EUserRole } from "../../../../interface/app";
 import URL from "../../../../constants/url";
 import dayjs from "dayjs";
-
-const { Title } = Typography;
+import { PageHeader, SectionCard } from "../../components/listPage";
 
 const STATUS_OPTIONS = ["Active", "Inactive", "On Leave", "Resigned", "Terminated", "Suspended"].map(v => ({ label: v, value: v }));
 const TYPE_OPTIONS = ["Full-Time", "Part-Time", "Contract", "Intern"].map(v => ({ label: v, value: v }));
@@ -99,13 +98,15 @@ const AddEmployee = () => {
     };
 
     return (
-        <div className="p-4" style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <Space className="mb-4" align="center" style={{ marginBottom: 20 }}>
-                <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
-                    Quay lại
-                </Button>
-                <Title level={3} style={{ margin: 0 }}>Thêm nhân viên mới</Title>
-            </Space>
+        <div className="p-2">
+            <PageHeader
+                title="Thêm nhân viên mới"
+                actions={
+                    <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
+                        Quay lại
+                    </Button>
+                }
+            />
 
             <Form 
                 form={form} 
@@ -113,7 +114,7 @@ const AddEmployee = () => {
                 onFinish={onFinish} 
                 initialValues={{ employmentStatus: "Active", employmentType: "Full-Time" }}
             >
-                <Card title="Thông tin cá nhân" className="mb-4" style={{ marginBottom: 20 }}>
+                <SectionCard title="Thông tin cá nhân" icon={<IdcardOutlined />}>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item name="firstName" label="Họ" rules={[{ required: true, message: "Vui lòng nhập họ" }, { max: 50 }]}>
@@ -176,9 +177,9 @@ const AddEmployee = () => {
                             <Form.Item name="country" label="Quốc gia" rules={[{ max: 50 }]}><Input /></Form.Item>
                         </Col>
                     </Row>
-                </Card>
+                </SectionCard>
 
-                <Card title="Thông tin công việc" className="mb-4" style={{ marginBottom: 20 }}>
+                <SectionCard title="Thông tin công việc" icon={<SolutionOutlined />}>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item 
@@ -313,9 +314,9 @@ const AddEmployee = () => {
                             </Form.Item>
                         </Col>
                     </Row>
-                </Card>
+                </SectionCard>
 
-                <div style={{ textAlign: "right", marginTop: 24 }}>
+                <div style={{ textAlign: "right" }}>
                     <Space>
                         <Button onClick={() => navigate(-1)}>Hủy bỏ</Button>
                         <Button type="primary" icon={<SaveOutlined />} loading={loading} onClick={() => form.submit()}>

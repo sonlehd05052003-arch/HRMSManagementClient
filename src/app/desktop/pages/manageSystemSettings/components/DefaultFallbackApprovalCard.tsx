@@ -1,6 +1,7 @@
 import React from "react";
-import { Card, Form, Button, Select, Space, Alert } from "antd";
+import { Form, Button, Select, Alert } from "antd";
 import { ReloadOutlined, SaveOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 
 const { Option } = Select;
 
@@ -10,14 +11,17 @@ interface DefaultFallbackApprovalCardProps {
     loading: boolean;
     onFinish: (values: any) => Promise<void>;
     onRefresh: () => void;
+    gap?: number;
 }
 
 const DefaultFallbackApprovalCard: React.FC<DefaultFallbackApprovalCardProps> = ({
-    form, users, loading, onFinish, onRefresh
+    form, users, loading, onFinish, onRefresh, gap
 }) => {
     return (
-        <Card
-            title={<Space><SafetyCertificateOutlined /><span>Dự phòng Phê duyệt (Toàn cục)</span></Space>}
+        <SectionCard
+            title="Dự phòng Phê duyệt (Toàn cục)"
+            icon={<SafetyCertificateOutlined />}
+            gap={gap}
             extra={
                 <Button
                     icon={<ReloadOutlined />}
@@ -32,7 +36,7 @@ const DefaultFallbackApprovalCard: React.FC<DefaultFallbackApprovalCardProps> = 
                 description="Dùng cho các trường hợp nhân viên bình thường nhưng chưa được gán ManagerId."
                 type="info"
                 showIcon
-                className="!mb-6"
+                style={{ marginBottom: 16 }}
             />
 
             <Form
@@ -71,7 +75,7 @@ const DefaultFallbackApprovalCard: React.FC<DefaultFallbackApprovalCardProps> = 
                     </Button>
                 </div>
             </Form>
-        </Card>
+        </SectionCard>
     );
 };
 

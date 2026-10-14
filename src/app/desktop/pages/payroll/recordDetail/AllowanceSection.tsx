@@ -1,9 +1,10 @@
 import { useState } from "react"
-import { Card, Table, Button, Modal, Form, Input, InputNumber, message, Popconfirm } from "antd"
+import { Table, Button, Modal, Form, Input, InputNumber, message, Popconfirm } from "antd"
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import { addAllowance, removeAllowance, selectCurrentRecord } from "../../../../../store/payrollSlide"
 import { errorText } from "../../../../../utils/apiError";
+import { SectionCard } from "../../../components/listPage"
 
 const AllowanceSection = ({ recordId, isEditable }: { recordId: number; isEditable: boolean }) => {
   const dispatch = useAppDispatch()
@@ -36,25 +37,24 @@ const AllowanceSection = ({ recordId, isEditable }: { recordId: number; isEditab
   }
 
   return (
-    <Card
+    <SectionCard
       title="Các khoản phụ cấp"
-      size="small"
+      gap={0}
       extra={
         isEditable && (
-          <Button size="small" type="primary" icon={<PlusOutlined />} onClick={() => setShowAdd(true)}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowAdd(true)}>
             Thêm khoản
           </Button>
         )
       }
     >
       <Table
-        size="small"
         pagination={false}
         dataSource={record?.allowances || []}
         rowKey="allowanceId"
         columns={[
           { title: "Nội dung", dataIndex: "allowanceName" },
-          { title: "Số tiền", dataIndex: "amount", align: "right", render: (v) => v.toLocaleString() },
+          { title: "Số tiền", dataIndex: "amount", align: "right", width: 150, render: (v) => v.toLocaleString() },
           { 
             title: "", 
             key: "action", 
@@ -86,7 +86,7 @@ const AllowanceSection = ({ recordId, isEditable }: { recordId: number; isEditab
           </Form.Item>
         </Form>
       </Modal>
-    </Card>
+    </SectionCard>
   )
 }
 

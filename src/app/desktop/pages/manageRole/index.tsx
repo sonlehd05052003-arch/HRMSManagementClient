@@ -138,7 +138,7 @@ const ManageRoleContent = () => {
     return (
         <div className="p-2">
             <PageHeader
-                title="Quản lý Vai trò"
+                title="Quản lý vai trò"
                 actions={
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddModalOpen(true)}>
                         Thêm vai trò

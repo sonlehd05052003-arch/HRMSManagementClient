@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Form, Typography, message, Row, Col, Space, Tabs, Badge } from "antd";
+import { Form, Typography, message, Row, Col, Tabs, Badge, Tag } from "antd";
 import {
     SafetyCertificateOutlined,
     EnvironmentOutlined,
     AimOutlined,
-    SettingOutlined,
+    InfoCircleOutlined,
     QuestionCircleOutlined,
     DollarOutlined,
     BankOutlined,
@@ -21,7 +21,6 @@ import {
 import { fetchAllUsers, selectUsers } from "../../../../store/userSlide";
 import { fetchApprovalAnalysis, selectApprovalAnalysis } from "../../../../store/employeeSlide";
 
-// Import modular components (will be redesigned next)
 import TopLevelApprovalCard from "./components/TopLevelApprovalCard";
 import DefaultFallbackApprovalCard from "./components/DefaultFallbackApprovalCard";
 import LocationConfigurationCard from "./components/LocationConfigurationCard";
@@ -32,8 +31,9 @@ import CompanySettingsCard from "./components/CompanySettingsCard";
 import HolidaysCard from "./components/HolidaysCard";
 import PayrollCalculationSettingsCard from "./components/PayrollCalculationSettingsCard";
 import { errorText } from "../../../../utils/apiError";
+import { PageHeader, SectionCard } from "../../components/listPage";
 
-const { Title, Paragraph, Text } = Typography;
+const { Paragraph, Text } = Typography;
 
 const SystemSettingPage: React.FC = () => {
     const [topLevelForm] = Form.useForm();
@@ -198,191 +198,162 @@ const SystemSettingPage: React.FC = () => {
     const tabItems = [
         {
             key: "1",
-            label: <Space className="px-4"><SafetyCertificateOutlined />Quy trình Phê duyệt</Space>,
+            icon: <SafetyCertificateOutlined />,
+            label: "Quy trình Phê duyệt",
             children: (
-                <div className="animate-in fade-in duration-500">
-                    <Row gutter={[32, 32]}>
-                        <Col xs={24} lg={16}>
-                            <Space orientation="vertical" style={{ width: '100%' }}>
-                                <TopLevelApprovalCard
-                                    form={topLevelForm}
-                                    users={users}
-                                    loading={loading}
-                                    onFinish={onApprovalFinish}
-                                    onRefresh={() => dispatch(fetchApprovalSettings())}
-                                />
-                                <DefaultFallbackApprovalCard
-                                    form={defaultFallbackForm}
-                                    users={users}
-                                    loading={loading}
-                                    onFinish={onApprovalFinish}
-                                    onRefresh={() => dispatch(fetchApprovalSettings())}
-                                />
-                            </Space>
-                        </Col>
-                        <Col xs={24} lg={8}>
-                            <GuidanceCard />
-                        </Col>
-                    </Row>
-                </div>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={16}>
+                        <TopLevelApprovalCard
+                            form={topLevelForm}
+                            users={users}
+                            loading={loading}
+                            onFinish={onApprovalFinish}
+                            onRefresh={() => dispatch(fetchApprovalSettings())}
+                        />
+                        <DefaultFallbackApprovalCard
+                            form={defaultFallbackForm}
+                            users={users}
+                            loading={loading}
+                            onFinish={onApprovalFinish}
+                            onRefresh={() => dispatch(fetchApprovalSettings())}
+                            gap={0}
+                        />
+                    </Col>
+                    <Col xs={24} lg={8}>
+                        <GuidanceCard />
+                    </Col>
+                </Row>
             )
         },
         {
             key: "2",
-            label: <Space className="px-4"><EnvironmentOutlined />Vị trí & Điểm danh</Space>,
+            icon: <EnvironmentOutlined />,
+            label: "Vị trí & Điểm danh",
             children: (
-                <div className="animate-in fade-in duration-500">
-                    <Row gutter={[32, 32]}>
-                        <Col xs={24} lg={16}>
-                            <LocationConfigurationCard
-                                form={locationForm}
-                                loading={loading}
-                                detecting={detecting}
-                                detectingIp={detectingIp}
-                                onFinish={onLocationFinish}
-                                onRefresh={() => dispatch(fetchLocationSettings())}
-                                onDetect={handleGetCurrentLocation}
-                                onDetectIp={handleGetCurrentIp}
-                            />
-                        </Col>
-                        <Col xs={24} lg={8}>
-                            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-full">
-                                <Title level={4} className="mb-4">Thông tin bổ trợ</Title>
-                                <Paragraph className="text-slate-500">
-                                    Hệ thống sử dụng tọa độ vệ tinh để xác minh tính trung thực khi điểm danh.
-                                </Paragraph>
-                                <Badge status="processing" text="Bán kính ổn định nhất: 50m" />
-                                <Paragraph className="text-slate-500 mt-4">
-                                    <Text strong>Làm sao để lấy tọa độ?</Text>
-                                    <ul className="mt-2 text-gray-600">
-                                        <li>Cách 1: Nhấn nút "Lấy toạ độ tại đây" nếu bạn đang ngồi tại văn phòng (yêu cầu bật định vị trình duyệt).</li>
-                                        <li>Cách 2: Truy cập Google Maps, chuột phải vào vị trí văn phòng và copy tọa độ.</li>
-                                    </ul>
-                                </Paragraph>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={16}>
+                        <LocationConfigurationCard
+                            form={locationForm}
+                            loading={loading}
+                            detecting={detecting}
+                            detectingIp={detectingIp}
+                            onFinish={onLocationFinish}
+                            onRefresh={() => dispatch(fetchLocationSettings())}
+                            onDetect={handleGetCurrentLocation}
+                            onDetectIp={handleGetCurrentIp}
+                        />
+                    </Col>
+                    <Col xs={24} lg={8}>
+                        <SectionCard title="Thông tin bổ trợ" icon={<InfoCircleOutlined />} gap={0}>
+                            <Paragraph type="secondary">
+                                Hệ thống sử dụng tọa độ vệ tinh để xác minh tính trung thực khi điểm danh.
+                            </Paragraph>
+                            <Badge status="processing" text="Bán kính ổn định nhất: 50m" />
+                            <Paragraph type="secondary" className="mt-4">
+                                <Text strong>Làm sao để lấy tọa độ?</Text>
+                                <ul className="mt-2">
+                                    <li>Cách 1: Nhấn nút "Lấy toạ độ tại đây" nếu bạn đang ngồi tại văn phòng (yêu cầu bật định vị trình duyệt).</li>
+                                    <li>Cách 2: Truy cập Google Maps, chuột phải vào vị trí văn phòng và copy tọa độ.</li>
+                                </ul>
+                            </Paragraph>
+                        </SectionCard>
+                    </Col>
+                </Row>
             )
         },
         {
             key: "3",
-            label: <Space className="px-4"><DollarOutlined />Kỳ lương & Tính lương</Space>,
+            icon: <DollarOutlined />,
+            label: "Kỳ lương & Tính lương",
             children: (
-                <div className="animate-in fade-in duration-500">
-                    <Row gutter={[32, 32]}>
-                        <Col xs={24} lg={16}>
-                            <Space direction="vertical" style={{ width: "100%" }} size={24}>
-                                <PayrollSettingsCard
-                                    form={payrollForm}
-                                    loading={loading}
-                                    onFinish={onPayrollFinish}
-                                    onRefresh={() => dispatch(fetchPayrollSettings())}
-                                />
-                                <PayrollCalculationSettingsCard
-                                    form={payrollCalcForm}
-                                    loading={loading}
-                                    onFinish={onPayrollCalcFinish}
-                                    onRefresh={() => dispatch(fetchPayrollCalcSettings())}
-                                />
-                            </Space>
-                        </Col>
-                        <Col xs={24} lg={8}>
-                            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                                <Title level={4} className="mb-4">Lưu ý</Title>
-                                <Paragraph className="text-slate-500">
-                                    Thay đổi ngày chốt lương sẽ ảnh hưởng đến kỳ lương mới. Nên cấu hình trước khi bắt đầu chu kỳ.
-                                </Paragraph>
-                                <Badge status="warning" text="Giới hạn tối đa ngày 28 để tránh lỗi tháng 2" />
-                                <Paragraph className="text-slate-500 mt-4">
-                                    Thay đổi tỷ lệ bảo hiểm hoặc giảm trừ thuế chỉ có hiệu lực với lần <strong>Tính lương</strong> tiếp theo.
-                                    Các kỳ đã Approved không bị ảnh hưởng.
-                                </Paragraph>
-                                <Badge status="processing" text="Chế độ Fixed BH: phù hợp khi công ty khai báo mức BH riêng với cơ quan BHXH" />
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={16}>
+                        <PayrollSettingsCard
+                            form={payrollForm}
+                            loading={loading}
+                            onFinish={onPayrollFinish}
+                            onRefresh={() => dispatch(fetchPayrollSettings())}
+                        />
+                        <PayrollCalculationSettingsCard
+                            form={payrollCalcForm}
+                            loading={loading}
+                            onFinish={onPayrollCalcFinish}
+                            onRefresh={() => dispatch(fetchPayrollCalcSettings())}
+                            gap={0}
+                        />
+                    </Col>
+                    <Col xs={24} lg={8}>
+                        <SectionCard title="Lưu ý" icon={<InfoCircleOutlined />} gap={0}>
+                            <Paragraph type="secondary">
+                                Thay đổi ngày chốt lương sẽ ảnh hưởng đến kỳ lương mới. Nên cấu hình trước khi bắt đầu chu kỳ.
+                            </Paragraph>
+                            <Badge status="warning" text="Giới hạn tối đa ngày 28 để tránh lỗi tháng 2" />
+                            <Paragraph type="secondary" className="mt-4">
+                                Thay đổi tỷ lệ bảo hiểm hoặc giảm trừ thuế chỉ có hiệu lực với lần <strong>Tính lương</strong> tiếp theo.
+                                Các kỳ đã Approved không bị ảnh hưởng.
+                            </Paragraph>
+                            <Badge status="processing" text="Chế độ Fixed BH: phù hợp khi công ty khai báo mức BH riêng với cơ quan BHXH" />
+                        </SectionCard>
+                    </Col>
+                </Row>
             )
         },
         {
             key: "holidays",
-            label: <Space className="px-4"><CalendarOutlined />Lịch nghỉ lễ</Space>,
-            children: (
-                <div className="animate-in fade-in duration-500">
-                    <HolidaysCard />
-                </div>
-            )
+            icon: <CalendarOutlined />,
+            label: "Lịch nghỉ lễ",
+            children: <HolidaysCard />
         },
         {
             key: "4",
-            label: <Space className="px-4"><BankOutlined />Thông tin Công ty</Space>,
+            icon: <BankOutlined />,
+            label: "Thông tin Công ty",
             children: (
-                <div className="animate-in fade-in duration-500">
-                    <Row gutter={[32, 32]}>
-                        <Col xs={24} lg={16}>
-                            <CompanySettingsCard
-                                form={companyForm}
-                                loading={loading}
-                                onFinish={onCompanyFinish}
-                                onRefresh={() => dispatch(fetchCompanySettings())}
-                            />
-                        </Col>
-                        <Col xs={24} lg={8}>
-                            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-full">
-                                <Title level={4} className="mb-4">Lưu ý</Title>
-                                <Paragraph className="text-slate-500">
-                                    Thông tin công ty sẽ được hiển thị trên phần đầu của mỗi phiếu lương PDF khi xuất cho nhân viên.
-                                </Paragraph>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={16}>
+                        <CompanySettingsCard
+                            form={companyForm}
+                            loading={loading}
+                            onFinish={onCompanyFinish}
+                            onRefresh={() => dispatch(fetchCompanySettings())}
+                            gap={0}
+                        />
+                    </Col>
+                    <Col xs={24} lg={8}>
+                        <SectionCard title="Lưu ý" icon={<InfoCircleOutlined />} gap={0}>
+                            <Paragraph type="secondary" style={{ marginBottom: 0 }}>
+                                Thông tin công ty sẽ được hiển thị trên phần đầu của mỗi phiếu lương PDF khi xuất cho nhân viên.
+                            </Paragraph>
+                        </SectionCard>
+                    </Col>
+                </Row>
             )
         },
         {
             key: "5",
-            label: <Space className="px-4"><AimOutlined />Phân tích (Audit)</Space>,
+            icon: <AimOutlined />,
+            label: "Phân tích (Audit)",
             children: (
-                <div className="animate-in fade-in duration-500">
-                    <ApprovalAnalysisTable
-                        data={approvalAnalysis}
-                        loading={loading}
-                        onRefresh={() => dispatch(fetchApprovalAnalysis())}
-                    />
-                </div>
+                <ApprovalAnalysisTable
+                    data={approvalAnalysis}
+                    loading={loading}
+                    onRefresh={() => dispatch(fetchApprovalAnalysis())}
+                />
             )
         }
     ];
 
     return (
-        <div className="p-4 bg-[#f8fafc] min-h-screen">
-            <div className="mb-10 flex justify-between items-end">
-                <div>
-                    <Title level={2} style={{ marginBottom: 4, fontWeight: 700, color: '#1e293b' }}>
-                        <SettingOutlined className="mr-3 text-indigo-600" />Thiết lập Hệ thống
-                    </Title>
-                    <Paragraph type="secondary" className="text-lg">
-                        Cấu hình tham số lõi và quản lý quy tắc phê duyệt tự động.
-                    </Paragraph>
-                </div>
-                <div className="hidden md:block">
-                    <Badge count="Admin Control Center" style={{ backgroundColor: '#4f46e5', padding: '0 12px' }} />
-                </div>
-            </div>
-
-            <Tabs
-                defaultActiveKey="1"
-                items={tabItems}
-                className="custom-minimal-tabs"
-                tabBarStyle={{
-                    marginBottom: 32,
-                    borderBottom: '1px solid #e2e8f0'
-                }}
-                size="large"
+        <div className="p-2">
+            <PageHeader
+                title="Thiết lập hệ thống"
+                subtitle="Cấu hình tham số lõi và quản lý quy tắc phê duyệt tự động."
+                actions={<Tag color="purple" style={{ marginInlineEnd: 0 }}>Admin Control Center</Tag>}
             />
 
-            <div className="mt-16 text-center opacity-40">
+            <Tabs defaultActiveKey="1" items={tabItems} />
+
+            <div className="text-center" style={{ marginTop: 16 }}>
                 <Text type="secondary" style={{ fontSize: 12 }}>
                     <QuestionCircleOutlined className="mr-1" />
                     Mọi thay đổi sẽ có hiệu lực ngay lập tức. Liên hệ hỗ trợ nếu cần hướng dẫn nâng cao.

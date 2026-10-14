@@ -1,32 +1,30 @@
-import { Card, Form, Input, Button, Space } from "antd"
+import { Form, Input, Button, Typography } from "antd"
 import { BankOutlined, ReloadOutlined, SaveOutlined } from "@ant-design/icons"
+import { SectionCard } from "../../../components/listPage";
 
 interface Props {
   form: any
   loading: boolean
   onFinish: (values: any) => void
   onRefresh: () => void
+  gap?: number
 }
 
-const CompanySettingsCard = ({ form, loading, onFinish, onRefresh }: Props) => {
+const CompanySettingsCard = ({ form, loading, onFinish, onRefresh, gap }: Props) => {
   return (
-    <Card
-      title={
-        <Space>
-          <BankOutlined className="text-indigo-500" />
-          <span>Thông tin Công ty</span>
-        </Space>
-      }
+    <SectionCard
+      title="Thông tin Công ty"
+      icon={<BankOutlined />}
+      gap={gap}
       extra={
-        <Button icon={<ReloadOutlined />} onClick={onRefresh} size="small">
+        <Button icon={<ReloadOutlined />} onClick={onRefresh}>
           Làm mới
         </Button>
       }
-      className="shadow-sm rounded-2xl border border-slate-100"
     >
-      <p className="text-slate-400 text-sm mb-4">
+      <Typography.Paragraph type="secondary">
         Thông tin này sẽ được in trên phiếu lương PDF xuất ra cho nhân viên.
-      </p>
+      </Typography.Paragraph>
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
           name="companyName"
@@ -60,7 +58,7 @@ const CompanySettingsCard = ({ form, loading, onFinish, onRefresh }: Props) => {
           </Button>
         </Form.Item>
       </Form>
-    </Card>
+    </SectionCard>
   )
 }
 

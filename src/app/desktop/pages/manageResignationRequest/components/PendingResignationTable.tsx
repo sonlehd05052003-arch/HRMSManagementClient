@@ -1,4 +1,4 @@
-import { Table, Button, Space, Modal, Input, message, Tag, Badge, Tooltip } from "antd";
+import { Table, Button, Space, Modal, Input, message, Tag, Badge, Tooltip, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import {
@@ -9,6 +9,7 @@ import {
     selectResignationRequestLoading,
 } from "../../../../../store/resignationRequestSlide";
 import dayjs from "dayjs";
+import { TableCard } from "../../../components/listPage";
 
 const { TextArea } = Input;
 
@@ -65,8 +66,8 @@ const PendingResignationTable = () => {
             key: "employee",
             render: (_: any, record: any) => (
                 <div>
-                    <div className="font-medium text-gray-800">{record.employeeName}</div>
-                    <div className="text-xs text-gray-400">{record.employeeCode}</div>
+                    <div className="font-medium" style={{ whiteSpace: "nowrap" }}>{record.employeeName}</div>
+                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>{record.employeeCode}</Typography.Text>
                 </div>
             ),
         },
@@ -74,21 +75,21 @@ const PendingResignationTable = () => {
             title: "Ngày nộp",
             dataIndex: "submittedDate",
             key: "submittedDate",
-            render: (d: string) => dayjs(d).format("DD/MM/YYYY"),
+            render: (d: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(d).format("DD/MM/YYYY")}</span>,
         },
         {
             title: "Ngày nghỉ dự kiến",
             dataIndex: "expectedLastWorkingDate",
             key: "expectedLastWorkingDate",
             render: (d: string) => (
-                <span className="font-medium text-red-600">{dayjs(d).format("DD/MM/YYYY")}</span>
+                <span className="font-medium text-red-600" style={{ whiteSpace: "nowrap" }}>{dayjs(d).format("DD/MM/YYYY")}</span>
             ),
         },
         {
             title: "Bàn giao cho",
             dataIndex: "handoverToEmployeeName",
             key: "handoverToEmployeeName",
-            render: (text: string) => text || <span className="text-gray-400 italic text-xs">Chưa chỉ định</span>,
+            render: (text: string) => text || <Typography.Text type="secondary" italic>Chưa chỉ định</Typography.Text>,
         },
         {
             title: "Task tồn đọng",
@@ -110,21 +111,18 @@ const PendingResignationTable = () => {
             render: (_: any, record: any) => (
                 <Space size="small">
                     <Button
-                        size="small"
                         onClick={() => { setSelectedRecord(record); setDetailModal(true); }}
                     >
                         Xem chi tiết
                     </Button>
                     <Button
                         type="primary"
-                        size="small"
                         onClick={() => { setSelectedId(record.resignationRequestId); setApproveModal(true); }}
                     >
                         Duyệt
                     </Button>
                     <Button
                         danger
-                        size="small"
                         onClick={() => { setSelectedId(record.resignationRequestId); setRejectModal(true); }}
                     >
                         Từ chối
@@ -135,11 +133,7 @@ const PendingResignationTable = () => {
     ];
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold mb-6 flex items-center">
-                <span className="w-2 h-6 bg-red-500 rounded-full mr-3"></span>
-                Đơn xin thôi việc chờ phê duyệt
-            </h3>
+        <TableCard title="Đơn xin thôi việc chờ phê duyệt" count={(requests || []).length}>
 
             <Table
                 columns={columns}
@@ -148,6 +142,7 @@ const PendingResignationTable = () => {
                 rowKey="resignationRequestId"
                 pagination={{ pageSize: 10 }}
                 locale={{ emptyText: "Không có đơn nào chờ phê duyệt." }}
+                scroll={{ x: "max-content" }}
             />
 
             {/* Detail Modal */}
@@ -169,13 +164,13 @@ const PendingResignationTable = () => {
                         {selectedRecord.handoverNote && (
                             <div>
                                 <div className="font-medium mb-1">Nội dung bàn giao:</div>
-                                <div className="bg-gray-50 p-3 rounded-lg text-sm whitespace-pre-wrap">{selectedRecord.handoverNote}</div>
+                                <div className="bg-gray-50 p-3 rounded-lg whitespace-pre-wrap">{selectedRecord.handoverNote}</div>
                             </div>
                         )}
                         {selectedRecord.incompleteTaskCount > 0 && (
                             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                                 <span className="text-red-600 font-medium">⚠️ {selectedRecord.incompleteTaskCount} task chưa hoàn thành</span>
-                                <p className="text-sm text-red-500 mt-1">Nhân viên cần xử lý hoặc bàn giao các task này trước ngày nghỉ.</p>
+                                <p className="text-red-500 mt-1">Nhân viên cần xử lý hoặc bàn giao các task này trước ngày nghỉ.</p>
                             </div>
                         )}
                     </div>
@@ -191,8 +186,8 @@ const PendingResignationTable = () => {
                 onCancel={() => { setApproveModal(false); setComments(""); }}
                 okText="Xác nhận duyệt"
             >
-                <p className="text-gray-600 mb-3">Bạn xác nhận phê duyệt đơn xin thôi việc này. HR sẽ tiến hành thủ tục thôi việc sau khi được duyệt.</p>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Ghi chú (không bắt buộc)</label>
+                <Typography.Paragraph type="secondary">Bạn xác nhận phê duyệt đơn xin thôi việc này. HR sẽ tiến hành thủ tục thôi việc sau khi được duyệt.</Typography.Paragraph>
+                <label className="block font-medium mb-2">Ghi chú (không bắt buộc)</label>
                 <TextArea
                     rows={3}
                     placeholder="Nhập ghi chú..."
@@ -211,7 +206,7 @@ const PendingResignationTable = () => {
                 okText="Xác nhận từ chối"
                 okButtonProps={{ danger: true }}
             >
-                <label className="block text-sm font-medium text-gray-700 mb-2">Lý do từ chối (bắt buộc)</label>
+                <label className="block font-medium mb-2">Lý do từ chối (bắt buộc)</label>
                 <TextArea
                     rows={4}
                     placeholder="Vui lòng nhập lý do từ chối..."
@@ -220,7 +215,7 @@ const PendingResignationTable = () => {
                     onChange={(e) => setRejectReason(e.target.value)}
                 />
             </Modal>
-        </div>
+        </TableCard>
     );
 };
 

@@ -93,7 +93,6 @@ const HRFaceRegisterModal: React.FC<Props> = ({ open, employeeId, employeeName, 
                             type="primary"
                             icon={<CameraOutlined />}
                             block
-                            size="large"
                             onClick={capture}
                             disabled={!isCameraReady}
                         >
@@ -116,7 +115,7 @@ const HRFaceRegisterModal: React.FC<Props> = ({ open, employeeId, employeeName, 
                     )}
                 </div>
 
-                <Text type="secondary" className="text-xs text-center">
+                <Text type="secondary" className="text-center" style={{ fontSize: 12 }}>
                     Ảnh khuôn mặt sẽ được lưu trữ bảo mật và chỉ dùng để xác thực chấm công.
                 </Text>
             </div>

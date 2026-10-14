@@ -13,6 +13,7 @@ import {
 import { isKnownMenuIcon, renderMenuIcon } from "../../../../constants/menuIcons";
 import { MAX_MENU_DEPTH, flattenTree, type FlatRow } from "./menuTreeUtils";
 import MenuItemModal from "./MenuItemModal";
+import { TableCard } from "../../components/listPage";
 
 const MenuTreeTab = () => {
   const dispatch = useAppDispatch();
@@ -67,7 +68,7 @@ const MenuTreeTab = () => {
         </div>
       ),
     },
-    { title: "Mã", key: "code", render: (_: unknown, { node }: FlatRow) => <code>{node.code}</code> },
+    { title: "Mã", key: "code", width: 180, ellipsis: true, render: (_: unknown, { node }: FlatRow) => <code>{node.code}</code> },
     { title: "Đường dẫn", key: "route", render: (_: unknown, { node }: FlatRow) => node.route || <i style={{ color: "#999" }}>(nhóm)</i> },
     { title: "Thứ tự", key: "order", width: 80, render: (_: unknown, { node }: FlatRow) => node.displayOrder },
     {
@@ -101,19 +102,23 @@ const MenuTreeTab = () => {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => openCreate(null)}>
-          Thêm mục gốc
-        </Button>
-      </div>
-      <Table
-        columns={columns}
-        dataSource={rows}
-        rowKey={(row) => row.node.menuId}
-        loading={loading}
-        pagination={false}
-        size="middle"
-      />
+      <TableCard
+        title="Cây menu"
+        count={rows.length}
+        extra={
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => openCreate(null)}>
+            Thêm mục gốc
+          </Button>
+        }
+      >
+        <Table
+          columns={columns}
+          dataSource={rows}
+          rowKey={(row) => row.node.menuId}
+          loading={loading}
+          pagination={false}
+        />
+      </TableCard>
       <MenuItemModal
         open={modalOpen}
         editing={editing}

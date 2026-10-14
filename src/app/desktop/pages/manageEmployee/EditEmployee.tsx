@@ -1,7 +1,7 @@
-import { Form, Input, Select, DatePicker, InputNumber, message, Row, Col, Card, Button, Typography, Space, Spin } from "antd";
+import { Form, Input, Select, DatePicker, InputNumber, message, Row, Col, Button, Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, IdcardOutlined, SaveOutlined, SolutionOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { updateEmployee, fetchEmployeeById, fetchAllEmployees, selectEmployeeLoading, selectEmployees } from "../../../../store/employeeSlide";
 import type { IEmployeeDetail } from "../../../../store/employeeSlide";
@@ -13,7 +13,7 @@ import { EUserRole } from "../../../../interface/app";
 import URL from "../../../../constants/url";
 import dayjs from "dayjs";
 
-const { Title } = Typography;
+import { PageHeader, SectionCard } from "../../components/listPage";
 
 const STATUS_OPTIONS = ["Active", "Inactive", "On Leave", "Resigned", "Terminated", "Suspended"].map(v => ({ label: v, value: v }));
 const TYPE_OPTIONS = ["Full-Time", "Part-Time", "Contract", "Intern"].map(v => ({ label: v, value: v }));
@@ -159,20 +159,22 @@ const EditEmployee = () => {
     }
 
     return (
-        <div className="p-4" style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <Space className="mb-4" align="center" style={{ marginBottom: 20 }}>
-                <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
-                    Quay lại
-                </Button>
-                <Title level={3} style={{ margin: 0 }}>Chỉnh sửa nhân viên: {editingEmployee?.fullName}</Title>
-            </Space>
+        <div className="p-2">
+            <PageHeader
+                title={<>Chỉnh sửa nhân viên: {editingEmployee?.fullName}</>}
+                actions={
+                    <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
+                        Quay lại
+                    </Button>
+                }
+            />
 
             <Form 
                 form={form} 
                 layout="vertical" 
                 onFinish={onFinish}
             >
-                <Card title="Thông tin cá nhân" className="mb-4" style={{ marginBottom: 20 }}>
+                <SectionCard title="Thông tin cá nhân" icon={<IdcardOutlined />}>
                     <Row gutter={16}>
                         <Col span={8}>
                             <Form.Item name="employeeCode" label="Mã nhân viên">
@@ -240,9 +242,9 @@ const EditEmployee = () => {
                             <Form.Item name="country" label="Quốc gia" rules={[{ max: 50 }]}><Input /></Form.Item>
                         </Col>
                     </Row>
-                </Card>
+                </SectionCard>
 
-                <Card title="Thông tin công việc" className="mb-4" style={{ marginBottom: 20 }}>
+                <SectionCard title="Thông tin công việc" icon={<SolutionOutlined />}>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item 
@@ -395,9 +397,9 @@ const EditEmployee = () => {
                             </Form.Item>
                         </Col>
                     </Row>
-                </Card>
+                </SectionCard>
 
-                <div style={{ textAlign: "right", marginTop: 24 }}>
+                <div style={{ textAlign: "right" }}>
                     <Space>
                         <Button onClick={() => navigate(-1)}>Hủy bỏ</Button>
                         <Button type="primary" icon={<SaveOutlined />} loading={loading} onClick={() => form.submit()}>

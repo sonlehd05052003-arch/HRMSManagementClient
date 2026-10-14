@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
-  Table, Card, Button, Tag, Space, Typography,
-  Tooltip, Select, Row, Col, Radio,
+  Table, Button, Tag, Space, Typography,
+  Tooltip, Select, Row, Col,
 } from "antd"
 import { PlusOutlined, PlayCircleOutlined } from "@ant-design/icons"
 import type { ColumnsType } from "antd/es/table"
@@ -17,8 +17,9 @@ import { EUserRole } from "../../../../interface/app"
 import type { IPayrollPeriod } from "../../../../types/payroll"
 import URL from "../../../../constants/url"
 import CreatePeriodModal from "./CreatePeriodModal"
+import { FilterCard, PageHeader, TableCard } from "../../components/listPage"
 
-const { Title } = Typography
+const { Text } = Typography
 
 const STATUS_COLORS: Record<string, string> = {
   Open:             "blue",
@@ -37,6 +38,9 @@ const STATUS_LABELS_VI: Record<string, string> = {
 }
 
 const ALL_STATUSES = Object.keys(STATUS_LABELS_VI)
+
+/** Keeps a column header on one line, so the column is as wide as its title */
+const noWrapHeader = () => ({ style: { whiteSpace: "nowrap" as const } })
 
 const PayrollPeriodList = () => {
   const dispatch = useAppDispatch()
@@ -69,33 +73,40 @@ const PayrollPeriodList = () => {
     })
   }, [periods, statusFilter, periodFilter])
 
+  const hasActiveFilter = statusFilter !== "all" || !!periodFilter
+
   const columns: ColumnsType<IPayrollPeriod> = [
     {
       title: "Kỳ lương",
       key: "period",
       width: 140,
+      onHeaderCell: noWrapHeader,
       sorter: (a, b) => {
         if (a.year !== b.year) return b.year - a.year
         return b.month - a.month
       },
       defaultSortOrder: "ascend",
-      render: (_, r) => <span className="font-semibold text-blue-600">Tháng {r.month}/{r.year}</span>,
+      render: (_, r) => (
+        <span className="font-semibold text-blue-600" style={{ whiteSpace: "nowrap" }}>Tháng {r.month}/{r.year}</span>
+      ),
     },
     {
       title: "Thời gian đối soát",
       key: "range",
       width: 180,
+      onHeaderCell: noWrapHeader,
       render: (_, r) => (
-        <Space direction="vertical" size={0}>
-          <small className="text-gray-500">Từ: {r.startDate}</small>
-          <small className="text-gray-500">Đến: {r.endDate}</small>
+        <Space direction="vertical" size={0} style={{ whiteSpace: "nowrap" }}>
+          <Text type="secondary">Từ: {r.startDate}</Text>
+          <Text type="secondary">Đến: {r.endDate}</Text>
         </Space>
       ),
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
-      width: 150,
+      width: 170,
+      onHeaderCell: noWrapHeader,
       filters: ALL_STATUSES.map(s => ({ text: STATUS_LABELS_VI[s], value: s })),
       onFilter: (value, record) => record.status === value,
       render: (s: string) => (
@@ -109,42 +120,47 @@ const PayrollPeriodList = () => {
       dataIndex: "totalEmployees",
       align: "center",
       width: 110,
+      onHeaderCell: noWrapHeader,
       render: (v: number) => <Tag color="geekblue">{v ?? 0} người</Tag>,
     },
     {
       title: "Tổng Gross",
       dataIndex: "totalGrossPay",
       align: "right",
-      width: 150,
+      width: 160,
+      onHeaderCell: noWrapHeader,
       sorter: (a, b) => (a.totalGrossPay ?? 0) - (b.totalGrossPay ?? 0),
       render: (v: number) => (
-        <span className="text-gray-700">{(v ?? 0).toLocaleString("vi-VN")} đ</span>
+        <span className="text-gray-700" style={{ whiteSpace: "nowrap" }}>{(v ?? 0).toLocaleString("vi-VN")} đ</span>
       ),
     },
     {
       title: "Tổng Thực lĩnh",
       dataIndex: "totalNetPay",
       align: "right",
-      width: 160,
+      width: 170,
+      onHeaderCell: noWrapHeader,
       sorter: (a, b) => (a.totalNetPay ?? 0) - (b.totalNetPay ?? 0),
       render: (v: number) => (
-        <span className="font-bold text-green-600">{(v ?? 0).toLocaleString("vi-VN")} đ</span>
+        <span className="font-bold text-green-600" style={{ whiteSpace: "nowrap" }}>{(v ?? 0).toLocaleString("vi-VN")} đ</span>
       ),
     },
     {
       title: "Ngày tính lương",
       dataIndex: "calculatedDate",
-      width: 140,
+      width: 150,
+      onHeaderCell: noWrapHeader,
       render: (v?: string) => v
-        ? new Date(v).toLocaleDateString("vi-VN")
+        ? <span style={{ whiteSpace: "nowrap" }}>{new Date(v).toLocaleDateString("vi-VN")}</span>
         : <span className="text-gray-400">—</span>,
     },
     {
       title: "Ngày duyệt",
       dataIndex: "approvedDate",
-      width: 120,
+      width: 130,
+      onHeaderCell: noWrapHeader,
       render: (v?: string) => v
-        ? new Date(v).toLocaleDateString("vi-VN")
+        ? <span style={{ whiteSpace: "nowrap" }}>{new Date(v).toLocaleDateString("vi-VN")}</span>
         : <span className="text-gray-400">—</span>,
     },
     {
@@ -152,7 +168,8 @@ const PayrollPeriodList = () => {
       key: "action",
       align: "center",
       fixed: "right",
-      width: 110,
+      width: 130,
+      onHeaderCell: noWrapHeader,
       render: (_, r) => (
         <Tooltip title="Xem chi tiết và tính lương">
           <Button
@@ -169,30 +186,22 @@ const PayrollPeriodList = () => {
   ]
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="flex justify-between items-center !mb-5">
-        <div>
-          <Title level={2} className="!mb-0">Quản Lý Kỳ Lương</Title>
-          <p className="text-gray-500 mt-1">Quản lý và tính toán tiền lương định kỳ cho toàn hệ thống.</p>
-        </div>
-        {isHR && (
-          <Button
-            type="primary"
-            size="large"
-            icon={<PlusOutlined />}
-            onClick={() => setShowCreate(true)}
-            className="shadow-md"
-          >
+    <div className="p-2">
+      <PageHeader
+        title="Quản lý kỳ lương"
+        subtitle="Quản lý và tính toán tiền lương định kỳ cho toàn hệ thống."
+        actions={isHR && (
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowCreate(true)}>
             Tạo kỳ lương mới
           </Button>
         )}
-      </div>
+      />
 
-      {/* Bộ lọc */}
-      <Card className="!mb-4 shadow-sm rounded-xl">
+      <FilterCard
+        onReset={hasActiveFilter ? () => { setPeriodFilter(null); setStatusFilter("all") } : undefined}
+      >
         <Row gutter={[16, 12]} align="middle">
-          <Col xs={24} sm={8} md={7}>
+          <Col xs={24} sm={12} md={8}>
             <Select
               placeholder="Chọn kỳ lương"
               options={periodOptions}
@@ -202,43 +211,37 @@ const PayrollPeriodList = () => {
               style={{ width: "100%" }}
             />
           </Col>
-          <Col xs={24} md={13}>
-            <div style={{ overflowX: "auto", whiteSpace: "nowrap", paddingBottom: 2 }}>
-              <Radio.Group
-                value={statusFilter}
-                onChange={e => setStatusFilter(e.target.value)}
-                optionType="button"
-                buttonStyle="solid"
-              >
-                <Radio.Button value="all">Tất cả</Radio.Button>
-                {ALL_STATUSES.map(s => (
-                  <Radio.Button key={s} value={s}>
-                    <span style={{ color: statusFilter === s ? undefined : STATUS_COLORS[s] }}>
-                      {STATUS_LABELS_VI[s]}
-                    </span>
-                  </Radio.Button>
-                ))}
-              </Radio.Group>
-            </div>
+          <Col xs={24} sm={12} md={8}>
+            <Select
+              value={statusFilter}
+              onChange={setStatusFilter}
+              style={{ width: "100%" }}
+              options={[
+                { label: "Tất cả trạng thái", value: "all" },
+                ...ALL_STATUSES.map(s => ({
+                  value: s,
+                  label: <Tag color={STATUS_COLORS[s]} style={{ marginInlineEnd: 0 }}>{STATUS_LABELS_VI[s]}</Tag>,
+                })),
+              ]}
+            />
           </Col>
         </Row>
-      </Card>
+      </FilterCard>
 
-      {/* Bảng danh sách */}
-      <Card className="!mb-4 shadow-sm rounded-xl overflow-hidden">
+      <TableCard title="Danh sách kỳ lương" count={filteredPeriods.length}>
         <Table
           columns={columns}
           dataSource={filteredPeriods}
           rowKey="periodId"
           loading={loading}
           pagination={{ pageSize: 12, showTotal: (total) => `${total} kỳ lương` }}
-          scroll={{ x: 1100 }}
+          scroll={{ x: 1240 }}
           onRow={(r) => ({
             style: { cursor: "pointer" },
             onClick: () => navigate(URL.PayrollPeriodDetail.replace(":id", String(r.periodId))),
           })}
         />
-      </Card>
+      </TableCard>
 
       <CreatePeriodModal
         visible={showCreate}

@@ -255,16 +255,16 @@ const AddHRProcedureModal = ({ open, initialValues, onCancel, onSuccess }: AddHR
                 {selectedEmployee && (
                     <Row gutter={16} style={{ marginBottom: 16, padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                         <Col span={8}>
-                            <div style={{ fontSize: '12px', color: '#64748b' }}>Phòng ban hiện tại:</div>
-                            <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px' }}>{selectedEmployee.departmentName}</div>
+                            <div style={{ color: '#64748b' }}>Phòng ban hiện tại:</div>
+                            <div style={{ fontWeight: 600, color: '#0f172a' }}>{selectedEmployee.departmentName}</div>
                         </Col>
                         <Col span={8}>
-                            <div style={{ fontSize: '12px', color: '#64748b' }}>Vị trí hiện tại:</div>
-                            <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px' }}>{selectedEmployee.positionName}</div>
+                            <div style={{ color: '#64748b' }}>Vị trí hiện tại:</div>
+                            <div style={{ fontWeight: 600, color: '#0f172a' }}>{selectedEmployee.positionName}</div>
                         </Col>
                         <Col span={8}>
-                            <div style={{ fontSize: '12px', color: '#64748b' }}>Quản lý hiện tại:</div>
-                            <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px' }}>{selectedEmployee.managerName || "Chưa có"}</div>
+                            <div style={{ color: '#64748b' }}>Quản lý hiện tại:</div>
+                            <div style={{ fontWeight: 600, color: '#0f172a' }}>{selectedEmployee.managerName || "Chưa có"}</div>
                         </Col>
                     </Row>
                 )}

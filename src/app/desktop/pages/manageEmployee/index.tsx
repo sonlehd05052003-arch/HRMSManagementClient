@@ -158,7 +158,7 @@ const ManageEmployee = () => {
                 <Table
                     columns={columns} dataSource={filtered} rowKey={(record) => record.employeeId || (record as any).id}
                     loading={loading} pagination={{ pageSize: 10 }}
-                    scroll={{ x: 1200 }} size="middle"
+                    scroll={{ x: 1200 }}
                     locale={{
                         emptyText: searchText ? (
                             <div style={{ padding: "20px 0" }}>

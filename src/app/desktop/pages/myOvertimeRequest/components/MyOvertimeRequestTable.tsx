@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { fetchMyOvertimeRequests, cancelOvertimeRequest, selectMyOvertimeRequests, selectOvertimeLoading } from "../../../../../store/overtimeSlide";
 import dayjs from "dayjs";
+import { TableCard } from "../../../components/listPage";
 
 const { Text } = Typography;
 
@@ -39,19 +40,19 @@ const MyOvertimeRequestTable = () => {
             title: "Mã yêu cầu",
             dataIndex: "requestNumber",
             key: "requestNumber",
-            render: (text: string) => <Text className="font-semibold text-blue-600">{text}</Text>,
+            render: (text: string) => <Text className="font-semibold text-blue-600" style={{ whiteSpace: "nowrap" }}>{text}</Text>,
         },
         {
             title: "Ngày",
             dataIndex: "overtimeDate",
             key: "overtimeDate",
-            render: (date: string) => dayjs(date).format("DD/MM/YYYY"),
+            render: (date: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(date).format("DD/MM/YYYY")}</span>,
         },
         {
             title: "Thời gian",
             key: "time",
             render: (_: any, record: any) => (
-                <span>
+                <span style={{ whiteSpace: "nowrap" }}>
                     {record.startTime.slice(0, 5)} - {record.endTime.slice(0, 5)} ({record.totalHours} giờ)
                 </span>
             ),
@@ -75,6 +76,7 @@ const MyOvertimeRequestTable = () => {
             title: "Lý do",
             dataIndex: "reason",
             key: "reason",
+            width: 200,
             ellipsis: true,
         },
         {
@@ -101,13 +103,16 @@ const MyOvertimeRequestTable = () => {
     ];
 
     return (
-        <Table
-            columns={columns}
-            dataSource={requests}
-            rowKey="overtimeRequestId"
-            loading={loading}
-            pagination={{ pageSize: 10 }}
-        />
+        <TableCard title="Lịch sử tăng ca" count={requests.length}>
+            <Table
+                columns={columns}
+                dataSource={requests}
+                rowKey="overtimeRequestId"
+                loading={loading}
+                pagination={{ pageSize: 10 }}
+                scroll={{ x: "max-content" }}
+            />
+        </TableCard>
     );
 };
 

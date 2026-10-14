@@ -100,7 +100,7 @@ const EditDocumentModal = ({ open, onCancel, onSuccess, document }: EditDocument
                 </Row>
 
                 <div style={{ background: "#f5f5f5", borderRadius: 6, padding: "10px 14px" }}>
-                    <div style={{ fontSize: 12, color: "#8c8c8c", marginBottom: 4 }}>File hiện tại</div>
+                    <div style={{ color: "#8c8c8c", marginBottom: 4 }}>File hiện tại</div>
                     <div style={{ fontWeight: 500 }}>{document?.fileName}</div>
                     <div style={{ fontSize: 12, color: "#8c8c8c" }}>
                         {document?.fileType?.toUpperCase()} · {document?.fileSizeFormatted}

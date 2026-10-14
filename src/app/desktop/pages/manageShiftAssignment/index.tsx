@@ -1,4 +1,4 @@
-import { UserOutlined, PlusOutlined, CalendarOutlined, EditOutlined, DeleteOutlined, StopOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined, StopOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { Table, Button, Space, Select, DatePicker, Typography, Tag, Avatar, Popconfirm, message, Tooltip } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchShiftAssignments, selectAssignments, selectShiftAssignmentLoading, deactivateShiftAssignment, activateShiftAssignment, deleteShiftAssignment, type IShiftAssignment } from "../../../../store/shiftAssignmentSlide";
@@ -179,22 +179,15 @@ const ManageShiftAssignment = () => {
     ];
 
     return (
-        <div className="p-2 bg-gray-50/50 min-h-full">
+        <div className="p-2">
             <PageHeader
-                title={
-                    <span className="flex items-center gap-2">
-                        <CalendarOutlined className="text-indigo-600" />
-                        Phân Ca Làm Việc
-                    </span>
-                }
+                title="Phân ca làm việc"
                 subtitle="Giao ca làm việc cho nhân viên theo từng ngày"
                 actions={
                     <Button
                         type="primary"
-                        size="large"
                         icon={<PlusOutlined />}
                         onClick={() => setIsAssignModalOpen(true)}
-                        className="bg-indigo-600 hover:bg-indigo-700 rounded-lg h-10 px-6"
                     >
                         Phân Ca Mới
                     </Button>
@@ -213,7 +206,6 @@ const ManageShiftAssignment = () => {
                             value={selectedDate} 
                             onChange={handleDateChange} 
                             format="DD/MM/YYYY"
-                            size="large"
                             className="w-48"
                         />
                     </div>
@@ -223,7 +215,6 @@ const ManageShiftAssignment = () => {
                         <Select
                             allowClear
                             placeholder="Tất cả nhân viên"
-                            size="large"
                             className="w-64"
                             value={selectedEmployeeId}
                             onChange={handleEmployeeChange}
@@ -243,7 +234,6 @@ const ManageShiftAssignment = () => {
                         showSizeChanger: true
                     }}
                     scroll={{ x: 1000 }}
-                    size="middle"
                     className="assignment-table"
                     locale={{
                         emptyText: (

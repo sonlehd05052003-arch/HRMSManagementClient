@@ -149,7 +149,6 @@ const ManagePosition = () => {
                     loading={loading}
                     pagination={{ pageSize: 10 }}
                     scroll={{ x: 800 }}
-                    size="middle"
                     locale={{
                         emptyText: searchText ? (
                             <div style={{ padding: "20px 0" }}>

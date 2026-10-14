@@ -171,7 +171,7 @@ const AttendanceTable = () => {
                                 </Tooltip>
                             )}
                         </Space>
-                        {record.isManualAdjusted && <Tag color="gold" style={{ fontSize: '10px', margin: 0 }}>Adjusted</Tag>}
+                        {record.isManualAdjusted && <Tag color="gold" style={{ margin: 0 }}>Adjusted</Tag>}
                     </Space>
                 );
             }
@@ -249,7 +249,7 @@ const AttendanceTable = () => {
                 <div className="mb-4 flex items-center gap-3 flex-wrap px-3 py-2.5 bg-blue-50 rounded-lg border border-blue-100">
                     <TeamOutlined className="text-blue-500 text-base" />
                     <span className="font-semibold text-blue-600">Phòng ban của bạn:</span>
-                    <Tag color="blue" style={{ margin: 0, fontSize: 13 }}>
+                    <Tag color="blue" style={{ margin: 0 }}>
                         {managerProfile.departmentName || "Chưa phân công"}
                     </Tag>
                     <Text type="secondary">Đang quản lý <strong>{employees.length}</strong> nhân viên</Text>

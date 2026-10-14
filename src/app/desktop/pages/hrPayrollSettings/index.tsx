@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Form, Typography, message } from "antd";
-import { DollarOutlined } from "@ant-design/icons";
+import { Form, message } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
     fetchPayrollSettings, selectPayrollSettings,
@@ -9,8 +8,7 @@ import {
 import PayrollSettingsCard from "../manageSystemSettings/components/PayrollSettingsCard";
 import HolidaysCard from "../manageSystemSettings/components/HolidaysCard";
 import { errorText } from "../../../../utils/apiError";
-
-const { Title, Paragraph } = Typography;
+import { PageHeader } from "../../components/listPage";
 
 const HRPayrollSettingsPage: React.FC = () => {
     const [payrollForm] = Form.useForm();
@@ -38,27 +36,22 @@ const HRPayrollSettingsPage: React.FC = () => {
     };
 
     return (
-        <div className="p-8 bg-[#f8fafc] min-h-screen">
-            <div className="max-w-3xl mx-auto">
-                <div className="mb-8">
-                    <Title level={2} style={{ marginBottom: 4, fontWeight: 700, color: '#1e293b' }}>
-                        <DollarOutlined className="mr-3 text-indigo-600" />Cấu hình Kỳ lương
-                    </Title>
-                    <Paragraph type="secondary">
-                        Cấu hình ngày chốt lương để hệ thống tính đúng kỳ chấm công.
-                    </Paragraph>
-                </div>
+        <div className="p-2">
+            <PageHeader
+                title="Cấu hình kỳ lương"
+                subtitle="Cấu hình ngày chốt lương để hệ thống tính đúng kỳ chấm công."
+            />
 
-                <PayrollSettingsCard
-                    form={payrollForm}
-                    loading={loading}
-                    onFinish={onPayrollFinish}
-                    onRefresh={() => dispatch(fetchPayrollSettings())}
-                />
+            <PayrollSettingsCard
+                form={payrollForm}
+                loading={loading}
+                onFinish={onPayrollFinish}
+                onRefresh={() => dispatch(fetchPayrollSettings())}
+            />
 
-                <div className="mt-8">
-                    <HolidaysCard />
-                </div>
+            {/* PayrollSettingsCard and HolidaysCard are shared with manageSystemSettings and set no margin themselves */}
+            <div style={{ marginTop: 16 }}>
+                <HolidaysCard />
             </div>
         </div>
     );

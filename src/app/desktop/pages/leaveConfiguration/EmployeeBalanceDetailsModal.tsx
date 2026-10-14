@@ -76,8 +76,8 @@ const EmployeeBalanceDetailsModal = ({ visible, onClose, employee }: EmployeeBal
                         <UserOutlined style={{ fontSize: '20px' }} />
                     </div>
                     <div>
-                        <div className="text-lg font-bold text-slate-800">Chi tiết số dư ngày nghỉ</div>
-                        <div className="text-xs text-slate-400 font-normal">Nhân viên: {employee?.name}</div>
+                        <div className="font-bold">Chi tiết số dư ngày nghỉ</div>
+                        <div className="text-slate-400 font-normal" style={{ fontSize: 12 }}>Nhân viên: {employee?.name}</div>
                     </div>
                 </Space>
             }

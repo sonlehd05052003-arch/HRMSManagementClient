@@ -2,8 +2,8 @@ import { useState } from "react";
 import { DatePicker, Select, Space, Table, Typography } from "antd";
 import dayjs, { type Dayjs } from "dayjs";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { FilterCard, TableCard } from "../../components/listPage";
-import { ChartCard, ExcelButton, StatRow } from "./shared";
+import { FilterCard, StatRow, TableCard } from "../../components/listPage";
+import { ChartCard, ExcelButton } from "./shared";
 import { formatNumber, useReport } from "./reportData";
 
 interface AttendanceRow {
@@ -77,7 +77,6 @@ const AttendanceTab = ({ departments }: Props) => {
 
             <TableCard title={`Chấm công tháng ${params.month}/${params.year}`} count={data?.departments.length}>
                 <Table<AttendanceRow>
-                    size="small"
                     rowKey={(r) => r.departmentId ?? 0}
                     loading={loading}
                     dataSource={data?.departments}

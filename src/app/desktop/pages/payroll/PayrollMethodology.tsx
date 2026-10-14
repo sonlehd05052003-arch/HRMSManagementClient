@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import { Typography, Card, Table, Tag, Collapse, Alert, Divider, Row, Col, Timeline, Tabs, Skeleton } from "antd"
 import {
-  BookOutlined,
   CalculatorOutlined,
   SafetyCertificateOutlined,
   FileTextOutlined,
@@ -10,8 +9,9 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../../store"
 import { fetchPayrollCalcSettings, selectPayrollCalcSettings } from "../../../../store/systemSettingSlide"
 import type { PayrollCalculationSettings } from "../../../../store/systemSettingSlide"
+import { PageHeader, SectionCard } from "../../components/listPage"
 
-const { Title, Text, Paragraph } = Typography
+const { Text, Paragraph } = Typography
 const { Panel } = Collapse
 
 // ── Legal defaults ────────────────────────────────────────────────
@@ -49,9 +49,9 @@ const tncnBrackets = [
 ]
 const tncnColumns = [
   { title: "Bậc", dataIndex: "bac", width: 70, render: (v: number) => <Tag color="blue">Bậc {v}</Tag> },
-  { title: "Thu nhập tính thuế / tháng", dataIndex: "range" },
-  { title: "Thuế suất", dataIndex: "rate", render: (v: string) => <Tag color="orange">{v}</Tag> },
-  { title: "Số thuế phải nộp", dataIndex: "base", className: "text-xs text-gray-500" },
+  { title: "Thu nhập tính thuế / tháng", dataIndex: "range", width: 240 },
+  { title: "Thuế suất", dataIndex: "rate", width: 110, render: (v: string) => <Tag color="orange">{v}</Tag> },
+  { title: "Số thuế phải nộp", dataIndex: "base", className: "text-gray-500" },
 ]
 
 // ── Tabs ──────────────────────────────────────────────────────────
@@ -62,9 +62,9 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
   const personalFmt = (cfg.personalDeduction / 1_000_000).toFixed(0) + "tr"
 
   return (
-    <Card className="border-0 shadow-none">
+    <SectionCard gap={0}>
       <Alert
-        type="info" showIcon icon={<InfoCircleOutlined />} className="!mb-6"
+        type="info" showIcon icon={<InfoCircleOutlined />} style={{ marginBottom: 24 }}
         message="Tỷ lệ BH, mức trần, và giảm trừ thuế có thể thay đổi tại Thiết lập Hệ thống → tab Kỳ lương & Tính lương. Tài liệu dưới đây phản ánh cấu hình đang được áp dụng."
       />
       <Timeline items={[
@@ -73,7 +73,7 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong>Bước 1 — Xác định ngày công chuẩn (mẫu số)</Text>
-              <Paragraph className="text-gray-500 text-sm mb-0 mt-1">
+              <Paragraph className="text-gray-500 mb-0 mt-1">
                 Đếm số ngày được <strong>phân ca làm việc</strong> (<code>ShiftAssignment</code>) của nhân viên trong kỳ.
                 Fallback về đếm ngày T2–T6 nếu chưa có phân ca.
               </Paragraph>
@@ -85,12 +85,12 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong>Bước 2 — Xác định ngày công thực tế quy đổi (tử số)</Text>
-              <Paragraph className="text-gray-500 text-sm mb-1 mt-1">Tính <code>Σ (WorkingHours / ShiftStandardHours)</code> cho các bản ghi hợp lệ:</Paragraph>
-              <ul className="text-gray-500 text-sm list-disc pl-5 space-y-1 mb-1">
-                <li><Tag color="green" className="text-xs">Present</Tag> <Tag color="orange" className="text-xs">Late</Tag> → luôn tính công</li>
-                <li>Bất kỳ trạng thái nào có <Tag color="blue" className="text-xs">ExplanationStatus = Approved</Tag> → tính công</li>
+              <Paragraph className="text-gray-500 mb-1 mt-1">Tính <code>Σ (WorkingHours / ShiftStandardHours)</code> cho các bản ghi hợp lệ:</Paragraph>
+              <ul className="text-gray-500 list-disc pl-5 space-y-1 mb-1">
+                <li><Tag color="green">Present</Tag> <Tag color="orange">Late</Tag> → luôn tính công</li>
+                <li>Bất kỳ trạng thái nào có <Tag color="blue">ExplanationStatus = Approved</Tag> → tính công</li>
                 <li>Giải trình <strong>chưa duyệt / bị từ chối</strong> → không tính công</li>
-                <li><code>LeaveRequest</code> duyệt có lương (<Tag color="blue" className="text-xs">IsPaid</Tag>) → cộng thêm ngày nghỉ</li>
+                <li><code>LeaveRequest</code> duyệt có lương (<Tag color="blue">IsPaid</Tag>) → cộng thêm ngày nghỉ</li>
               </ul>
             </div>
           ),
@@ -100,10 +100,10 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong>Bước 3 — Tính lương ngày công</Text>
-              <div className="bg-gray-100 rounded px-3 py-2 text-sm font-mono mt-1">
+              <div className="bg-gray-100 rounded px-3 py-2 font-mono mt-1">
                 Lương ngày công = Lương cơ bản ÷ Số ngày phân ca × Ngày công thực tế quy đổi
               </div>
-              <Paragraph className="text-gray-500 text-sm mt-1 mb-0">Căn cứ: Điều 101 – Bộ Luật Lao động 2019.</Paragraph>
+              <Paragraph className="text-gray-500 mt-1 mb-0">Căn cứ: Điều 101 – Bộ Luật Lao động 2019.</Paragraph>
             </div>
           ),
         },
@@ -112,8 +112,8 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong>Bước 4 — Cộng phụ cấp theo chính sách</Text>
-              <Paragraph className="text-gray-500 text-sm mb-0 mt-1">
-                Tổng hợp <code>PayrollPolicy</code> loại <Tag className="text-xs">Allowance</Tag> còn hiệu lực.
+              <Paragraph className="text-gray-500 mb-0 mt-1">
+                Tổng hợp <code>PayrollPolicy</code> loại <Tag>Allowance</Tag> còn hiệu lực.
                 HR có thể bổ sung phụ cấp thủ công trực tiếp trên phiếu lương.
               </Paragraph>
             </div>
@@ -124,13 +124,13 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong>Bước 5 — Tính lương tăng ca (OT)</Text>
-              <Paragraph className="text-gray-500 text-sm mt-1 mb-1">
-                Tổng hợp <code>OvertimeRequest</code> trạng thái <Tag color="green" className="text-xs">Approved</Tag>.
+              <Paragraph className="text-gray-500 mt-1 mb-1">
+                Tổng hợp <code>OvertimeRequest</code> trạng thái <Tag color="green">Approved</Tag>.
               </Paragraph>
-              <div className="bg-gray-100 rounded px-3 py-1 text-sm font-mono">
+              <div className="bg-gray-100 rounded px-3 py-1 font-mono">
                 Lương OT = (Lương CB ÷ Số ngày phân ca ÷ 8) × Số giờ OT × Hệ số
               </div>
-              <div className="mt-1 text-xs text-gray-500">
+              <div className="mt-1 text-gray-500">
                 Hệ số hiện tại — Ngày thường: ×{cfg.otWeekdayMultiplier} &ensp;|&ensp;
                 Cuối tuần: ×{cfg.otWeekendMultiplier} &ensp;|&ensp;
                 Ngày lễ: ×{cfg.otHolidayMultiplier}
@@ -143,7 +143,7 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong className="text-green-600">Bước 6 — Thu nhập gộp (GROSS)</Text>
-              <div className="bg-green-50 border border-green-200 rounded px-3 py-2 text-sm font-mono mt-1">
+              <div className="bg-green-50 border border-green-200 rounded px-3 py-2 font-mono mt-1">
                 Gross = Lương ngày công + Phụ cấp + OT + Thưởng
               </div>
             </div>
@@ -154,10 +154,10 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong>Bước 7 — Khấu trừ BHXH / BHYT / BHTN</Text>
-              <div className="bg-red-50 border border-red-100 rounded px-3 py-2 text-sm font-mono mt-1">
+              <div className="bg-red-50 border border-red-100 rounded px-3 py-2 font-mono mt-1">
                 Tổng BH = min(Gross, {capFmt}) × {totalBH}%
               </div>
-              <Paragraph className="text-gray-500 text-sm mt-1 mb-0">
+              <Paragraph className="text-gray-500 mt-1 mb-0">
                 BHXH {cfg.bhxhRate}% + BHYT {cfg.bhytRate}% + BHTN {cfg.bhtnRate}% = {totalBH}%.
               </Paragraph>
             </div>
@@ -168,7 +168,7 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong>Bước 8 — Tính thuế TNCN (lũy tiến 7 bậc)</Text>
-              <div className="bg-red-50 border border-red-100 rounded px-3 py-2 text-sm font-mono mt-1">
+              <div className="bg-red-50 border border-red-100 rounded px-3 py-2 font-mono mt-1">
                 Thu nhập tính thuế = Gross − Tổng BH − Giảm trừ bản thân ({personalFmt}) − Giảm trừ gia cảnh
               </div>
             </div>
@@ -179,36 +179,36 @@ const TabQuyTrinh = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           children: (
             <div>
               <Text strong className="text-green-700">Bước 9 — Thực lĩnh (NET PAY)</Text>
-              <div className="bg-green-600 text-white rounded px-3 py-2 text-sm font-mono mt-1">
+              <div className="bg-green-600 text-white rounded px-3 py-2 font-mono mt-1">
                 Net Pay = Gross − Tổng BH − Thuế TNCN − Khấu trừ khác
               </div>
             </div>
           ),
         },
       ]} />
-    </Card>
+    </SectionCard>
   )
 }
 
 const TabThueTNCN = () => (
-  <Card className="border-0 shadow-none">
-    <Alert type="warning" showIcon className="!mb-4"
+  <SectionCard gap={0}>
+    <Alert type="warning" showIcon style={{ marginBottom: 16 }}
       message="Căn cứ pháp lý: Luật Thuế TNCN số 04/2007/QH12, sửa đổi bởi Luật số 26/2012/QH13 và Nghị quyết 954/2020/UBTVQH14." />
-    <Table size="small" dataSource={tncnBrackets} columns={tncnColumns} pagination={false} rowKey="bac" />
+    <Table dataSource={tncnBrackets} columns={tncnColumns} pagination={false} rowKey="bac" />
     <Divider />
     <Collapse ghost>
       <Panel header="Ví dụ tính thuế — Thu nhập tính thuế 25,000,000 đ/tháng" key="1">
-        <div className="space-y-1 text-sm font-mono bg-gray-50 rounded p-3">
+        <div className="space-y-1 font-mono bg-gray-50 rounded p-3">
           <div>Bậc 1: 5,000,000 × 5%  = <strong>250,000 đ</strong></div>
           <div>Bậc 2: 5,000,000 × 10% = <strong>500,000 đ</strong></div>
           <div>Bậc 3: 8,000,000 × 15% = <strong>1,200,000 đ</strong></div>
           <div>Bậc 4: 7,000,000 × 20% = <strong>1,400,000 đ</strong></div>
-          <Divider className="my-2" />
+          <Divider style={{ margin: "8px 0" }} />
           <div className="text-green-700 font-bold">Tổng thuế = 3,350,000 đ (thuế suất hiệu dụng ≈ 13.4%)</div>
         </div>
       </Panel>
     </Collapse>
-  </Card>
+  </SectionCard>
 )
 
 const TabBaoHiem = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
@@ -248,23 +248,23 @@ const TabBaoHiem = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
 
   const columns = [
     { title: "Loại bảo hiểm",  dataIndex: "loai", render: (v: string) => <Text strong>{v}</Text> },
-    { title: "NLĐ đóng",       dataIndex: "nv",   render: (v: string) => <Tag color="red">{v}</Tag> },
-    { title: "NSDLĐ đóng",     dataIndex: "dn",   render: (v: string) => v !== "—" ? <Tag color="volcano">{v}</Tag> : <Text type="secondary">—</Text> },
-    { title: "Tổng",            dataIndex: "tong", render: (v: string) => v !== "—" ? <Tag color="magenta">{v}</Tag> : <Text type="secondary">—</Text> },
+    { title: "NLĐ đóng",       dataIndex: "nv",   width: 110, render: (v: string) => <Tag color="red">{v}</Tag> },
+    { title: "NSDLĐ đóng",     dataIndex: "dn",   width: 120, render: (v: string) => v !== "—" ? <Tag color="volcano">{v}</Tag> : <Text type="secondary">—</Text> },
+    { title: "Tổng",            dataIndex: "tong", width: 100, render: (v: string) => v !== "—" ? <Tag color="magenta">{v}</Tag> : <Text type="secondary">—</Text> },
     {
       title: "Căn cứ pháp lý", dataIndex: "cancu",
       render: (v: string) => v === POLICY_LABEL
         ? <Tag color="gold">{POLICY_LABEL}</Tag>
-        : <span className="text-xs text-gray-500">{v}</span>,
+        : <Text type="secondary">{v}</Text>,
     },
   ]
 
   return (
-    <Card className="border-0 shadow-none">
-      <Alert type="error" showIcon className="!mb-4"
+    <SectionCard gap={0}>
+      <Alert type="error" showIcon style={{ marginBottom: 16 }}
         message="Căn cứ pháp lý: Luật BHXH 58/2014/QH13 (Điều 85, 86); Luật BHYT 25/2008/QH12 sửa đổi bởi 46/2014/QH13 (Điều 13); Luật Việc làm 38/2013/QH13 (Điều 57). Quyết định 595/QĐ-BHXH ngày 14/4/2017." />
-      <Table size="small" dataSource={rows} columns={columns} pagination={false} rowKey="loai" />
-      <div className="mt-3 text-xs text-gray-400">
+      <Table dataSource={rows} columns={columns} pagination={false} rowKey="loai" />
+      <div className="mt-3 text-gray-400" style={{ fontSize: 12 }}>
         * Mức đóng BH tối đa = mức trần đang áp dụng: <strong>{fmtMoney(cfg.insuranceCap)}/tháng</strong>.
         {cfg.insuranceCap !== DEFAULTS.insuranceCap && (
           <Tag color="gold" className="ml-2">{POLICY_LABEL}</Tag>
@@ -273,7 +273,7 @@ const TabBaoHiem = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           <span className="ml-1">(Nghị định 38/2022/NĐ-CP, hiệu lực 01/07/2022.)</span>
         )}
       </div>
-    </Card>
+    </SectionCard>
   )
 }
 
@@ -303,24 +303,24 @@ const TabLuongOT = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
 
   const columns = [
     { title: "Loại ngày tăng ca", dataIndex: "loai", render: (v: string) => <Text strong>{v}</Text> },
-    { title: "Hệ số lương OT",   dataIndex: "heso", render: (v: string) => <Tag color="green" className="text-base font-bold">{v}</Tag> },
+    { title: "Hệ số lương OT",   dataIndex: "heso", width: 150, render: (v: string) => <Tag color="green" className="font-bold">{v}</Tag> },
     {
       title: "Căn cứ pháp lý", dataIndex: "cancu",
       render: (v: string) => v === POLICY_LABEL
         ? <Tag color="gold">{POLICY_LABEL}</Tag>
-        : <span className="text-xs text-gray-500">{v}</span>,
+        : <Text type="secondary">{v}</Text>,
     },
   ]
 
   return (
-    <Card className="border-0 shadow-none">
-      <Alert type="success" showIcon className="!mb-4"
+    <SectionCard gap={0}>
+      <Alert type="success" showIcon style={{ marginBottom: 16 }}
         message="Căn cứ pháp lý: Điều 98 – Bộ Luật Lao động số 45/2019/QH14, có hiệu lực từ 01/01/2021." />
-      <Table size="small" dataSource={rows} columns={columns} pagination={false} rowKey="loai" />
-      <div className="mt-3 text-xs text-gray-400">
+      <Table dataSource={rows} columns={columns} pagination={false} rowKey="loai" />
+      <div className="mt-3 text-gray-400" style={{ fontSize: 12 }}>
         * Công thức: Lương giờ OT = (Lương CB ÷ Số ngày phân ca ÷ 8 giờ) × Số giờ × Hệ số.
       </div>
-    </Card>
+    </SectionCard>
   )
 }
 
@@ -329,15 +329,15 @@ const TabGiamTru = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
   const dependentChanged = cfg.dependentDeduction !== DEFAULTS.dependentDeduction
 
   return (
-    <Card className="border-0 shadow-none">
-      <Alert type="info" showIcon className="!mb-4"
+    <SectionCard gap={0}>
+      <Alert type="info" showIcon style={{ marginBottom: 16 }}
         message="Căn cứ pháp lý: Nghị quyết số 954/2020/UBTVQH14, có hiệu lực từ 01/07/2020." />
-      <Row gutter={16} className="mb-4">
+      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
         <Col xs={24} sm={12}>
           <Card size="small" className="bg-purple-50 border-purple-200 text-center">
-            <div className="text-purple-600 font-bold text-2xl">{fmtMoney(cfg.personalDeduction)}</div>
-            <div className="text-gray-500 text-sm mt-1">Giảm trừ bản thân / tháng</div>
-            <div className="text-xs mt-1">
+            <div className="text-purple-600 font-bold" style={{ fontSize: 24 }}>{fmtMoney(cfg.personalDeduction)}</div>
+            <div className="text-gray-500 mt-1">Giảm trừ bản thân / tháng</div>
+            <div className="mt-1">
               {personalChanged
                 ? <Tag color="gold">{POLICY_LABEL}</Tag>
                 : <span className="text-gray-400">Điều 1 Nghị quyết 954/2020</span>
@@ -347,9 +347,9 @@ const TabGiamTru = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
         </Col>
         <Col xs={24} sm={12}>
           <Card size="small" className="bg-blue-50 border-blue-200 text-center">
-            <div className="text-blue-600 font-bold text-2xl">{fmtMoney(cfg.dependentDeduction)}</div>
-            <div className="text-gray-500 text-sm mt-1">Giảm trừ mỗi người phụ thuộc / tháng</div>
-            <div className="text-xs mt-1">
+            <div className="text-blue-600 font-bold" style={{ fontSize: 24 }}>{fmtMoney(cfg.dependentDeduction)}</div>
+            <div className="text-gray-500 mt-1">Giảm trừ mỗi người phụ thuộc / tháng</div>
+            <div className="mt-1">
               {dependentChanged
                 ? <Tag color="gold">{POLICY_LABEL}</Tag>
                 : <span className="text-gray-400">Điều 1 Nghị quyết 954/2020</span>
@@ -358,11 +358,11 @@ const TabGiamTru = ({ cfg }: { cfg: PayrollCalculationSettings }) => {
           </Card>
         </Col>
       </Row>
-      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
         <strong>Lưu ý:</strong> Hệ thống đang tính thuế với <strong>0 người phụ thuộc</strong>.
         Để áp dụng giảm trừ gia cảnh, HR cần cập nhật thông tin người phụ thuộc cho từng nhân viên.
       </div>
-    </Card>
+    </SectionCard>
   )
 }
 
@@ -378,28 +378,21 @@ const PayrollMethodology = () => {
 
   if (!cfg) {
     return (
-      <div className="p-4 bg-gray-50 min-h-screen">
+      <div className="p-2">
         <Skeleton active paragraph={{ rows: 10 }} />
       </div>
     )
   }
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
-      <div className="mb-5">
-        <Title level={2} className="!mb-1">
-          <BookOutlined className="mr-2 text-blue-500" />
-          Quy tắc Tính Lương & Cơ sở Pháp lý
-        </Title>
-        <Paragraph className="text-gray-500 mb-0">
-          Mô tả toàn bộ quy trình tính lương đang áp dụng trong hệ thống, kèm căn cứ pháp lý từ các văn bản hiện hành của Việt Nam.
-        </Paragraph>
-      </div>
+    <div className="p-2">
+      <PageHeader
+        title="Quy tắc tính lương & cơ sở pháp lý"
+        subtitle="Mô tả toàn bộ quy trình tính lương đang áp dụng trong hệ thống, kèm căn cứ pháp lý từ các văn bản hiện hành của Việt Nam."
+      />
 
       <Tabs
         defaultActiveKey="1"
-        size="large"
-        tabBarStyle={{ marginBottom: 16 }}
         items={[
           {
             key: "1",

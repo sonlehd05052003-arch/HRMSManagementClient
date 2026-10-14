@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Button, Card, DatePicker, Form, Input, InputNumber, Modal, Popconfirm, Space, Switch, Table, Tag, Tooltip, Typography, message } from "antd";
-import { CalendarOutlined, DeleteOutlined, EditOutlined, PlusOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import { Alert, Button, DatePicker, Form, Input, InputNumber, Modal, Popconfirm, Space, Switch, Table, Tag, Tooltip, Typography, message } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import dayjs, { type Dayjs } from "dayjs";
 import { request } from "../../../../../utils/request";
 import { apiErrorMessage, isFormValidationError } from "../../../../../utils/apiError";
 import { fetchHolidays, type IHoliday } from "../../../../../utils/holidays";
+import { TableCard } from "../../../components/listPage";
 
 const { Text } = Typography;
 const WEEKDAYS = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
@@ -91,7 +92,7 @@ const HolidaysCard = () => {
         {
             title: "Ngày", dataIndex: "holidayDate", width: 170,
             render: (value: string) => (
-                <Space>
+                <Space style={{ whiteSpace: "nowrap" }}>
                     <span>{dayjs(value).format("DD/MM/YYYY")}</span>
                     <Text type="secondary">{WEEKDAYS[dayjs(value).day()]}</Text>
                 </Space>
@@ -116,8 +117,9 @@ const HolidaysCard = () => {
     ];
 
     return (
-        <Card
-            title={<Space><CalendarOutlined className="text-blue-500" />Lịch nghỉ lễ</Space>}
+        <TableCard
+            title="Lịch nghỉ lễ"
+            count={holidays.length}
             extra={
                 <Space wrap>
                     <InputNumber value={year} min={2000} max={2100} onChange={(v) => v && setYear(v)} style={{ width: 90 }} />
@@ -125,16 +127,15 @@ const HolidaysCard = () => {
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => openEditor("new")}>Thêm ngày nghỉ</Button>
                 </Space>
             }
-            className="rounded-2xl shadow-sm"
         >
             <Alert
                 type="info"
                 showIcon
-                className="mb-4"
+                style={{ marginBottom: 16 }}
                 message="Ngày lễ có lương được tính đủ công khi tính lương, tăng ca ngày lễ hưởng hệ số ngày lễ, và không ai bị tính vắng mặt."
                 description={'"Thêm ngày lễ cố định" thêm 1/1, 30/4, 1/5 và 2/9. Tết Nguyên đán, Giỗ Tổ Hùng Vương và ngày nghỉ bù Quốc khánh được Chính phủ công bố hằng năm, hãy thêm thủ công theo thông báo.'}
             />
-            <Table rowKey="holidayId" columns={columns} dataSource={holidays} loading={loading} pagination={false} size="middle"
+            <Table rowKey="holidayId" columns={columns} dataSource={holidays} loading={loading} pagination={false}
                 locale={{ emptyText: `Chưa có ngày nghỉ nào trong năm ${year}` }} />
 
             <Modal
@@ -159,7 +160,7 @@ const HolidaysCard = () => {
                     </Form.Item>
                 </Form>
             </Modal>
-        </Card>
+        </TableCard>
     );
 };
 

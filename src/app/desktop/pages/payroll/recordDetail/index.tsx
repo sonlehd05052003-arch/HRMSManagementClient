@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { Card, Row, Col, Typography, Space, Button, Descriptions, Badge, message, Tag } from "antd"
-import { ArrowLeftOutlined, FilePdfOutlined, CalculatorOutlined } from "@ant-design/icons"
+import { Row, Col, Button, Descriptions, Badge, message, Tag } from "antd"
+import { ArrowLeftOutlined, FilePdfOutlined, CalculatorOutlined, UserOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import {
   fetchRecordById,
@@ -16,8 +16,7 @@ import AllowanceSection from "./AllowanceSection"
 import DeductionSection from "./DeductionSection"
 import SalaryBreakdown from "./SalaryBreakdown"
 import { errorText } from "../../../../../utils/apiError";
-
-const { Title, Text } = Typography
+import { PageHeader, SectionCard } from "../../../components/listPage"
 
 const PayrollRecordDetail = () => {
   const { id } = useParams()
@@ -62,28 +61,24 @@ const PayrollRecordDetail = () => {
   if (!record) return <div className="p-10 text-center text-gray-400">Đang tải dữ liệu...</div>
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <Space>
-          <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)} />
-          <div>
-            <Title level={3} className="m-0">Chi Tiết Lương Nhân Viên</Title>
-            <Text type="secondary">{record.employeeName} — {record.employeeCode}</Text>
-          </div>
-        </Space>
-        <Space>
+    <div className="p-2">
+      <PageHeader
+        title="Chi tiết lương nhân viên"
+        subtitle={`${record.employeeName} — ${record.employeeCode}`}
+        actions={<>
+          <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>Quay lại</Button>
           {isEditable && (
             <Button icon={<CalculatorOutlined />} onClick={handleRecalculate}>Tính lại</Button>
           )}
           {isHR && isApproved && (
             <Button type="primary" icon={<FilePdfOutlined />} onClick={handleGeneratePayslip}>Tạo & Xem Phiếu Lương</Button>
           )}
-        </Space>
-      </div>
+        </>}
+      />
 
       <Row gutter={[16, 16]}>
         <Col span={24}>
-          <Card title="Thông tin chung" className="shadow-sm rounded-xl">
+          <SectionCard title="Thông tin chung" icon={<UserOutlined />} gap={0}>
             <Descriptions bordered size="small" column={{ xxl: 4, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }}>
               <Descriptions.Item label="Họ tên">{record.employeeName}</Descriptions.Item>
               <Descriptions.Item label="Phòng ban">{record.departmentName}</Descriptions.Item>
@@ -102,14 +97,14 @@ const PayrollRecordDetail = () => {
                 <Tag color={record.status === "Approved" ? "green" : "orange"}>{record.status.toUpperCase()}</Tag>
               </Descriptions.Item>
             </Descriptions>
-          </Card>
+          </SectionCard>
         </Col>
 
-        <Col span={12}>
+        <Col xs={24} lg={12}>
           <AllowanceSection recordId={record.payrollRecordId} isEditable={isEditable} />
         </Col>
 
-        <Col span={12}>
+        <Col xs={24} lg={12}>
           <DeductionSection recordId={record.payrollRecordId} isEditable={isEditable} />
         </Col>
 

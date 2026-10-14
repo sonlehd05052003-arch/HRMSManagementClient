@@ -1,4 +1,4 @@
-import { Layout, Typography, Tabs } from "antd";
+import { Badge, Space, Tabs } from "antd";
 import { TableOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import AttendanceTable from "./components/AttendanceTable";
 import ExplanationApprovalTable from "./components/ExplanationApprovalTable";
@@ -6,9 +6,7 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchPendingExplanations, selectPendingExplanationsTotal } from "../../../../store/attendanceSlide";
-
-const { Content } = Layout;
-const { Title } = Typography;
+import { PageHeader } from "../../components/listPage";
 
 const ManageAttendance = () => {
     const dispatch = useAppDispatch();
@@ -25,65 +23,36 @@ const ManageAttendance = () => {
     }, [dispatch]);
 
     return (
-        <Layout className="bg-transparent p-4 min-h-screen">
-            <Content>
-                <div className="mb-6">
-                    <Title level={2} className="m-0">Quản lý Chấm công</Title>
-                    <p className="text-gray-500 mt-2">Tra cứu, điều chỉnh và quản lý dữ liệu chấm công của toàn bộ nhân viên.</p>
-                </div>
+        <div className="p-2">
+            <PageHeader
+                title="Quản lý chấm công"
+                subtitle="Tra cứu, điều chỉnh và quản lý dữ liệu chấm công của toàn bộ nhân viên."
+            />
 
-                <Tabs
-                    defaultActiveKey="attendance"
-                    items={[
-                        {
-                            key: "attendance",
-                            label: (
-                                <span>
-                                    <TableOutlined />
-                                    Bảng chấm công
-                                    <span style={{
-                                        marginLeft: 8
-                                    }}></span>
-                                </span>
-                            ),
-                            children: <AttendanceTable />
-                        },
-                        {
-                            key: "explanations",
-                            label: (
-                                <span>
-                                    <ExclamationCircleOutlined />
-                                    Giải trình chờ duyệt
-                                    <span
-                                        style={{
-                                            marginLeft: 8,
-                                        }}
-                                    >
-                                    </span>
-                                    {pendingCount > 0 && (
-                                        <span
-                                            style={{
-                                                background: "#fa8c16",
-                                                color: "#fff",
-                                                borderRadius: 10,
-                                                padding: "0 7px",
-                                                fontSize: 12,
-                                                fontWeight: 600,
-                                            }}
-                                        >
-                                            {pendingCount}
-                                        </span>
-                                    )}
-                                </span>
-                            ),
-                            children: <ExplanationApprovalTable />
-                        }
-                    ]}
-                />
-            </Content>
-        </Layout>
+            <Tabs
+                defaultActiveKey="attendance"
+                items={[
+                    {
+                        key: "attendance",
+                        icon: <TableOutlined />,
+                        label: "Bảng chấm công",
+                        children: <AttendanceTable />
+                    },
+                    {
+                        key: "explanations",
+                        icon: <ExclamationCircleOutlined />,
+                        label: (
+                            <Space size={8}>
+                                <span>Giải trình chờ duyệt</span>
+                                {pendingCount > 0 && <Badge count={pendingCount} color="#fa8c16" />}
+                            </Space>
+                        ),
+                        children: <ExplanationApprovalTable />
+                    }
+                ]}
+            />
+        </div>
     );
 };
 
 export default ManageAttendance;
-

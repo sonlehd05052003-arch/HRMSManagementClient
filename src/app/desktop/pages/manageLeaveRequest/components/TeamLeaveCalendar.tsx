@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { fetchTeamLeaveCalendar, selectTeamLeaveCalendar } from "../../../../../store/leaveRequestSlide";
 import dayjs, { Dayjs } from "dayjs";
+import { CalendarOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 
 const TeamLeaveCalendar = () => {
     const dispatch = useAppDispatch();
@@ -31,7 +33,7 @@ const TeamLeaveCalendar = () => {
                             <Badge 
                                 status={item.isTopLevel ? "processing" : "success"} 
                                 text={item.employeeName} 
-                                className="text-[10px] whitespace-nowrap overflow-hidden transition-all duration-300 hover:scale-105" 
+                                className="whitespace-nowrap overflow-hidden" 
                             />
                         </Tooltip>
                     </li>
@@ -41,11 +43,7 @@ const TeamLeaveCalendar = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-            <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <span className="w-1.5 h-6 bg-green-500 rounded-full mr-3"></span>
-                Lịch nghỉ phép của nhóm
-            </h3>
+        <SectionCard title="Lịch nghỉ phép của nhóm" icon={<CalendarOutlined />} gap={0}>
             <div className="overflow-auto max-h-[700px]">
                 <Calendar 
                     cellRender={dateCellRender} 
@@ -58,18 +56,11 @@ const TeamLeaveCalendar = () => {
                     height: 80px !important;
                     overflow-y: auto;
                 }
-                .custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date {
-                    background-color: #f0fdf4 !important;
-                }
-                .custom-calendar .ant-picker-calendar-date:hover {
-                    background-color: #f9fafb;
-                }
                 .custom-calendar .ant-badge-status-text {
-                    font-size: 11px;
-                    color: #4b5563;
+                    font-size: 12px;
                 }
             `}</style>
-        </div>
+        </SectionCard>
     );
 };
 

@@ -189,7 +189,7 @@ const ManageAccount = () => {
     return (
         <div className="p-2">
             <PageHeader
-                title="Quản lý Tài khoản"
+                title="Quản lý tài khoản"
                 actions={
                     <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
                         Thêm tài khoản
@@ -225,7 +225,6 @@ const ManageAccount = () => {
                     loading={loading}
                     pagination={{ pageSize: 10 }}
                     scroll={{ x: 1000 }}
-                    size="middle"
                 />
             </TableCard>
 

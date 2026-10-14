@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Space, Input, message, Tooltip, Typography, Tag } from "antd";
-import { PlusOutlined, EditOutlined, ClockCircleOutlined, SettingOutlined, StopOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, ClockCircleOutlined, StopOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchAllShifts, selectShifts, selectShiftLoading, deactivateShift, activateShift, type IShift } from "../../../../store/shiftSlide";
 import { useNavigate } from "react-router-dom";
@@ -73,7 +73,7 @@ const ManageShift = () => {
                 <div className="flex items-center gap-2">
                     <ClockCircleOutlined className="text-gray-400" />
                     <span>{record.startTime.substring(0, 5)} - {record.endTime.substring(0, 5)}</span>
-                    {record.isOvernight && <Tag color="orange" className="text-[10px]">Qua đêm</Tag>}
+                    {record.isOvernight && <Tag color="orange">Qua đêm</Tag>}
                 </div>
             )
         },
@@ -148,22 +148,15 @@ const ManageShift = () => {
     ];
 
     return (
-        <div className="p-2 bg-gray-50/50 min-h-full">
+        <div className="p-2">
             <PageHeader
-                title={
-                    <span className="flex items-center gap-2">
-                        <SettingOutlined className="text-indigo-600" />
-                        Quản Lý Ca Làm Việc
-                    </span>
-                }
+                title="Quản lý ca làm việc"
                 subtitle="Thiết lập giờ giấc và quy định chấm công cho nhân viên"
                 actions={
                     <Button
                         type="primary"
-                        size="large"
                         icon={<PlusOutlined />}
                         onClick={() => navigate(URL.AddShift)}
-                        className="bg-indigo-600 hover:bg-indigo-700 rounded-lg h-10 px-6"
                     >
                         Thêm Ca Mới
                     </Button>
@@ -177,7 +170,6 @@ const ManageShift = () => {
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                         className="max-w-md custom-search"
-                        size="large"
                     />
                 </div>
             </FilterCard>
@@ -193,7 +185,6 @@ const ManageShift = () => {
                         pageSizeOptions: ['10', '20', '50']
                     }}
                     scroll={{ x: 1000 }}
-                    size="middle"
                     className="shift-table"
                     locale={{
                         emptyText: searchText ? (

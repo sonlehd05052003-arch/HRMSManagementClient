@@ -1,13 +1,13 @@
-import { Layout, Typography, Table, Tag, Button, Row, Col, Card, Statistic } from "antd";
+import { Typography, Table, Tag, Button } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchPendingOvertimeRequests, selectPendingOvertimeRequests, selectOvertimeLoading } from "../../../../store/overtimeSlide";
 import ReviewOvertimeModal from "./components/ReviewOvertimeModal";
 import dayjs from "dayjs";
 import { ClockCircleOutlined, TeamOutlined } from "@ant-design/icons";
+import { PageHeader, StatRow, TableCard } from "../../components/listPage";
 
-const { Content } = Layout;
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ManageOvertimeRequest = () => {
     const dispatch = useAppDispatch();
@@ -32,14 +32,14 @@ const ManageOvertimeRequest = () => {
             render: (_: any, record: any) => (
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                        <Text className="font-bold text-slate-800">{record.employeeName}</Text>
+                        <Text className="font-bold" style={{ whiteSpace: "nowrap" }}>{record.employeeName}</Text>
                         {record.isTopLevel && (
-                            <Tag color="blue" className="rounded-full px-3 m-0 border-blue-100 text-[10px] font-bold uppercase tracking-wider">
+                            <Tag color="blue" style={{ marginInlineEnd: 0 }}>
                                 Quản lý
                             </Tag>
                         )}
                     </div>
-                    <Text type="secondary" className="text-xs">Mã NV: {record.employeeId}</Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>Mã NV: {record.employeeId}</Text>
                 </div>
             ),
         },
@@ -47,23 +47,23 @@ const ManageOvertimeRequest = () => {
             title: "Mã yêu cầu",
             dataIndex: "requestNumber",
             key: "requestNumber",
-            render: (text: string) => <Tag color="blue" className="font-mono">{text}</Tag>,
+            render: (text: string) => <Tag color="blue" className="font-mono" style={{ whiteSpace: "nowrap" }}>{text}</Tag>,
         },
         {
             title: "Ngày tăng ca",
             dataIndex: "overtimeDate",
             key: "overtimeDate",
-            render: (date: string) => dayjs(date).format("DD/MM/YYYY"),
+            render: (date: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(date).format("DD/MM/YYYY")}</span>,
         },
         {
             title: "Phân loại",
             key: "typeMode",
             render: (_: any, record: any) => (
                 <div className="flex flex-col gap-1">
-                    <Tag color={record.otType === "NormalDay" ? "blue" : "orange"} className="w-fit border-none font-bold text-[10px] uppercase">
+                    <Tag color={record.otType === "NormalDay" ? "blue" : "orange"} className="w-fit">
                         {record.otType === "NormalDay" ? "Ngày thường" : "Ngày nghỉ"}
                     </Tag>
-                    <Text className="text-xs text-slate-500 font-medium">
+                    <Text type="secondary" style={{ fontSize: 12 }}>
                         {record.otMode === "AfterShift" ? "Sau ca" : 
                          record.otMode === "BeforeShift" ? "Trước ca" : "Linh hoạt"}
                     </Text>
@@ -74,12 +74,12 @@ const ManageOvertimeRequest = () => {
             title: "Thời gian",
             key: "time",
             render: (_: any, record: any) => (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" style={{ whiteSpace: "nowrap" }}>
                     <ClockCircleOutlined className="text-slate-400" />
-                    <span className="font-medium text-slate-700">
+                    <span className="font-medium">
                         {record.startTime?.slice(0, 5) || "—"} - {record.endTime?.slice(0, 5) || "—"}
                     </span>
-                    <Tag color="orange" className="border-none font-bold">{record.totalHours}h</Tag>
+                    <Tag color="orange">{record.totalHours}h</Tag>
                 </div>
             ),
         },
@@ -87,13 +87,14 @@ const ManageOvertimeRequest = () => {
             title: "Lý do",
             dataIndex: "reason",
             key: "reason",
+            width: 200,
             ellipsis: true,
         },
         {
             title: "Ngày gửi",
             dataIndex: "submittedDate",
             key: "submittedDate",
-            render: (date: string) => dayjs(date).format("DD/MM/YYYY HH:mm"),
+            render: (date: string) => <span style={{ whiteSpace: "nowrap" }}>{dayjs(date).format("DD/MM/YYYY HH:mm")}</span>,
         },
         {
             title: "Thao tác",
@@ -104,7 +105,6 @@ const ManageOvertimeRequest = () => {
                     type="primary" 
                     ghost 
                     onClick={() => handleReview(record)}
-                    className="rounded-lg font-semibold hover:bg-blue-50"
                 >
                     Xem xét
                 </Button>
@@ -113,73 +113,50 @@ const ManageOvertimeRequest = () => {
     ];
 
     return (
-        <Layout className="bg-slate-50/30 p-4 min-h-screen">
-            <Content>
-                <div className="mb-10">
-                    <Title level={2} className="m-0 text-slate-900 font-extrabold tracking-tight">Duyệt yêu cầu làm thêm giờ</Title>
-                    <p className="text-slate-500 mt-2 text-lg font-medium opacity-80">Xem và phê duyệt các yêu cầu tăng ca từ nhân viên trong bộ phận.</p>
-                </div>
+        <div className="p-2">
+            <PageHeader
+                title="Duyệt yêu cầu làm thêm giờ"
+                subtitle="Xem và phê duyệt các yêu cầu tăng ca từ nhân viên trong bộ phận."
+            />
 
-                <Row gutter={[24, 24]} className="mb-10">
-                    <Col xs={24} md={8}>
-                        <Card className="rounded-3xl border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white overflow-hidden group">
-                            <div className="p-2">
-                                <Statistic
-                                    title={<span className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Chờ phê duyệt</span>}
-                                    value={pendingRequests.length}
-                                    prefix={<ClockCircleOutlined className="mr-3 p-3 rounded-2xl bg-orange-50 text-orange-500 transition-transform group-hover:scale-110" />}
-                                    styles={{ content: { color: '#f59e0b', fontWeight: 900, fontSize: '2.5rem' } }}
-                                />
-                            </div>
-                        </Card>
-                    </Col>
-                    <Col xs={24} md={8}>
-                        <Card className="rounded-3xl border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white overflow-hidden group">
-                            <div className="p-2">
-                                <Statistic
-                                    title={<span className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Tổng nhân viên</span>}
-                                    value={new Set(pendingRequests.map(r => r.employeeId)).size}
-                                    prefix={<TeamOutlined className="mr-3 p-3 rounded-2xl bg-blue-50 text-blue-500 transition-transform group-hover:scale-110" />}
-                                    styles={{ content: { color: '#3b82f6', fontWeight: 900, fontSize: '2.5rem' } }}
-                                />
-                            </div>
-                        </Card>
-                    </Col>
-                </Row>
+            <StatRow
+                items={[
+                    { title: "Chờ phê duyệt", value: pendingRequests.length, prefix: <ClockCircleOutlined />, color: "#f59e0b" },
+                    { title: "Tổng nhân viên", value: new Set(pendingRequests.map(r => r.employeeId)).size, prefix: <TeamOutlined />, color: "#3b82f6" },
+                ]}
+            />
 
-                <Card className="rounded-3xl border-none shadow-[0_20px_50px_rgba(0,0,0,0.02)] bg-white/80 backdrop-blur-xl p-4 overflow-hidden">
-                    <div className="mb-8 flex items-center justify-between">
-                        <Title level={4} className="m-0 flex items-center font-bold text-slate-800">
-                            <span className="w-2 h-8 bg-blue-500 rounded-full mr-5 shadow-[0_0_15px_rgba(59,130,246,0.3)]"></span>
-                            Danh sách yêu cầu đang chờ
-                        </Title>
-                        <Tag icon={<ClockCircleOutlined />} color="warning" className="px-4 py-1.5 rounded-full font-bold border-none shadow-sm">
-                            Cập nhật trực tiếp
-                        </Tag>
-                    </div>
-                    <Table
-                        columns={columns}
-                        dataSource={pendingRequests}
-                        rowKey="overtimeRequestId"
-                        loading={loading}
-                        pagination={{ 
-                            pageSize: 8,
-                            showTotal: (total) => `Tổng cộng ${total} yêu cầu`
-                        }}
-                        className="custom-ant-table"
-                    />
-                </Card>
-
-                <ReviewOvertimeModal
-                    open={isModalOpen}
-                    onCancel={() => {
-                        setIsModalOpen(false);
-                        setSelectedRecord(null);
+            <TableCard
+                title="Danh sách yêu cầu đang chờ"
+                count={pendingRequests.length}
+                extra={
+                    <Tag icon={<ClockCircleOutlined />} color="warning" style={{ marginInlineEnd: 0 }}>
+                        Cập nhật trực tiếp
+                    </Tag>
+                }
+            >
+                <Table
+                    columns={columns}
+                    dataSource={pendingRequests}
+                    rowKey="overtimeRequestId"
+                    loading={loading}
+                    pagination={{
+                        pageSize: 8,
+                        showTotal: (total) => `Tổng cộng ${total} yêu cầu`
                     }}
-                    record={selectedRecord}
+                    scroll={{ x: "max-content" }}
                 />
-            </Content>
-        </Layout>
+            </TableCard>
+
+            <ReviewOvertimeModal
+                open={isModalOpen}
+                onCancel={() => {
+                    setIsModalOpen(false);
+                    setSelectedRecord(null);
+                }}
+                record={selectedRecord}
+            />
+        </div>
     );
 };
 

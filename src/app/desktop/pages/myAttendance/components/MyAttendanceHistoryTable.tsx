@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Button, Space, Select, Card, Tooltip, message, Form, Alert, Typography, Row, Col, Statistic, Divider } from "antd";
+import { Button, Space, Select, Tooltip, message, Form, Alert, Typography } from "antd";
 import {
     SearchOutlined, ReloadOutlined, ExclamationCircleOutlined,
     ClockCircleOutlined, CheckCircleOutlined,
@@ -14,6 +14,7 @@ import { fetchPayrollSettings, selectPayrollSettings } from "../../../../../stor
 import dayjs from "dayjs";
 import ExplanationModal from "../modal/ExplanationModal";
 import { errorText, isFormValidationError } from "../../../../../utils/apiError";
+import { SectionCard, StatRow } from "../../../components/listPage";
 
 const { Text } = Typography;
 
@@ -84,7 +85,8 @@ const STATUS_LABEL: Record<string, string> = {
 
 // ──────────────────────────────────────────────────────────────────────────────
 
-const MyAttendanceHistoryTable = () => {
+/** `embedded`: shown inside another card, so without a card of its own */
+const MyAttendanceHistoryTable = ({ embedded = false }: { embedded?: boolean }) => {
     const dispatch = useAppDispatch();
     const records = useAppSelector(selectMyHistory);
     const loading = useAppSelector(selectAttendanceLoading);
@@ -306,13 +308,13 @@ const MyAttendanceHistoryTable = () => {
                         <div className="flex items-center gap-4">
                             {records.length > 0 && (
                                 <>
-                                    <div className="text-sm">
-                                        <span className="text-gray-500 text-xs">Tổng giờ công: </span>
+                                    <div>
+                                        <Text type="secondary">Tổng giờ công: </Text>
                                         <span className="font-semibold text-gray-800">{summary.totalWorkingHours.toFixed(1)}h</span>
                                     </div>
                                     {summary.totalOvertimeHours > 0 && (
-                                        <div className="text-sm">
-                                            <span className="text-gray-500 text-xs">Tăng ca: </span>
+                                        <div>
+                                            <Text type="secondary">Tăng ca: </Text>
                                             <span className="font-semibold text-purple-600">{summary.totalOvertimeHours.toFixed(1)}h</span>
                                         </div>
                                     )}
@@ -330,7 +332,7 @@ const MyAttendanceHistoryTable = () => {
                             ].map(l => (
                                 <span key={l.label} className="flex items-center gap-1">
                                     <span className={`inline-block w-2 h-2 rounded-full ${l.dot}`} />
-                                    <span className="text-[10px] text-gray-500">{l.label}</span>
+                                    <Text type="secondary" style={{ fontSize: 12 }}>{l.label}</Text>
                                 </span>
                             ))}
                         </div>
@@ -342,17 +344,8 @@ const MyAttendanceHistoryTable = () => {
 
     // ──────────────────────────────────────────────────────────────────────────
 
-    return (
-        <Card
-            title={
-                <Space>
-                    <CalendarOutlined className="text-blue-500" />
-                    <span>Lịch sử chấm công của tôi</span>
-                </Space>
-            }
-            className="shadow-sm rounded-xl"
-            style={{ overflow: "hidden" }}
-        >
+    const content = (
+        <>
             {requiredCount > 0 && (
                 <Alert
                     type="warning" showIcon icon={<ExclamationCircleOutlined />} className="!mb-4"
@@ -361,7 +354,7 @@ const MyAttendanceHistoryTable = () => {
             )}
 
             {/* ── Bộ lọc kỳ lương ── */}
-            <Space className="mb-4" wrap style={{ rowGap: 8 }}>
+            <Space wrap style={{ rowGap: 8, marginBottom: 16 }}>
                 <Select
                     style={{ width: "min(320px, 100%)" }}
                     value={selectedPeriodKey || undefined}
@@ -380,76 +373,33 @@ const MyAttendanceHistoryTable = () => {
 
             {/* ── Thông tin kỳ đang xem ── */}
             {selectedPeriod && (
-                <div className="mb-4 text-sm text-slate-500 flex items-center gap-2">
-                    <CalendarOutlined />
-                    <span>
+                <div className="flex items-center gap-2" style={{ marginBottom: 16 }}>
+                    <Text type="secondary"><CalendarOutlined /></Text>
+                    <Text type="secondary">
                         Đang xem: <strong>{selectedPeriod.displayLabel}</strong>
                         &nbsp;·&nbsp; Ngày chốt: <strong>ngày {cutOffDay} hàng tháng</strong>
-                    </span>
+                    </Text>
                 </div>
             )}
 
             {/* ── 4 thẻ thống kê ── */}
             {records.length > 0 && (
-                <>
-                    <Row gutter={[12, 12]} className="mb-4">
-                        <Col xs={24} sm={12} md={6}>
-                            <Card size="small" className="bg-blue-50 border-blue-200 text-center">
-                                <Statistic
-                                    title={<span className="text-blue-600 text-xs font-medium">Tổng bản ghi</span>}
-                                    value={summary.totalRecords}
-                                    suffix="ngày"
-                                    valueStyle={{ color: "#1d4ed8", fontSize: 20 }}
-                                    prefix={<CalendarOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={12} md={6}>
-                            <Card size="small" className="bg-green-50 border-green-200 text-center">
-                                <Statistic
-                                    title={<span className="text-green-600 text-xs font-medium">Ngày có mặt</span>}
-                                    value={summary.presentDays}
-                                    suffix="ngày"
-                                    valueStyle={{ color: "#15803d", fontSize: 20 }}
-                                    prefix={<CheckCircleOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={12} md={6}>
-                            <Card size="small" className="bg-indigo-50 border-indigo-200 text-center">
-                                <Statistic
-                                    title={<span className="text-indigo-600 text-xs font-medium">Tổng giờ công</span>}
-                                    value={summary.totalWorkingHours}
-                                    precision={1}
-                                    suffix="h"
-                                    valueStyle={{ color: "#4338ca", fontSize: 20 }}
-                                    prefix={<ClockCircleOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={12} md={6}>
-                            <Card size="small" className="bg-orange-50 border-orange-200 text-center">
-                                <Statistic
-                                    title={<span className="text-orange-600 text-xs font-medium">Tổng giờ OT (tính lương)</span>}
-                                    value={summary.totalOvertimeHours}
-                                    precision={1}
-                                    suffix="h"
-                                    valueStyle={{ color: "#c2410c", fontSize: 20 }}
-                                    prefix={<ThunderboltOutlined />}
-                                />
-                            </Card>
-                        </Col>
-                    </Row>
-                    <Divider style={{ margin: "0 0 16px 0" }} />
-                </>
+                <StatRow
+                    items={[
+                        { title: "Tổng bản ghi", value: summary.totalRecords, suffix: "ngày", prefix: <CalendarOutlined />, color: "#1d4ed8" },
+                        { title: "Ngày có mặt", value: summary.presentDays, suffix: "ngày", prefix: <CheckCircleOutlined />, color: "#15803d" },
+                        { title: "Tổng giờ công", value: summary.totalWorkingHours.toFixed(1), suffix: "h", prefix: <ClockCircleOutlined />, color: "#4338ca" },
+                        { title: "Tổng giờ OT (tính lương)", value: summary.totalOvertimeHours.toFixed(1), suffix: "h", prefix: <ThunderboltOutlined />, color: "#c2410c" },
+                    ]}
+                />
             )}
 
             {/* ── Calendar ── */}
             {renderCalendar()}
 
             {requiredCount > 0 && (
-                <div className="mt-3 text-xs text-gray-400 flex items-center gap-1">
-                    <ExclamationCircleOutlined />
+                <div className="mt-3 flex items-center gap-1">
+                    <Text type="secondary" style={{ fontSize: 12 }}><ExclamationCircleOutlined /></Text>
                     <Text type="secondary" style={{ fontSize: 12 }}>
                         Nhấn vào ô có dấu <strong>!</strong> hoặc <strong>x</strong> để gửi giải trình
                     </Text>
@@ -465,7 +415,15 @@ const MyAttendanceHistoryTable = () => {
                 onOk={handleSubmitExplanation}
                 onCancel={() => setModalOpen(false)}
             />
-        </Card>
+        </>
+    );
+
+    if (embedded) return content;
+
+    return (
+        <SectionCard title="Lịch sử chấm công của tôi" icon={<CalendarOutlined />}>
+            {content}
+        </SectionCard>
     );
 };
 

@@ -1,11 +1,11 @@
-import { Form, Input, InputNumber, TimePicker, Switch, message, Row, Col, Select, Card, Button, Typography, Space } from "antd";
-import { ArrowLeftOutlined, SaveOutlined } from "@ant-design/icons";
+import { Form, Input, InputNumber, TimePicker, Switch, message, Row, Col, Select, Button, Space } from "antd";
+import { ArrowLeftOutlined, ClockCircleOutlined, LoginOutlined, SaveOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../store";
 import { createShift, fetchAllShifts } from "../../../../store/shiftSlide";
 import { useNavigate } from "react-router-dom";
 import URL from "../../../../constants/url";
 
-const { Title } = Typography;
+import { PageHeader, SectionCard } from "../../components/listPage";
 
 const AddShift = () => {
     const [form] = Form.useForm();
@@ -48,13 +48,15 @@ const AddShift = () => {
     };
 
     return (
-        <div className="p-4" style={{ maxWidth: 800, margin: "0 auto" }}>
-            <Space className="mb-4" align="center" style={{ marginBottom: 20 }}>
-                <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
-                    Quay lại
-                </Button>
-                <Title level={3} style={{ margin: 0 }}>Thêm Ca Làm Việc Mới</Title>
-            </Space>
+        <div className="p-2">
+            <PageHeader
+                title="Thêm ca làm việc mới"
+                actions={
+                    <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
+                        Quay lại
+                    </Button>
+                }
+            />
 
             <Form
                 form={form}
@@ -72,7 +74,7 @@ const AddShift = () => {
                     isOvernight: false,
                 }}
             >
-                <Card className="mb-4 shadow-sm border-0 rounded-xl" style={{ marginBottom: 20 }}>
+                <SectionCard title="Thông tin ca làm việc" icon={<ClockCircleOutlined />}>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
@@ -149,9 +151,9 @@ const AddShift = () => {
                             </Form.Item>
                         </Col>
                     </Row>
-                </Card>
+                </SectionCard>
 
-                <Card title="Quy định Check-in / Check-out" className="mb-4 shadow-sm border-0 rounded-xl" style={{ marginBottom: 20 }}>
+                <SectionCard title="Quy định Check-in / Check-out" icon={<LoginOutlined />}>
                     <Row gutter={16}>
                         <Col span={8}>
                             <Form.Item
@@ -197,9 +199,9 @@ const AddShift = () => {
                             </Form.Item>
                         </Col>
                     </Row>
-                </Card>
+                </SectionCard>
 
-                <div style={{ textAlign: "right", marginTop: 24 }}>
+                <div style={{ textAlign: "right" }}>
                     <Space>
                         <Button onClick={() => navigate(-1)}>Hủy bỏ</Button>
                         <Button type="primary" icon={<SaveOutlined />} onClick={() => form.submit()} className="bg-indigo-600 hover:bg-indigo-700">

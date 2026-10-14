@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type Key } from "react";
-import { Card, Select, Tree, Button, Typography, Spin, Space, message } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
+import { Select, Tree, Button, Typography, Spin, Space, message } from "antd";
+import { KeyOutlined, SaveOutlined } from "@ant-design/icons";
 import type { DataNode } from "antd/es/tree";
 import { useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -16,8 +16,9 @@ import {
 } from "../../../../store/roleSlide";
 import CompanyScopeSelect, { SuperAdminOnly } from "../../components/companyScopeSelect";
 import { useConfigScope } from "../../components/companyScopeSelect/hooks";
+import { PageHeader, SectionCard } from "../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 const UNGROUPED = "Chung";
 const GROUP_PREFIX = "group:";
 
@@ -113,9 +114,24 @@ const ManagePermissionContent = () => {
 
   return (
     <div className="p-2">
-      <Card title={<Title level={4} style={{ margin: 0 }}>Phân quyền</Title>}>
+      <PageHeader
+        title="Phân quyền"
+        actions={
+          <Button type="primary" icon={<SaveOutlined />} disabled={roleId == null} loading={saving} onClick={handleSave}>
+            Lưu
+          </Button>
+        }
+      />
+      <div style={{ marginBottom: 16 }}>
+        <CompanyScopeSelect />
+      </div>
+      <SectionCard
+        title="Quyền của vai trò"
+        icon={<KeyOutlined />}
+        gap={0}
+        extra={<Text type="secondary">Đã chọn {selected.size}/{allKeys.length} quyền</Text>}
+      >
         <Space style={{ marginBottom: 16 }} wrap>
-          <CompanyScopeSelect />
           <Select
             style={{ width: 240 }}
             placeholder="Chọn vai trò"
@@ -123,12 +139,8 @@ const ManagePermissionContent = () => {
             onChange={handleRoleChange}
             options={roles.map((r) => ({ value: r.roleId, label: r.roleName }))}
           />
-          <Button type="primary" icon={<SaveOutlined />} disabled={roleId == null} loading={saving} onClick={handleSave}>
-            Lưu
-          </Button>
           <Button disabled={roleId == null} onClick={() => setSelected(new Set(allKeys))}>Chọn tất cả</Button>
           <Button disabled={roleId == null} onClick={() => setSelected(new Set())}>Bỏ chọn tất cả</Button>
-          <Text type="secondary">Đã chọn {selected.size}/{allKeys.length} quyền</Text>
         </Space>
 
         <Spin spinning={loading}>
@@ -145,7 +157,7 @@ const ManagePermissionContent = () => {
             onCheck={handleCheck}
           />
         </Spin>
-      </Card>
+      </SectionCard>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-    Card, Table, Button, Input, Space, Tag, Tooltip,
-    Popconfirm, message, Row, Col, Statistic, Badge
+    Table, Button, Input, Space, Tag, Tooltip,
+    Popconfirm, message, Typography
 } from "antd";
 import {
     SearchOutlined, ReloadOutlined, UserOutlined,
@@ -17,7 +17,7 @@ import {
 import dayjs from "dayjs";
 import HRFaceRegisterModal from "./HRFaceRegisterModal";
 import { errorText } from "../../../../utils/apiError";
-import { FilterCard, PageHeader, TableCard } from "../../components/listPage";
+import { FilterCard, PageHeader, StatRow, TableCard } from "../../components/listPage";
 
 const ManageFaceRegistrationPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -71,7 +71,7 @@ const ManageFaceRegistrationPage: React.FC = () => {
             width: 90, align: "center" as const,
         },
         {
-            title: "Họ và tên", dataIndex: "fullName", key: "fullName",
+            title: "Họ và tên", dataIndex: "fullName", key: "fullName", ellipsis: true,
             render: (name: string) => (
                 <Space>
                     <UserOutlined className="text-slate-400" />
@@ -94,15 +94,15 @@ const ManageFaceRegistrationPage: React.FC = () => {
                 : <Tag color="error" icon={<CloseCircleOutlined />}>Chưa đăng ký</Tag>
         },
         {
-            title: "Ngày đăng ký", key: "registeredAt", align: "center" as const,
+            title: "Ngày đăng ký", key: "registeredAt", align: "center" as const, width: 150,
             render: (_: any, r: EmployeeFaceStatusDto) => r.registeredAt
-                ? <span className="text-sm">{dayjs(r.registeredAt).format("DD/MM/YYYY HH:mm")}</span>
+                ? <span style={{ whiteSpace: "nowrap" }}>{dayjs(r.registeredAt).format("DD/MM/YYYY HH:mm")}</span>
                 : <span className="text-slate-400">—</span>
         },
         {
-            title: "Cập nhật lần cuối", key: "lastUpdatedAt", align: "center" as const,
+            title: "Cập nhật lần cuối", key: "lastUpdatedAt", align: "center" as const, width: 150,
             render: (_: any, r: EmployeeFaceStatusDto) => r.lastUpdatedAt
-                ? <span className="text-sm text-slate-500">{dayjs(r.lastUpdatedAt).format("DD/MM/YYYY HH:mm")}</span>
+                ? <span className="text-slate-500" style={{ whiteSpace: "nowrap" }}>{dayjs(r.lastUpdatedAt).format("DD/MM/YYYY HH:mm")}</span>
                 : <span className="text-slate-400">—</span>
         },
         {
@@ -139,99 +139,63 @@ const ManageFaceRegistrationPage: React.FC = () => {
     ];
 
     return (
-        <div className="p-6 bg-[#f8fafc] min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <PageHeader
-                    title={<><CameraOutlined className="mr-3 text-indigo-600" />Quản lý Đăng ký Khuôn mặt</>}
-                    subtitle="HR phụ trách đăng ký và quản lý khuôn mặt cho từng nhân viên. Nhân viên không thể tự đăng ký."
-                />
+        <div className="p-2">
+            <PageHeader
+                title="Quản lý đăng ký khuôn mặt"
+                subtitle="HR phụ trách đăng ký và quản lý khuôn mặt cho từng nhân viên. Nhân viên không thể tự đăng ký."
+            />
 
-                {/* Thống kê */}
-                <Row gutter={16} className="mb-6">
-                    <Col xs={8}>
-                        <Card size="small" className="bg-blue-50 border-blue-200 text-center">
-                            <Statistic
-                                title={<span className="text-blue-600 text-xs font-medium">Tổng nhân viên</span>}
-                                value={stats.total}
-                                valueStyle={{ color: '#1d4ed8', fontSize: 22 }}
-                                prefix={<TeamOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={8}>
-                        <Card size="small" className="bg-green-50 border-green-200 text-center">
-                            <Statistic
-                                title={<span className="text-green-600 text-xs font-medium">Đã đăng ký</span>}
-                                value={stats.registered}
-                                valueStyle={{ color: '#15803d', fontSize: 22 }}
-                                prefix={<CheckCircleOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={8}>
-                        <Card size="small" className="bg-red-50 border-red-200 text-center">
-                            <Statistic
-                                title={<span className="text-red-600 text-xs font-medium">Chưa đăng ký</span>}
-                                value={stats.unregistered}
-                                valueStyle={{ color: '#dc2626', fontSize: 22 }}
-                                prefix={<CloseCircleOutlined />}
-                            />
-                        </Card>
-                    </Col>
-                </Row>
+            <StatRow
+                items={[
+                    { title: "Tổng nhân viên", value: stats.total, prefix: <TeamOutlined />, color: "#1d4ed8" },
+                    { title: "Đã đăng ký", value: stats.registered, prefix: <CheckCircleOutlined />, color: "#15803d" },
+                    { title: "Chưa đăng ký", value: stats.unregistered, prefix: <CloseCircleOutlined />, color: "#dc2626" },
+                ]}
+            />
 
-                <FilterCard
-                    onReset={() => setSearch("")}
-                    extra={
-                        <Button
-                            icon={<ReloadOutlined />}
-                            onClick={() => dispatch(fetchAllEmployeesFaceStatus())}
-                            loading={loading}
-                        >
-                            Làm mới
-                        </Button>
-                    }
-                >
-                    <Input
-                        placeholder="Tìm theo tên, mã NV, phòng ban..."
-                        prefix={<SearchOutlined />}
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                        style={{ width: 300 }}
-                        allowClear
-                    />
-                </FilterCard>
-
-                <TableCard
-                    title="Danh sách nhân viên"
-                    count={filtered.length}
-                    extra={
-                        <Badge
-                            count={stats.unregistered}
-                            showZero={false}
-                            color="red"
-                            title={`${stats.unregistered} nhân viên chưa đăng ký`}
-                        >
-                            <span className="text-sm text-slate-500">
-                                {stats.unregistered > 0
-                                    ? `${stats.unregistered} nhân viên chưa đăng ký khuôn mặt`
-                                    : "Tất cả nhân viên đã đăng ký"}
-                            </span>
-                        </Badge>
-                    }
-                >
-                    <Table
-                        columns={columns}
-                        dataSource={filtered}
-                        rowKey="employeeId"
+            <FilterCard
+                onReset={() => setSearch("")}
+                extra={
+                    <Button
+                        icon={<ReloadOutlined />}
+                        onClick={() => dispatch(fetchAllEmployeesFaceStatus())}
                         loading={loading}
-                        pagination={{ pageSize: 15, showSizeChanger: false }}
-                        bordered
-                        rowClassName={(r) => !r.isRegistered ? "bg-red-50" : ""}
-                    />
-                </TableCard>
-            </div>
+                    >
+                        Làm mới
+                    </Button>
+                }
+            >
+                <Input
+                    placeholder="Tìm theo tên, mã NV, phòng ban..."
+                    prefix={<SearchOutlined />}
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{ width: 300 }}
+                    allowClear
+                />
+            </FilterCard>
+
+            <TableCard
+                title="Danh sách nhân viên"
+                count={filtered.length}
+                extra={
+                    <Typography.Text type={stats.unregistered > 0 ? "danger" : "secondary"}>
+                        {stats.unregistered > 0
+                            ? `${stats.unregistered} nhân viên chưa đăng ký khuôn mặt`
+                            : "Tất cả nhân viên đã đăng ký"}
+                    </Typography.Text>
+                }
+            >
+                <Table
+                    columns={columns}
+                    dataSource={filtered}
+                    rowKey="employeeId"
+                    loading={loading}
+                    pagination={{ pageSize: 15, showSizeChanger: false }}
+                    bordered
+                    rowClassName={(r) => !r.isRegistered ? "bg-red-50" : ""}
+                />
+            </TableCard>
 
             <HRFaceRegisterModal
                 open={modal.open}

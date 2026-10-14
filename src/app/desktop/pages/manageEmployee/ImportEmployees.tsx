@@ -140,7 +140,6 @@ const ImportEmployees = ({ open, onClose, onImported }: Props) => {
                         <Alert type="error" showIcon
                             message={`${result.errors.length}/${result.totalRows} dòng có lỗi. Sửa file rồi tải lên lại; chưa nhân viên nào được thêm.`} />
                         <Table<ImportRowError>
-                            size="small"
                             rowKey="row"
                             dataSource={result.errors}
                             pagination={result.errors.length > 10 ? { pageSize: 10, size: "small" } : false}

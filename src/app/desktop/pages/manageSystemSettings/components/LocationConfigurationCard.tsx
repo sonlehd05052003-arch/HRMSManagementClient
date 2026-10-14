@@ -1,6 +1,7 @@
 import React from "react";
-import { Card, Form, Button, InputNumber, Space, Alert, Row, Col, Divider, Slider, Radio, Input, Typography } from "antd";
+import { Form, Button, InputNumber, Space, Alert, Row, Col, Divider, Slider, Radio, Input, Typography } from "antd";
 import { ReloadOutlined, SaveOutlined, EnvironmentOutlined, AimOutlined, WifiOutlined, GlobalOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -25,8 +26,10 @@ const LocationConfigurationCard: React.FC<LocationConfigurationCardProps> = ({
     const showIp  = checkInMethod === "IP"       || checkInMethod === "Either";
 
     return (
-        <Card
-            title={<Space><EnvironmentOutlined /><span>Cấu hình Điểm danh</span></Space>}
+        <SectionCard
+            title="Cấu hình Điểm danh"
+            icon={<EnvironmentOutlined />}
+            gap={0}
             extra={
                 <Button icon={<ReloadOutlined />} onClick={onRefresh} loading={loading}>
                     Làm mới
@@ -37,7 +40,7 @@ const LocationConfigurationCard: React.FC<LocationConfigurationCardProps> = ({
                 description="Cấu hình phương thức xác minh khi nhân viên Check-in/Check-out. Có thể dùng GPS, IP mạng văn phòng, hoặc cho phép cả hai."
                 type="info"
                 showIcon
-                className="!mb-6"
+                style={{ marginBottom: 16 }}
             />
 
             <Form
@@ -160,7 +163,7 @@ const LocationConfigurationCard: React.FC<LocationConfigurationCardProps> = ({
                     Lưu cấu hình
                 </Button>
             </Form>
-        </Card>
+        </SectionCard>
     );
 };
 

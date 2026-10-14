@@ -35,7 +35,7 @@ import {
     CASE_CONFIG,
 } from "../../../../../constants/explanationTemplates";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 interface ExplanationModalProps {
     open: boolean;
@@ -280,7 +280,7 @@ const ExplanationModal: React.FC<ExplanationModalProps> = ({
                 >
                     <CloseCircleOutlined style={{ color: "#ff4d4f", fontSize: 16, marginTop: 2 }} />
                     <div>
-                        <Text strong style={{ color: "#cf1322", fontSize: 13 }}>Phiếu bị từ chối</Text>
+                        <Text strong style={{ color: "#cf1322" }}>Phiếu bị từ chối</Text>
                         <br />
                         <Text type="secondary" style={{ fontSize: 12 }}>
                             "{selectedRecord.explanationResponse}"
@@ -293,8 +293,8 @@ const ExplanationModal: React.FC<ExplanationModalProps> = ({
 
             <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
                 <BulbOutlined style={{ color: "#faad14" }} />
-                <Title level={5} style={{ margin: 0, fontSize: 13 }}>Lý do giải trình</Title>
-                <Text type="secondary" style={{ fontSize: 11 }}>— nhập hoặc chọn gợi ý từ danh sách</Text>
+                <Text strong>Lý do giải trình</Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>— nhập hoặc chọn gợi ý từ danh sách</Text>
             </div>
 
             <Form form={form} layout="vertical" style={{ marginBottom: 12 }}>

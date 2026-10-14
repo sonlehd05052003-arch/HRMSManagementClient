@@ -1,38 +1,32 @@
 import React from "react";
-import { Card, Form, InputNumber, Button, Typography, Alert } from "antd";
+import { Form, InputNumber, Button, Typography, Alert } from "antd";
 import { SaveOutlined, ReloadOutlined, CalendarOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface Props {
     form: any;
     loading: boolean;
     onFinish: (values: any) => void;
     onRefresh: () => void;
+    gap?: number;
 }
 
-const PayrollSettingsCard: React.FC<Props> = ({ form, loading, onFinish, onRefresh }) => {
+const PayrollSettingsCard: React.FC<Props> = ({ form, loading, onFinish, onRefresh, gap }) => {
     return (
-        <Card className="shadow-sm rounded-2xl border border-slate-100">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <CalendarOutlined className="text-indigo-600 text-lg" />
-                </div>
-                <div>
-                    <Title level={4} style={{ margin: 0 }}>Ngày chốt lương</Title>
-                    <Text type="secondary" style={{ fontSize: 13 }}>
-                        Cấu hình ngày bắt đầu kỳ tính lương hàng tháng
-                    </Text>
-                </div>
-            </div>
+        <SectionCard title="Ngày chốt lương" icon={<CalendarOutlined />} gap={gap}>
+            <Text type="secondary" className="block" style={{ marginBottom: 16 }}>
+                Cấu hình ngày bắt đầu kỳ tính lương hàng tháng
+            </Text>
 
             <Alert
                 type="info"
                 showIcon
-                className="!mb-6"
+                style={{ marginBottom: 16 }}
                 message="Cách tính kỳ lương"
                 description={
-                    <div className="text-sm mt-1">
+                    <div className="mt-1">
                         <p>Nếu ngày chốt = <strong>5</strong>, các kỳ lương sẽ là:</p>
                         <ul className="list-disc ml-4 mt-1 space-y-1">
                             <li>Kỳ tháng 1: <strong>05/01 → 04/02</strong></li>
@@ -58,7 +52,6 @@ const PayrollSettingsCard: React.FC<Props> = ({ form, loading, onFinish, onRefre
                         min={1}
                         max={28}
                         style={{ width: 180 }}
-                        size="large"
                         addonBefore={<CalendarOutlined />}
                         addonAfter="hàng tháng"
                     />
@@ -77,7 +70,6 @@ const PayrollSettingsCard: React.FC<Props> = ({ form, loading, onFinish, onRefre
                         min={1}
                         max={30}
                         style={{ width: 180 }}
-                        size="large"
                         addonBefore={<ClockCircleOutlined />}
                         addonAfter="ngày"
                     />
@@ -97,7 +89,7 @@ const PayrollSettingsCard: React.FC<Props> = ({ form, loading, onFinish, onRefre
                     </Button>
                 </div>
             </Form>
-        </Card>
+        </SectionCard>
     );
 };
 

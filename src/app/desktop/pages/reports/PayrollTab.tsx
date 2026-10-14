@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Col, DatePicker, Row, Select, Space, Table, Tag } from "antd";
 import dayjs from "dayjs";
 import { Bar, CartesianGrid, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { FilterCard, TableCard } from "../../components/listPage";
-import { ChartCard, ExcelButton, StatRow } from "./shared";
+import { FilterCard, StatRow, TableCard } from "../../components/listPage";
+import { ChartCard, ExcelButton } from "./shared";
 import { formatMillions, formatNumber, useReport } from "./reportData";
 
 interface PayrollRow {
@@ -99,7 +99,7 @@ const PayrollTab = () => {
                 <Col xs={24} xl={12}>
                     <TableCard title="Theo tháng" count={data?.months.length}>
                         <Table<PayrollRow>
-                            size="small" rowKey="label" loading={loading} dataSource={data?.months} pagination={false} scroll={{ x: 640 }}
+                            rowKey="label" loading={loading} dataSource={data?.months} pagination={false} scroll={{ x: 640 }}
                             columns={[
                                 { title: "Kỳ", dataIndex: "label" },
                                 { title: "Trạng thái", dataIndex: "status", render: (s: string) => s ? <Tag color={STATUS[s]?.color}>{STATUS[s]?.label ?? s}</Tag> : null },
@@ -111,7 +111,7 @@ const PayrollTab = () => {
                 <Col xs={24} xl={12}>
                     <TableCard title={data?.month ? `Theo phòng ban – tháng ${data.month}` : "Theo phòng ban"} count={data?.departments.length}>
                         <Table<PayrollRow>
-                            size="small" rowKey="label" loading={loading} dataSource={data?.departments} pagination={false} scroll={{ x: 640 }}
+                            rowKey="label" loading={loading} dataSource={data?.departments} pagination={false} scroll={{ x: 640 }}
                             columns={[
                                 { title: "Phòng ban", dataIndex: "label" },
                                 ...moneyColumns,

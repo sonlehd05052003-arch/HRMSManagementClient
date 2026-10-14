@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { Card, Button, Space, Typography, Spin, Alert, Tooltip } from "antd"
+import { Card, Button, Typography, Spin, Alert, Tooltip, Row, Col, Statistic } from "antd"
 import { ArrowLeftOutlined, CalendarOutlined, InfoCircleOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import {
@@ -8,8 +8,9 @@ import {
   selectMyAttendanceSummary,
   selectPayrollLoading,
 } from "../../../../../store/payrollSlide"
+import { PageHeader, SectionCard } from "../../../components/listPage"
 
-const { Title, Text } = Typography
+const { Text } = Typography
 
 const STATUS_TAG: Record<string, { color: string; label: string }> = {
   Present: { color: "blue",   label: "Có mặt"   },
@@ -72,11 +73,11 @@ const MyAttendanceReview = () => {
 
   if (!attendance) {
     return (
-      <div className="p-6">
+      <div className="p-2">
         <Alert type="info" message="Không có dữ liệu chấm công"
           description="Chưa có dữ liệu chấm công cho kỳ này."
           showIcon />
-        <Button icon={<ArrowLeftOutlined />} className="mt-4" onClick={() => navigate(-1)}>Quay lại</Button>
+        <Button icon={<ArrowLeftOutlined />} style={{ marginTop: 16 }} onClick={() => navigate(-1)}>Quay lại</Button>
       </div>
     )
   }
@@ -87,36 +88,31 @@ const MyAttendanceReview = () => {
   const totalOTHours   = monthlyRows.reduce((s, r) => s + r.otHours, 0)
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
-      <div className="flex items-center justify-between !mb-5">
-        <Space direction="vertical" size={0}>
-          <Title level={3} className="!mb-0">Review Chấm Công</Title>
-          <Text type="secondary">Kiểm tra dữ liệu chấm công của bạn trong kỳ lương này.</Text>
-        </Space>
-        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>Quay lại</Button>
-      </div>
+    <div className="p-2">
+      <PageHeader
+        title="Rà soát chấm công"
+        subtitle="Kiểm tra dữ liệu chấm công của bạn trong kỳ lương này."
+        actions={<Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>Quay lại</Button>}
+      />
 
       <Alert
         type="info"
         showIcon
         icon={<InfoCircleOutlined />}
-        className="!mb-4"
+        style={{ marginBottom: 16 }}
         message="Hệ thống đang trong giai đoạn review chấm công"
         description="Hãy kiểm tra lịch chấm công bên dưới. Nếu phát hiện sai sót, vui lòng gửi yêu cầu giải trình qua module Chấm công trước khi hết hạn review."
       />
 
-      <Card
-        title={
-          <Space>
-            <CalendarOutlined className="text-blue-500" />
-            <span>Bảng Chấm Công Tháng {monthYear.month}/{monthYear.year}</span>
-          </Space>
-        }
-        className="shadow-sm rounded-xl"
+      {renderStats(attendance)}
+
+      <SectionCard
+        title={`Bảng Chấm Công Tháng ${monthYear.month}/${monthYear.year}`}
+        icon={<CalendarOutlined />}
+        gap={0}
       >
-        {renderStats(attendance)}
         {renderCalendar(attendance, monthlyRows, totalWorkHours, totalOTHours)}
-      </Card>
+      </SectionCard>
     </div>
   )
 }
@@ -173,22 +169,23 @@ function buildMonthlyRows(attendance: any) {
 
 function renderStats(attendance: any) {
   const stats = [
-    { label: "Có mặt",    val: attendance.totals.presentDays,                       unit: "ngày", bg: "bg-blue-50",    border: "border-blue-100",    num: "text-blue-700"    },
-    { label: "Đi trễ",    val: attendance.totals.lateDays,                          unit: "ngày", bg: "bg-amber-50",   border: "border-amber-100",   num: "text-amber-700"   },
-    { label: "Vắng mặt",  val: attendance.totals.absentDays,                        unit: "ngày", bg: "bg-red-50",     border: "border-red-100",     num: "text-red-600"     },
-    { label: "Nghỉ phép", val: Number(attendance.totals.paidLeaveDays).toFixed(1),  unit: "ngày", bg: "bg-emerald-50", border: "border-emerald-100", num: "text-emerald-700" },
-    { label: "Tăng ca",   val: Number(attendance.totals.overtimeHours).toFixed(1),  unit: "giờ",  bg: "bg-purple-50",  border: "border-purple-100",  num: "text-purple-700"  },
+    { label: "Có mặt",    val: attendance.totals.presentDays,                       unit: "ngày", color: "#1d4ed8" },
+    { label: "Đi trễ",    val: attendance.totals.lateDays,                          unit: "ngày", color: "#b45309" },
+    { label: "Vắng mặt",  val: attendance.totals.absentDays,                        unit: "ngày", color: "#dc2626" },
+    { label: "Nghỉ phép", val: Number(attendance.totals.paidLeaveDays).toFixed(1),  unit: "ngày", color: "#047857" },
+    { label: "Tăng ca",   val: Number(attendance.totals.overtimeHours).toFixed(1),  unit: "giờ",  color: "#7e22ce" },
   ]
+  // Same cards as the shared StatRow, but five on one row on a wide screen
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-4">
+    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
       {stats.map(s => (
-        <div key={s.label} className={`rounded-xl border px-3 py-2.5 ${s.bg} ${s.border}`}>
-          <div className={`text-xl font-bold leading-none ${s.num}`}>{s.val}</div>
-          <div className={`text-xs mt-1 font-medium ${s.num} opacity-80`}>{s.label}</div>
-          <div className="text-[10px] text-gray-400">{s.unit}</div>
-        </div>
+        <Col key={s.label} flex="1 1 160px">
+          <Card size="small" className="rounded-xl shadow-sm" style={{ height: "100%" }}>
+            <Statistic title={s.label} value={s.val} suffix={s.unit} valueStyle={{ color: s.color, fontSize: 24 }} />
+          </Card>
+        </Col>
       ))}
-    </div>
+    </Row>
   )
 }
 
@@ -257,13 +254,13 @@ function renderCalendar(attendance: any, monthlyRows: any[], totalWorkHours: num
 
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 bg-gray-50 rounded-xl px-4 py-2.5 border border-gray-100">
           <div className="flex items-center gap-4">
-            <div className="text-sm">
-              <span className="text-gray-500 text-xs">Tổng giờ làm: </span>
+            <div>
+              <Text type="secondary">Tổng giờ làm: </Text>
               <span className="font-semibold text-gray-800">{totalWorkHours.toFixed(1)}h</span>
             </div>
             {totalOTHours > 0 && (
-              <div className="text-sm">
-                <span className="text-gray-500 text-xs">Tăng ca: </span>
+              <div>
+                <Text type="secondary">Tăng ca: </Text>
                 <span className="font-semibold text-purple-600">{totalOTHours.toFixed(1)}h</span>
               </div>
             )}
@@ -278,7 +275,7 @@ function renderCalendar(attendance: any, monthlyRows: any[], totalWorkHours: num
             ].map(l => (
               <span key={l.label} className="flex items-center gap-1">
                 <span className={`inline-block w-2 h-2 rounded-full ${l.dot}`} />
-                <span className="text-[10px] text-gray-500">{l.label}</span>
+                <Text type="secondary" style={{ fontSize: 12 }}>{l.label}</Text>
               </span>
             ))}
           </div>

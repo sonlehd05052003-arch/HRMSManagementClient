@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Card, Col, Empty, Row, Statistic, message } from "antd";
+import { Button, Card, Empty, message } from "antd";
 import { FileExcelOutlined } from "@ant-design/icons";
 import { request } from "../../../../utils/request";
 import { apiErrorMessage } from "../../../../utils/apiError";
@@ -34,26 +34,6 @@ export const ExcelButton = ({ kind, params }: { kind: ReportKind; params: Report
     );
 };
 
-export interface StatItem {
-    title: string;
-    value: number | string;
-    suffix?: string;
-    color?: string;
-}
-
-/** A row of figures above the charts */
-export const StatRow = ({ items, loading }: { items: StatItem[]; loading: boolean }) => (
-    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-        {items.map((item) => (
-            <Col key={item.title} xs={24} sm={12} lg={24 / items.length}>
-                <Card size="small" loading={loading}>
-                    <Statistic title={item.title} value={item.value} suffix={item.suffix} valueStyle={{ color: item.color }} />
-                </Card>
-            </Col>
-        ))}
-    </Row>
-);
-
 export const ChartCard = ({ title, height = 300, empty, loading, children }: {
     title: string;
     height?: number;
@@ -61,7 +41,7 @@ export const ChartCard = ({ title, height = 300, empty, loading, children }: {
     loading?: boolean;
     children: React.ReactNode;
 }) => (
-    <Card size="small" title={title} style={{ height: "100%" }} loading={loading}>
+    <Card className="rounded-xl shadow-sm" title={title} style={{ height: "100%" }} loading={loading}>
         <div style={{ height }}>
             {empty ? (
                 <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>

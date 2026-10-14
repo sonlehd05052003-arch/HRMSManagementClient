@@ -1,14 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card, Descriptions, Button, Tag, Space, Typography, Spin, message, Modal, Table, Tooltip } from "antd";
-import { ArrowLeftOutlined, EditOutlined, StopOutlined, UserOutlined, EyeOutlined } from "@ant-design/icons";
+import { Descriptions, Button, Tag, Spin, message, Modal, Table, Tooltip } from "antd";
+import { ApartmentOutlined, ArrowLeftOutlined, EditOutlined, StopOutlined, EyeOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { fetchDepartmentById, selectSelectedDepartment, selectDepartmentLoading, deactivateDepartment } from "../../../../store/departmentSlide";
 import EditDepartmentModal from "./modal/EditDepartmentModal";
 import type { ColumnsType } from "antd/es/table";
 import type { IDepartmentEmployee } from "../../../../store/departmentSlide";
 
-const { Title } = Typography;
+import { PageHeader, SectionCard, TableCard } from "../../components/listPage";
 
 const DepartmentDetail = () => {
     const { id } = useParams();
@@ -28,16 +28,16 @@ const DepartmentDetail = () => {
     const handleDeactivate = () => {
         if (!department) return;
         Modal.confirm({
-            title: "Confirm Deactivation",
-            content: "Are you sure you want to deactivate this department?",
+            title: "Xác nhận ngừng sử dụng",
+            content: "Bạn có chắc muốn ngừng sử dụng phòng ban này?",
             onOk: () => {
                 dispatch(deactivateDepartment(department.departmentId)).then((res: any) => {
                     if (!res.error) {
-                        message.success("Department deactivated successfully (MSG-95)");
+                        message.success("Đã ngừng sử dụng phòng ban (MSG-95)");
                         navigate("/hr/manage-department");
                     } else {
                         const error = res.payload;
-                        const msg = typeof error === 'string' ? error : error?.message || "Cannot deactivate department (MSG-96)";
+                        const msg = typeof error === 'string' ? error : error?.message || "Không thể ngừng sử dụng phòng ban (MSG-96)";
                         message.error(msg);
                     }
                 });
@@ -57,13 +57,13 @@ const DepartmentDetail = () => {
 
     const employeeColumns: ColumnsType<IDepartmentEmployee> = [
         {
-            title: 'Employee Code',
+            title: 'Mã NV',
             dataIndex: 'employeeCode',
             key: 'employeeCode',
             width: 150,
         },
         {
-            title: 'Full Name',
+            title: 'Họ tên',
             dataIndex: 'fullName',
             key: 'fullName',
             render: (text, record) => (
@@ -73,7 +73,7 @@ const DepartmentDetail = () => {
             ),
         },
         {
-            title: 'Position',
+            title: 'Chức vụ',
             dataIndex: 'positionName',
             key: 'positionName',
             render: (text) => text || "—",
@@ -84,19 +84,19 @@ const DepartmentDetail = () => {
             key: 'email',
         },
         {
-            title: 'Phone',
+            title: 'Số điện thoại',
             dataIndex: 'phone',
             key: 'phone',
             render: (text) => text || "—",
         },
         {
-            title: 'Gender',
+            title: 'Giới tính',
             dataIndex: 'gender',
             key: 'gender',
             render: (text) => text || "—",
         },
         {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'employmentStatus',
             key: 'employmentStatus',
             render: (status) => (
@@ -106,11 +106,11 @@ const DepartmentDetail = () => {
             ),
         },
         {
-            title: 'Action',
+            title: 'Thao tác',
             key: 'action',
             width: 100,
             render: (_, record) => (
-                <Tooltip title="View Detail">
+                <Tooltip title="Xem chi tiết">
                     <Button 
                         icon={<EyeOutlined />} 
                         onClick={() => navigate(`/hr/manage-employee/${record.employeeId}`)} 
@@ -125,71 +125,60 @@ const DepartmentDetail = () => {
     }
 
     if (!department) {
-        return <div style={{ padding: "20px" }}><Title level={4}>Department not found</Title></div>;
+        return <div className="p-2"><PageHeader title="Không tìm thấy phòng ban" /></div>;
     }
 
     return (
-        <div className="p-4">
-            <Card
-                className="mb-4"
-                title={
-                    <Space>
+        <div className="p-2">
+            <PageHeader
+                title="Chi tiết phòng ban"
+                subtitle={department.departmentName}
+                actions={
+                    <>
                         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate("/hr/manage-department")}>
-                            Back
+                            Quay lại
                         </Button>
-                        <Title level={4} style={{ margin: 0 }}>Department Details</Title>
-                    </Space>
-                }
-                extra={
-                    <Space>
-                        <Button 
-                            type="primary" 
-                            icon={<EditOutlined />} 
+                        <Button
+                            type="primary"
+                            icon={<EditOutlined />}
                             onClick={() => setIsEditModalOpen(true)}
                         >
-                            Edit
+                            Chỉnh sửa
                         </Button>
                         {department.isActive && (
-                            <Button 
-                                danger 
-                                icon={<StopOutlined />} 
+                            <Button
+                                danger
+                                icon={<StopOutlined />}
                                 onClick={handleDeactivate}
                             >
-                                Deactivate
+                                Ngừng sử dụng
                             </Button>
                         )}
-                    </Space>
+                    </>
                 }
-            >
+            />
+            <SectionCard title="Thông tin phòng ban" icon={<ApartmentOutlined />}>
                 <Descriptions bordered column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}>
-                    <Descriptions.Item label="Department Code">{department.departmentCode}</Descriptions.Item>
-                    <Descriptions.Item label="Department Name">{department.departmentName}</Descriptions.Item>
-                    <Descriptions.Item label="Status">
+                    <Descriptions.Item label="Mã phòng ban">{department.departmentCode}</Descriptions.Item>
+                    <Descriptions.Item label="Tên phòng ban">{department.departmentName}</Descriptions.Item>
+                    <Descriptions.Item label="Trạng thái">
                         <Tag color={department.isActive ? "green" : "red"}>
-                            {department.isActive ? "ACTIVE" : "INACTIVE"}
+                            {department.isActive ? "Đang hoạt động" : "Ngừng sử dụng"}
                         </Tag>
                     </Descriptions.Item>
-                    <Descriptions.Item label="Manager">{department.managerName || "—"}</Descriptions.Item>
-                    <Descriptions.Item label="Employee Count">{department.employeeCount}</Descriptions.Item>
-                    <Descriptions.Item label="Description" span={1}>{department.description || "—"}</Descriptions.Item>
+                    <Descriptions.Item label="Trưởng phòng">{department.managerName || "—"}</Descriptions.Item>
+                    <Descriptions.Item label="Số nhân viên">{department.employeeCount}</Descriptions.Item>
+                    <Descriptions.Item label="Mô tả" span={1}>{department.description || "—"}</Descriptions.Item>
                 </Descriptions>
-            </Card>
-            <div style={{ height: "20px" }}></div>
-            <Card 
-                title={
-                    <Space>
-                        <UserOutlined />
-                        <Title level={5} style={{ margin: 0 }}>Employees in Department</Title>
-                    </Space>
-                }
-            >
+            </SectionCard>
+            <TableCard title="Nhân viên trong phòng ban" count={department.employees?.length}>
                 <Table 
                     columns={employeeColumns} 
                     dataSource={department.employees} 
                     rowKey="employeeId"
                     pagination={{ pageSize: 10 }}
                 />
-            </Card>
+            </TableCard>
 
             <EditDepartmentModal
                 open={isEditModalOpen}

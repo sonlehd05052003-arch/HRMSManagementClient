@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import {
-  Table, Card, Button, Space, Typography, Tag, message,
-  Breadcrumb, Divider, Input, Select, Row, Col, Tooltip, Badge, Modal,
+  Table, Button, Space, Typography, Tag, message,
+  Breadcrumb, Input, Select, Row, Col, Tooltip, Modal, Alert,
 } from "antd"
 import {
   CalculatorOutlined,
@@ -13,7 +13,6 @@ import {
   EyeOutlined,
   SearchOutlined,
   FilterOutlined,
-  CloseCircleOutlined,
   SendOutlined,
   ClockCircleOutlined,
   TeamOutlined,
@@ -42,8 +41,9 @@ import type { IPayrollRecord } from "../../../../../types/payroll"
 import URL from "../../../../../constants/url"
 import SummaryCards from "./SummaryCards"
 import { errorText } from "../../../../../utils/apiError";
+import { FilterCard, PageHeader, TableCard } from "../../../components/listPage"
 
-const { Title, Text } = Typography
+const { Text } = Typography
 
 const PayrollPeriodDetail = () => {
   const { id }    = useParams()
@@ -203,18 +203,19 @@ const PayrollPeriodDetail = () => {
       sorter: (a, b) => a.employeeName.localeCompare(b.employeeName, "vi"),
       render: (_, r) => (
         <Space direction="vertical" size={0}>
-          <Text strong className="text-sm">{r.employeeName}</Text>
-          <Text type="secondary" className="text-xs">{r.employeeCode}</Text>
+          <Text strong>{r.employeeName}</Text>
+          <Text type="secondary">{r.employeeCode}</Text>
         </Space>
       ),
     },
     {
       title: "Phòng ban",
       dataIndex: "departmentName",
-      width: 150,
+      width: 180,
+      ellipsis: true,
       sorter: (a, b) => (a.departmentName || "").localeCompare(b.departmentName || "", "vi"),
       render: (v: string) => v
-        ? <Tag color="cyan" className="text-xs">{v}</Tag>
+        ? <Tag color="cyan" title={v} style={{ maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", verticalAlign: "middle" }}>{v}</Tag>
         : <span className="text-gray-300">—</span>,
     },
     {
@@ -223,7 +224,7 @@ const PayrollPeriodDetail = () => {
       width: 140,
       sorter: (a, b) => (a.positionName || "").localeCompare(b.positionName || "", "vi"),
       render: (v: string) => v
-        ? <span className="text-xs text-gray-600">{v}</span>
+        ? <span className="text-gray-600">{v}</span>
         : <span className="text-gray-300">—</span>,
     },
     {
@@ -246,7 +247,7 @@ const PayrollPeriodDetail = () => {
       title: "Lương ngày công",
       dataIndex: "salariedAmount",
       align: "right",
-      width: 140,
+      width: 170,
       sorter: (a, b) => (a.salariedAmount ?? 0) - (b.salariedAmount ?? 0),
       render: (v: number) => (v > 0 ? v.toLocaleString("vi-VN") : "—"),
     },
@@ -274,7 +275,7 @@ const PayrollPeriodDetail = () => {
       title: "Bảo hiểm",
       dataIndex: "insuranceAmount",
       align: "right",
-      width: 110,
+      width: 120,
       sorter: (a, b) => (a.insuranceAmount ?? 0) - (b.insuranceAmount ?? 0),
       render: (v: number) => (
         <Text type="danger">-{(v ?? 0).toLocaleString("vi-VN")}</Text>
@@ -295,7 +296,7 @@ const PayrollPeriodDetail = () => {
       key: "netPay",
       align: "right",
       fixed: "right",
-      width: 140,
+      width: 150,
       sorter: (a, b) => {
         const netA = a.salariedAmount + a.totalAllowances + a.overtimePay + a.bonusAmount - a.insuranceAmount - a.taxAmount - a.deductions.filter(d => d.deductionType === "Manual").reduce((s, d) => s + d.amount, 0)
         const netB = b.salariedAmount + b.totalAllowances + b.overtimePay + b.bonusAmount - b.insuranceAmount - b.taxAmount - b.deductions.filter(d => d.deductionType === "Manual").reduce((s, d) => s + d.amount, 0)
@@ -305,7 +306,7 @@ const PayrollPeriodDetail = () => {
         const gross = r.salariedAmount + r.totalAllowances + r.overtimePay + r.bonusAmount
         const manualDeductions = r.deductions.filter(d => d.deductionType === "Manual").reduce((s, d) => s + d.amount, 0)
         const computedNet = gross - r.insuranceAmount - r.taxAmount - manualDeductions
-        return <span className="font-bold text-green-600">{computedNet.toLocaleString("vi-VN")} đ</span>
+        return <span className="font-bold text-green-600" style={{ whiteSpace: "nowrap" }}>{computedNet.toLocaleString("vi-VN")} đ</span>
       },
     },
     {
@@ -313,7 +314,7 @@ const PayrollPeriodDetail = () => {
       key: "action",
       fixed: "right",
       align: "center",
-      width: 80,
+      width: 130,
       render: (_, r) => (
         <Button
           type="primary"
@@ -332,9 +333,9 @@ const PayrollPeriodDetail = () => {
   ]
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
+    <div className="p-2">
       <Breadcrumb
-        className="mb-4"
+        style={{ marginBottom: 12 }}
         items={[
           { title: "Dashboard", href: "/" },
           { title: "Kỳ lương", href: URL.PayrollPeriods },
@@ -342,13 +343,10 @@ const PayrollPeriodDetail = () => {
         ]}
       />
 
-      {/* Header + Actions */}
-      <div className="flex justify-between items-start !mb-5">
-        <Space direction="vertical" size={0}>
-          <Title level={3} className="!mb-0">
-            Chi tiết Kỳ lương Tháng {period?.month}/{period?.year}
-          </Title>
-          <Space className="mt-1">
+      <PageHeader
+        title={`Chi tiết kỳ lương tháng ${period?.month}/${period?.year}`}
+        subtitle={
+          <Space wrap size={[0, 4]} style={{ marginTop: 4 }}>
             <Tag color="cyan">Từ: {period?.startDate}</Tag>
             <Tag color="cyan">Đến: {period?.endDate}</Tag>
             {isApproved         && <Tag color="green"  icon={<CheckCircleOutlined />}>ĐÃ DUYỆT</Tag>}
@@ -357,9 +355,8 @@ const PayrollPeriodDetail = () => {
             {isRejected         && <Tag color="red" icon={<StopOutlined />}>ĐÃ TỪ CHỐI</Tag>}
             {isOpen             && <Tag color="default">CHƯA XỬ LÝ</Tag>}
           </Space>
-        </Space>
-
-        <Space wrap>
+        }
+        actions={<>
           <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>Quay lại</Button>
 
           {/* HR: kích hoạt review thủ công nếu background service chưa chạy */}
@@ -420,97 +417,70 @@ const PayrollPeriodDetail = () => {
               Từ chối
             </Button>
           )}
-        </Space>
-      </div>
+        </>}
+      />
 
       {/* AttendanceReview: hiển thị thông tin hạn review chấm công */}
       {isAttendanceReview && (
-        <Card className="shadow-sm rounded-xl !mb-4 border-orange-200 bg-orange-50">
-          <Row gutter={[24, 8]} align="middle">
-            <Col xs={24} sm={14}>
-              <Space>
-                <ClockCircleOutlined className="text-orange-600" />
-                <span className="font-semibold text-orange-700">Hạn nhân viên review chấm công:</span>
-                {period?.reviewDeadline
-                  ? <span className={period.reviewDeadlineExpired ? "text-red-600 font-bold" : "text-gray-800"}>
-                      {new Date(period.reviewDeadline).toLocaleString("vi-VN")}
-                      {period.reviewDeadlineExpired && " — ĐÃ HẾT HẠN — HR có thể tính lương"}
-                    </span>
-                  : <span className="text-gray-400">Chưa đặt</span>
-                }
-              </Space>
-            </Col>
-            <Col xs={24} sm={10}>
-              <Space>
-                <TeamOutlined className="text-orange-600" />
-                <span className="text-sm text-orange-700">
-                  Nhân viên đang xem xét và gửi yêu cầu giải trình chấm công nếu có sai sót.
-                </span>
-              </Space>
-            </Col>
-          </Row>
-        </Card>
+        <Alert
+          type="warning"
+          showIcon
+          icon={<ClockCircleOutlined />}
+          style={{ marginBottom: 16 }}
+          message={
+            <Space wrap>
+              <span className="font-semibold">Hạn nhân viên review chấm công:</span>
+              {period?.reviewDeadline
+                ? <span className={period.reviewDeadlineExpired ? "text-red-600 font-bold" : undefined}>
+                    {new Date(period.reviewDeadline).toLocaleString("vi-VN")}
+                    {period.reviewDeadlineExpired && " — ĐÃ HẾT HẠN — HR có thể tính lương"}
+                  </span>
+                : <Text type="secondary">Chưa đặt</Text>
+              }
+            </Space>
+          }
+          description={
+            <Space>
+              <TeamOutlined />
+              <span>Nhân viên đang xem xét và gửi yêu cầu giải trình chấm công nếu có sai sót.</span>
+            </Space>
+          }
+        />
       )}
 
       {/* Banner Rejected */}
       {isRejected && (
-        <Card className="shadow-sm rounded-xl !mb-4 border-red-200 bg-red-50">
-          <Space>
-            <WarningOutlined className="text-red-500 text-lg" />
-            <div>
-              <span className="font-semibold text-red-700">Kỳ lương đã bị từ chối</span>
+        <Alert
+          type="error"
+          showIcon
+          icon={<WarningOutlined />}
+          style={{ marginBottom: 16 }}
+          message={
+            <span>
+              <span className="font-semibold">Kỳ lương đã bị từ chối</span>
               {period?.rejectedByName && (
                 <span className="text-gray-600 ml-2">bởi <strong>{period.rejectedByName}</strong></span>
               )}
               {period?.rejectedDate && (
                 <span className="text-gray-500 ml-2">— {new Date(period.rejectedDate).toLocaleString("vi-VN")}</span>
               )}
-              {period?.rejectionReason && (
-                <div className="text-red-600 mt-1">Lý do: {period.rejectionReason}</div>
-              )}
-              {isHR && (
-                <div className="text-gray-500 text-sm mt-1">HR cần tính toán lại để Admin duyệt lại.</div>
-              )}
-            </div>
-          </Space>
-        </Card>
+            </span>
+          }
+          description={(period?.rejectionReason || isHR) && (
+            <>
+              {period?.rejectionReason && <div>Lý do: {period.rejectionReason}</div>}
+              {isHR && <Text type="secondary">HR cần tính toán lại để Admin duyệt lại.</Text>}
+            </>
+          )}
+        />
       )}
 
       {/* Summary */}
       <SummaryCards />
 
-      <Divider />
-
       {/* Bảng nhân viên */}
-      <Card
-        title={
-          <Space>
-            <span>Danh sách nhân viên</span>
-            <Badge
-              count={filteredRecords.length}
-              showZero
-              color={hasActiveFilter ? "orange" : "blue"}
-              overflowCount={999}
-            />
-          </Space>
-        }
-        className="shadow-sm rounded-xl"
-        extra={
-          hasActiveFilter && (
-            <Button
-              size="small"
-              icon={<CloseCircleOutlined />}
-              onClick={clearFilters}
-              type="text"
-              className="text-orange-500"
-            >
-              Xóa bộ lọc
-            </Button>
-          )
-        }
-      >
-        {/* Thanh lọc */}
-        <Row gutter={[12, 12]} className="mb-4">
+      <FilterCard onReset={hasActiveFilter ? clearFilters : undefined}>
+        <Row gutter={[12, 12]}>
           <Col xs={24} sm={10} md={8}>
             <Input
               prefix={<SearchOutlined className="text-gray-400" />}
@@ -550,21 +520,23 @@ const PayrollPeriodDetail = () => {
             />
           </Col>
           <Col xs={24} md={4} className="flex items-center">
-            <Text type="secondary" className="text-sm">
+            <Text type="secondary">
               {hasActiveFilter
                 ? `${filteredRecords.length} / ${records.length} nhân viên`
                 : `${records.length} nhân viên`}
             </Text>
           </Col>
         </Row>
+      </FilterCard>
 
-        {/* Bảng */}
+      {/* Bảng nhân viên */}
+      <TableCard title="Danh sách nhân viên" count={filteredRecords.length}>
         <Table
-          columns={columns}
+          columns={columns.map(c => ({ ...c, onHeaderCell: () => ({ style: { whiteSpace: "nowrap" as const } }) }))}
           dataSource={filteredRecords}
           rowKey="payrollRecordId"
           loading={loading || calculating}
-          scroll={{ x: 1380 }}
+          scroll={{ x: 1460 }}
           pagination={{
             pageSize: 20,
             showTotal: (total) => `${total} nhân viên`,
@@ -577,7 +549,7 @@ const PayrollPeriodDetail = () => {
           })}
           rowClassName={(_, index) => index % 2 === 0 ? "" : "bg-gray-50"}
         />
-      </Card>
+      </TableCard>
       {/* Modal gửi NV xem */}
       {/* Modal từ chối kỳ lương */}
       <Modal

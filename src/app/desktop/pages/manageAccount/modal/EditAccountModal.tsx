@@ -43,17 +43,17 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
 
     const onFinish = (values: any) => {
         if (isProtectedAdmin && values.isActive === false) {
-            message.warning("Khong cho phep vo hieu hoa tai khoan admin");
+            message.warning("Không được vô hiệu hoá tài khoản admin");
             return;
         }
 
         dispatch(updateUser({ id: editingUser.userId, data: values })).then((res: any) => {
             if (!res.error) {
-                message.success("User updated successfully");
+                message.success("Đã cập nhật tài khoản");
                 onSuccess();
             } else {
                 const error = res.payload;
-                const msg = typeof error === 'string' ? error : error?.message || "Failed to update user";
+                const msg = typeof error === 'string' ? error : error?.message || "Cập nhật tài khoản thất bại";
                 message.error(msg);
             }
         });
@@ -61,7 +61,7 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
 
     return (
         <Modal
-            title="Edit User"
+            title="Sửa tài khoản"
             open={open}
             onCancel={() => {
                 form.resetFields();
@@ -78,19 +78,19 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
             >
                 <Form.Item
                     name="username"
-                    label="Username"
+                    label="Tên đăng nhập"
                 >
                     <Input disabled />
                 </Form.Item>
 
                 <Form.Item
                     name="employeeId"
-                    label="Employee"
-                    rules={[{ required: true, message: "Please select an employee!" }]}
+                    label="Nhân viên"
+                    rules={[{ required: true, message: "Vui lòng chọn nhân viên" }]}
                 >
                     <Select
                         showSearch
-                        placeholder="Select an employee"
+                        placeholder="Chọn nhân viên"
                         optionFilterProp="children"
                         onChange={(value) => {
                             const emp = employees.find(e => e.employeeId === value);
@@ -111,8 +111,8 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
                     name="email"
                     label="Email"
                     rules={[
-                        { required: true, message: "Please input the email!" },
-                        { type: "email", message: "Please enter a valid email!" },
+                        { required: true, message: "Vui lòng nhập email" },
+                        { type: "email", message: "Email không hợp lệ" },
                     ]}
                 >
                     <Input disabled />
@@ -120,10 +120,10 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
 
                 <Form.Item
                     name="roleIds"
-                    label="Role"
-                    rules={[{ required: true, message: "Please select a role!" }]}
+                    label="Vai trò"
+                    rules={[{ required: true, message: "Vui lòng chọn vai trò" }]}
                 >
-                    <Select placeholder="Select a role">
+                    <Select placeholder="Chọn vai trò">
                         {roles.map((role) => (
                             <Select.Option key={role.roleId} value={role.roleId}>
                                 {role.roleName}
@@ -136,7 +136,7 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
                     <Input />
                 </Form.Item>
 
-                <Form.Item label="Active Status">
+                <Form.Item label="Trạng thái hoạt động">
                     <Button
                         type={currentIsActive ? "primary" : "default"}
                         danger={currentIsActive}
@@ -145,7 +145,7 @@ const EditAccountModal = ({ open, onCancel, onSuccess, editingUser }: EditAccoun
                             form.setFieldValue("isActive", !currentIsActive);
                         }}
                     >
-                        {currentIsActive ? "Deactivate" : "Activate"}
+                        {currentIsActive ? "Ngừng hoạt động" : "Hoạt động"}
                     </Button>
                 </Form.Item>
             </Form>

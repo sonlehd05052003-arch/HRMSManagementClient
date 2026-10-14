@@ -123,7 +123,6 @@ const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({ open, title, on
                         <Button
                             type="primary"
                             icon={<CameraOutlined />}
-                            size="large"
                             onClick={capture}
                             disabled={loading || !isCameraReady}
                         >
@@ -151,7 +150,7 @@ const CameraCaptureModal: React.FC<CameraCaptureModalProps> = ({ open, title, on
                 </div>
 
                 <div className="mt-4 text-center">
-                    <Text type="secondary" className="text-sm">
+                    <Text type="secondary">
                         Đảm bảo khuôn mặt của bạn nằm trong khung hình và đủ ánh sáng.
                     </Text>
                 </div>

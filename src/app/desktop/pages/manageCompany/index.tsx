@@ -134,7 +134,7 @@ const ManageCompany = () => {
       key: "contact",
       render: (_: unknown, c: ICompany) => (
         <Space direction="vertical" size={0}>
-          {c.email && <Text style={{ fontSize: 13 }}>{c.email}</Text>}
+          {c.email && <Text>{c.email}</Text>}
           {c.phone && <Text type="secondary" style={{ fontSize: 12 }}>{c.phone}</Text>}
           {!c.email && !c.phone && <Text type="secondary">—</Text>}
         </Space>

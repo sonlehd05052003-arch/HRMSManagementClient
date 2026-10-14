@@ -1,12 +1,13 @@
 import { useState } from "react"
-import { Card, Table, Typography, Divider, InputNumber, Button, Space, Tooltip, message, Tag } from "antd"
-import { EditOutlined, SaveOutlined, CloseOutlined, InfoCircleOutlined } from "@ant-design/icons"
+import { Table, Typography, Divider, InputNumber, Button, Space, Tooltip, message, Tag } from "antd"
+import { EditOutlined, SaveOutlined, CloseOutlined, InfoCircleOutlined, CalculatorOutlined } from "@ant-design/icons"
 import { useAppDispatch } from "../../../../../store"
 import { updateBonus } from "../../../../../store/payrollSlide"
 import type { IPayrollRecord } from "../../../../../types/payroll"
 import { errorText } from "../../../../../utils/apiError";
+import { SectionCard } from "../../../components/listPage"
 
-const { Text, Title } = Typography
+const { Text } = Typography
 
 interface Props {
   record: IPayrollRecord
@@ -107,7 +108,7 @@ const SalaryBreakdown = ({ record, isEditable }: Props) => {
           </Space>
         ) : (
           <Space size="small">
-            <Text className="text-xs text-gray-400">Chỉnh sửa thủ công</Text>
+            <Text type="secondary">Chỉnh sửa thủ công</Text>
             <Button
               size="small"
               type="text"
@@ -168,37 +169,44 @@ const SalaryBreakdown = ({ record, isEditable }: Props) => {
     {
       title: "Bước",
       dataIndex: "step",
-      width: 55,
+      width: 64,
       render: (v: string, row: any) => (
-        <Tag color={row.type === "income" ? "blue" : "red"} className="text-xs font-mono">{v}</Tag>
+        <Tag color={row.type === "income" ? "blue" : "red"} className="font-mono">{v}</Tag>
       ),
     },
     {
       title: "Khoản mục",
       dataIndex: "label",
+      width: 220,
       render: (v: string) => <Text strong>{v}</Text>,
     },
     {
       title: "Công thức / Ghi chú",
       dataIndex: "formula",
-      className: "text-gray-500 text-xs",
-      render: (v: any) => <span className="text-xs text-gray-500">{v}</span>,
+      render: (v: any) => <Text type="secondary">{v}</Text>,
     },
     {
       title: "Số tiền (đ)",
       dataIndex: "amount",
       align: "right" as const,
-      width: 140,
+      width: 150,
       render: (v: number, row: any) => (
-        <span className={`font-semibold ${row.type === "income" ? "text-gray-800" : "text-red-500"}`}>
+        <span className={`font-semibold ${row.type === "income" ? "text-gray-800" : "text-red-500"}`} style={{ whiteSpace: "nowrap" }}>
           {row.type === "deduction" ? "−" : "+"}{fmt(v)}
         </span>
       ),
     },
   ]
 
+  /** Small label above each group of rows */
+  const groupLabel = (text: string) => (
+    <Text type="secondary" strong className="uppercase tracking-wide">{text}</Text>
+  )
+
   return (
-    <Card
+    <SectionCard
+      gap={0}
+      icon={<CalculatorOutlined />}
       title={
         <Space>
           <span>Chi tiết tính lương</span>
@@ -207,53 +215,51 @@ const SalaryBreakdown = ({ record, isEditable }: Props) => {
           </Tooltip>
         </Space>
       }
-      className="shadow-md rounded-xl"
     >
       {/* ── PHẦN THU NHẬP ─────────────────────────── */}
-      <Text type="secondary" className="text-xs uppercase font-semibold tracking-wide">Thu nhập</Text>
+      {groupLabel("Thu nhập")}
       <Table
-        size="small"
         dataSource={incomeRows}
         columns={columns}
         pagination={false}
         rowKey="key"
-        className="mt-2"
+        style={{ marginTop: 8 }}
         showHeader={false}
+        scroll={{ x: 640 }}
       />
 
       {/* ── GROSS TỔNG HỢP ───────────────────────── */}
-      <div className="flex justify-between items-center bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 my-3">
+      <div className="flex justify-between items-center flex-wrap gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 my-3">
         <div>
-          <Text strong className="text-blue-700 text-base">TỔNG THU NHẬP GỘP (GROSS)</Text>
-          <div className="text-xs text-gray-400 mt-1">
-            Lương ngày công + Phụ cấp + OT + Thưởng
-          </div>
+          <Text strong className="text-blue-700">TỔNG THU NHẬP GỘP (GROSS)</Text>
+          <div><Text type="secondary" style={{ fontSize: 12 }}>Lương ngày công + Phụ cấp + OT + Thưởng</Text></div>
         </div>
-        <Title level={4} className="m-0 text-blue-700">{fmt(displayGross)} đ</Title>
+        <Text strong className="text-blue-700" style={{ fontSize: 20 }}>{fmt(displayGross)} đ</Text>
       </div>
 
       {/* ── PHẦN KHẤU TRỪ BẮT BUỘC ──────────────── */}
-      <Text type="secondary" className="text-xs uppercase font-semibold tracking-wide">Khấu trừ bắt buộc</Text>
-      <div className="text-xs text-gray-400 mb-1">
-        Mức lương đóng BH đã đăng ký: <strong>{fmt(insuranceBase)} đ</strong>
-        <span className="ml-1 text-blue-500">(cố định theo đăng ký, không đổi theo OT/thưởng)</span>
+      {groupLabel("Khấu trừ bắt buộc")}
+      <div className="mb-1">
+        <Text type="secondary">
+          Mức lương đóng BH đã đăng ký: <strong>{fmt(insuranceBase)} đ</strong>
+          <span className="ml-1 text-blue-500">(cố định theo đăng ký, không đổi theo OT/thưởng)</span>
+        </Text>
       </div>
       <Table
-        size="small"
         dataSource={deductionRows}
         columns={columns}
         pagination={false}
         rowKey="key"
         showHeader={false}
+        scroll={{ x: 640 }}
       />
 
       {/* ── KHẤU TRỪ THỦ CÔNG ────────────────────── */}
       {manualDeductions.length > 0 && (
         <>
-          <Divider className="my-2" />
-          <Text type="secondary" className="text-xs uppercase font-semibold tracking-wide">Khấu trừ khác</Text>
+          <Divider style={{ margin: "8px 0" }} />
+          {groupLabel("Khấu trừ khác")}
           <Table
-            size="small"
             dataSource={manualDeductions.map(d => ({
               key: d.deductionId,
               step: "7",
@@ -266,28 +272,29 @@ const SalaryBreakdown = ({ record, isEditable }: Props) => {
             pagination={false}
             rowKey="key"
             showHeader={false}
-            className="mt-1"
+            style={{ marginTop: 4 }}
+            scroll={{ x: 640 }}
           />
         </>
       )}
 
-      <Divider className="my-3" />
+      <Divider style={{ margin: "12px 0" }} />
 
       {/* ── TỔNG KHẤU TRỪ ────────────────────────── */}
-      <div className="flex justify-between items-center bg-red-50 border border-red-100 rounded-lg px-4 py-2 mb-3">
+      <div className="flex justify-between items-center flex-wrap gap-2 bg-red-50 border border-red-100 rounded-lg px-4 py-2 mb-3">
         <Text strong className="text-red-600">TỔNG KHẤU TRỪ (BH + Thuế + Khác)</Text>
-        <Text strong className="text-red-600 text-base">−{fmt(computedTotalDeductions)} đ</Text>
+        <Text strong className="text-red-600">−{fmt(computedTotalDeductions)} đ</Text>
       </div>
 
       {/* ── NET PAY ───────────────────────────────── */}
-      <div className="flex justify-between items-center bg-green-600 rounded-xl px-6 py-4">
+      <div className="flex justify-between items-center flex-wrap gap-2 bg-green-600 rounded-xl px-6 py-4">
         <div>
-          <Text className="text-white font-semibold text-lg">THỰC LĨNH (NET PAY)</Text>
-          <div className="text-green-100 text-xs mt-1">Gross − Tổng khấu trừ</div>
+          <Text strong className="text-white">THỰC LĨNH (NET PAY)</Text>
+          <div className="text-green-100" style={{ fontSize: 12 }}>Gross − Tổng khấu trừ</div>
         </div>
-        <Title level={2} className="m-0 text-white">{fmt(computedNetPay)} đ</Title>
+        <Text strong className="text-white" style={{ fontSize: 24 }}>{fmt(computedNetPay)} đ</Text>
       </div>
-    </Card>
+    </SectionCard>
   )
 }
 

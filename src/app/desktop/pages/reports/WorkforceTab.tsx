@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 import {
     Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
-import { FilterCard } from "../../components/listPage";
-import { ChartCard, ExcelButton, StatRow } from "./shared";
+import { FilterCard, StatRow } from "../../components/listPage";
+import { ChartCard, ExcelButton } from "./shared";
 import { COLORS, type ReportCount, useReport } from "./reportData";
 
 interface WorkforceReport {

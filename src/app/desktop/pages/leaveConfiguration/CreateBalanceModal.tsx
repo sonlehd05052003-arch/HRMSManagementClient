@@ -43,7 +43,7 @@ const CreateBalanceModal = ({ visible, onClose }: CreateBalanceModalProps) => {
 
     return (
         <Modal
-            title={<span className="text-xl font-bold text-slate-800">Khởi tạo Số dư Nghỉ phép</span>}
+            title={"Khởi tạo Số dư Nghỉ phép"}
             open={visible}
             onCancel={() => onClose()}
             onOk={() => form.submit()}

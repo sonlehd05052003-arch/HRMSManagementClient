@@ -1,4 +1,4 @@
-import { Layout, Typography, Row, Col, Card, Form, Select, Input, InputNumber, Button, Table, message, DatePicker, Tag, Space, Popconfirm, Tooltip, Modal, Checkbox, Statistic, Tabs, Alert } from "antd";
+import { Typography, Row, Col, Form, Select, Input, InputNumber, Button, Table, message, DatePicker, Tag, Space, Popconfirm, Tooltip, Modal, Checkbox, Statistic, Tabs, Alert } from "antd";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
@@ -24,7 +24,6 @@ import {
     DeleteOutlined,
     PlusOutlined,
     CalendarOutlined,
-    SolutionOutlined,
     UserOutlined,
     HistoryOutlined,
     PlusCircleOutlined,
@@ -36,9 +35,9 @@ import LeaveTypeModal from "./LeaveTypeModal";
 import CreateBalanceModal from "./CreateBalanceModal";
 import EmployeeBalanceDetailsModal from "./EmployeeBalanceDetailsModal";
 import { errorText } from "../../../../utils/apiError";
+import { PageHeader, SectionCard, TableCard } from "../../components/listPage";
 
-const { Content } = Layout;
-const { Title, Paragraph } = Typography;
+const { Text } = Typography;
 const { Option } = Select;
 
 const LeaveConfiguration = () => {
@@ -134,7 +133,7 @@ const LeaveConfiguration = () => {
             title: "Tên loại phép",
             dataIndex: "leaveTypeName",
             key: "leaveTypeName",
-            className: "font-semibold text-slate-700"
+            className: "font-semibold"
         },
         {
             title: "Tự hưởng (năm)",
@@ -207,8 +206,8 @@ const LeaveConfiguration = () => {
                         <UserOutlined />
                     </div>
                     <div>
-                        <div className="font-semibold text-slate-700">{record.employeeName}</div>
-                        <div className="text-xs text-slate-400">ID: {record.employeeId}</div>
+                        <div className="font-semibold" style={{ whiteSpace: "nowrap" }}>{record.employeeName}</div>
+                        <Text type="secondary" style={{ fontSize: 12 }}>ID: {record.employeeId}</Text>
                     </div>
                 </Space>
             )
@@ -249,7 +248,7 @@ const LeaveConfiguration = () => {
             title: "Cập nhật lần cuối",
             dataIndex: "lastUpdated",
             key: "lastUpdated",
-            render: (date: string) => <span className="text-slate-400 text-xs">{dayjs(date).format("DD/MM/YYYY HH:mm")}</span>
+            render: (date: string) => <Text type="secondary" style={{ whiteSpace: "nowrap" }}>{dayjs(date).format("DD/MM/YYYY HH:mm")}</Text>
         },
         {
             title: "Hành động",
@@ -274,164 +273,117 @@ const LeaveConfiguration = () => {
     const tabItems = [
         {
             key: "1",
-            label: <Space className="px-4"><CalendarOutlined />Loại Nghỉ Phép</Space>,
+            label: <Space><CalendarOutlined />Loại Nghỉ Phép</Space>,
             children: (
-                <div className="animate-in fade-in duration-500">
-                    <Card
-                        title={
-                            <div className="flex justify-between items-center w-full">
-                                <Space>
-                                    <SolutionOutlined className="text-indigo-500 text-lg" />
-                                    <span className="font-bold text-slate-800">Danh sách Loại Nghỉ phép</span>
-                                </Space>
-                                <Button
-                                    type="primary"
-                                    icon={<PlusOutlined />}
-                                    onClick={handleAddLeaveType}
-                                    className="h-10 px-6 rounded-lg font-semibold shadow-lg shadow-indigo-200"
-                                >
-                                    Thêm Loại Phép
-                                </Button>
-                            </div>
-                        }
-                        className="shadow-sm border-none rounded-2xl bg-white overflow-hidden"
-                    >
-                        <Table
-                            columns={leaveTypeColumns}
-                            dataSource={leaveTypes || []}
-                            rowKey="leaveTypeId"
-                            pagination={{ pageSize: 8 }}
-                            loading={leaveTypeLoading}
-                            className="custom-table"
-                        />
-                    </Card>
-                </div>
+                <TableCard
+                    title="Danh sách Loại Nghỉ phép"
+                    count={(leaveTypes || []).length}
+                    extra={
+                        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddLeaveType}>
+                            Thêm Loại Phép
+                        </Button>
+                    }
+                >
+                    <Table
+                        columns={leaveTypeColumns}
+                        dataSource={leaveTypes || []}
+                        rowKey="leaveTypeId"
+                        pagination={{ pageSize: 8 }}
+                        loading={leaveTypeLoading}
+                        scroll={{ x: "max-content" }}
+                    />
+                </TableCard>
             )
         },
         {
             key: "2",
-            label: <Space className="px-4"><HistoryOutlined />Quản lý Theo Dõi Số Dư</Space>,
+            label: <Space><HistoryOutlined />Quản lý Theo Dõi Số Dư</Space>,
             children: (
-                <div className="animate-in fade-in duration-500">
-                    <Row gutter={[24, 24]}>
-                        <Col xs={24} lg={8}>
-                            <Card
-                                className="shadow-sm border-none rounded-2xl overflow-hidden h-full bg-white"
-                                styles={{ body: { padding: '24px' } }}
-                            >
-                                <div className="flex items-start justify-between mb-4">
-                                    <div>
-                                        <Title level={4} style={{ color: '#1e293b', marginBottom: '8px' }}>Khởi tạo tự động</Title>
-                                        <p style={{ color: '#64748b', margin: 0, fontSize: 13 }}>
-                                            Tạo số dư cho toàn bộ nhân viên theo năm.
-                                        </p>
-                                    </div>
-                                    <ThunderboltOutlined style={{ fontSize: '32px', color: '#6366f1' }} />
-                                </div>
-                                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: '24px' }}>
-                                    <div className="mb-4">
-                                        <p style={{ color: '#475569', marginBottom: '8px', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 'bold' }}>Năm khởi tạo</p>
-                                        <DatePicker
-                                            picker="year"
-                                            value={dayjs().year(generateYear)}
-                                            onChange={(d) => d && setGenerateYear(d.year())}
-                                            className="w-full h-10 rounded-lg"
-                                        />
-                                    </div>
-                                    <div className="mb-6">
-                                        <Checkbox
-                                            checked={carryForward}
-                                            onChange={(e) => setCarryForward(e.target.checked)}
-                                            style={{ color: '#334155' }}
-                                        >
-                                            Cộng dồn phép dư năm trước
-                                        </Checkbox>
-                                    </div>
-                                    <Popconfirm
-                                        title={<span className="font-bold">Khởi tạo năm {generateYear}?</span>}
-                                        description="Bản ghi đã tồn tại sẽ được bỏ qua."
-                                        onConfirm={handleGenerateBalances}
-                                        okText="Thực hiện"
-                                        cancelText="Hủy"
-                                    >
-                                        <Button
-                                            type="primary"
-                                            icon={<ThunderboltOutlined />}
-                                            loading={isGenerating}
-                                            style={{ width: '100%', height: '44px', borderRadius: '12px', fontWeight: 'bold' }}
-                                        >
-                                            Khởi tạo số dư năm {generateYear}
-                                        </Button>
-                                    </Popconfirm>
-                                </div>
-                            </Card>
-                        </Col>
-                        <Col xs={24} lg={16}>
-                            <Card
-                                title={
-                                    <div className="flex justify-between items-center w-full">
-                                        <Space>
-                                            <HistoryOutlined className="text-emerald-500 text-lg" />
-                                            <span className="font-bold text-slate-800">Danh sách Số dư Nhân viên</span>
-                                        </Space>
-                                        <Button
-                                            size="small"
-                                            icon={<PlusCircleOutlined />}
-                                            onClick={() => setIsBalanceModalVisible(true)}
-                                            className="text-emerald-600 hover:text-emerald-700 bg-emerald-50 border-emerald-100 rounded-md font-medium"
-                                        >
-                                            Tạo thủ công
-                                        </Button>
-                                    </div>
-                                }
-                                className="shadow-sm border-none rounded-2xl bg-white h-full"
-                            >
-                                <Table
-                                    columns={balanceColumns}
-                                    dataSource={allBalances || []}
-                                    rowKey="balanceId"
-                                    pagination={{ pageSize: 8 }}
-                                    loading={leaveBalanceLoading}
-                                    className="custom-table"
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} lg={8}>
+                        <SectionCard title="Khởi tạo tự động" icon={<ThunderboltOutlined />} gap={0}>
+                            <Text type="secondary" className="block mb-4">
+                                Tạo số dư cho toàn bộ nhân viên theo năm.
+                            </Text>
+                            <div className="mb-4">
+                                <div className="mb-2 font-medium">Năm khởi tạo</div>
+                                <DatePicker
+                                    picker="year"
+                                    value={dayjs().year(generateYear)}
+                                    onChange={(d) => d && setGenerateYear(d.year())}
+                                    className="w-full"
                                 />
-                            </Card>
-                        </Col>
-                    </Row>
-                </div>
+                            </div>
+                            <div className="mb-4">
+                                <Checkbox
+                                    checked={carryForward}
+                                    onChange={(e) => setCarryForward(e.target.checked)}
+                                >
+                                    Cộng dồn phép dư năm trước
+                                </Checkbox>
+                            </div>
+                            <Popconfirm
+                                title={<span className="font-bold">Khởi tạo năm {generateYear}?</span>}
+                                description="Bản ghi đã tồn tại sẽ được bỏ qua."
+                                onConfirm={handleGenerateBalances}
+                                okText="Thực hiện"
+                                cancelText="Hủy"
+                            >
+                                <Button
+                                    type="primary"
+                                    icon={<ThunderboltOutlined />}
+                                    loading={isGenerating}
+                                    block
+                                >
+                                    Khởi tạo số dư năm {generateYear}
+                                </Button>
+                            </Popconfirm>
+                        </SectionCard>
+                    </Col>
+                    <Col xs={24} lg={16}>
+                        <TableCard
+                            title="Danh sách Số dư Nhân viên"
+                            count={(allBalances || []).length}
+                            extra={
+                                <Button icon={<PlusCircleOutlined />} onClick={() => setIsBalanceModalVisible(true)}>
+                                    Tạo thủ công
+                                </Button>
+                            }
+                        >
+                            <Table
+                                columns={balanceColumns}
+                                dataSource={allBalances || []}
+                                rowKey="balanceId"
+                                pagination={{ pageSize: 8 }}
+                                loading={leaveBalanceLoading}
+                                scroll={{ x: "max-content" }}
+                            />
+                        </TableCard>
+                    </Col>
+                </Row>
             )
         },
         {
             key: "3",
-            label: <Space className="px-4"><EditOutlined />Cộng Trừ Phép Chuyên Sâu</Space>,
+            label: <Space><EditOutlined />Cộng Trừ Phép Chuyên Sâu</Space>,
             children: (
-                <div className="animate-in fade-in duration-500 w-full max-w-2xl mx-auto">
-                    <Card
-                        title={
-                            <Space size="middle">
-                                <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                                    <PlusOutlined className="text-indigo-600 text-lg" />
-                                </div>
-                                <span className="font-bold text-slate-800">Phiếu điều chỉnh số dư</span>
-                            </Space>
-                        }
-                        className="shadow-sm border-none rounded-2xl bg-white"
-                    >
-                        <Alert 
+                <div className="w-full max-w-2xl mx-auto">
+                    <SectionCard title="Phiếu điều chỉnh số dư" icon={<PlusOutlined />} gap={0}>
+                        <Alert
                             message="Lưu ý"
                             description="Thao tác này sẽ trực tiếp thay đổi số phép còn lại của nhân viên. Hành động này sẽ được ghi log toàn hệ thống."
                             type="warning"
                             showIcon
-                            className="mb-8 border-none bg-amber-50 rounded-xl text-amber-800"
+                            style={{ marginBottom: 24 }}
                         />
                         <Form form={adjustmentForm} layout="vertical" onFinish={onFinishAdjustment} requiredMark={false}>
-                            <Row gutter={24}>
+                            <Row gutter={16}>
                                 <Col span={24}>
-                                    <Form.Item name="employeeId" label={<span className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Nhân viên</span>} rules={[{ required: true, message: "Chọn nhân viên" }]}>
+                                    <Form.Item name="employeeId" label="Nhân viên" rules={[{ required: true, message: "Chọn nhân viên" }]}>
                                         <Select
                                             showSearch
                                             placeholder="Chọn nhân viên"
                                             optionFilterProp="children"
-                                            className="h-11 rounded-lg"
                                         >
                                             {(employees || []).map((e: any) => (
                                                 <Option key={e.employeeId} value={e.employeeId}>
@@ -442,8 +394,8 @@ const LeaveConfiguration = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col span={24}>
-                                    <Form.Item name="leaveTypeId" label={<span className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Loại phép</span>} rules={[{ required: true, message: "Chọn loại phép" }]}>
-                                        <Select placeholder="Chọn loại phép" className="h-11 rounded-lg">
+                                    <Form.Item name="leaveTypeId" label="Loại phép" rules={[{ required: true, message: "Chọn loại phép" }]}>
+                                        <Select placeholder="Chọn loại phép">
                                             {(leaveTypes || []).filter((lt: any) => lt.isActive).map((lt: any) => (
                                                 <Option key={lt.leaveTypeId} value={lt.leaveTypeId}>
                                                     {lt.leaveTypeName}
@@ -453,26 +405,26 @@ const LeaveConfiguration = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item name="adjustmentType" label={<span className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Thao tác</span>} rules={[{ required: true }]}>
-                                        <Select placeholder="Thao tác" className="h-11 rounded-lg">
+                                    <Form.Item name="adjustmentType" label="Thao tác" rules={[{ required: true }]}>
+                                        <Select placeholder="Thao tác">
                                             <Option value="Add"><span className="text-emerald-600 font-bold">Cộng thêm (+)</span></Option>
                                             <Option value="Deduct"><span className="text-rose-600 font-bold">Trừ đi (-)</span></Option>
                                         </Select>
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item name="numberOfDays" label={<span className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Số ngày</span>} rules={[{ required: true }]}>
-                                        <InputNumber min={0.5} step={0.5} style={{ width: '100%' }} className="h-11 rounded-lg pt-1" />
+                                    <Form.Item name="numberOfDays" label="Số ngày" rules={[{ required: true }]}>
+                                        <InputNumber min={0.5} step={0.5} style={{ width: '100%' }} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={24}>
-                                    <Form.Item name="effectiveDate" label={<span className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Ngày hiệu lực</span>} rules={[{ required: true }]} initialValue={dayjs()}>
-                                        <DatePicker className="w-full h-11 rounded-lg" />
+                                    <Form.Item name="effectiveDate" label="Ngày hiệu lực" rules={[{ required: true }]} initialValue={dayjs()}>
+                                        <DatePicker className="w-full" />
                                     </Form.Item>
                                 </Col>
                                 <Col span={24}>
-                                    <Form.Item name="reason" label={<span className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Lý do điều chỉnh (Bắt buộc)</span>} rules={[{ required: true }]}>
-                                        <Input.TextArea rows={3} placeholder="Ví dụ: Thưởng phép do làm OT dự án A..." className="rounded-xl" />
+                                    <Form.Item name="reason" label="Lý do điều chỉnh (Bắt buộc)" rules={[{ required: true }]}>
+                                        <Input.TextArea rows={3} placeholder="Ví dụ: Thưởng phép do làm OT dự án A..." />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -481,40 +433,24 @@ const LeaveConfiguration = () => {
                                 htmlType="submit"
                                 block
                                 loading={leaveBalanceLoading}
-                                className="h-12 mt-4 rounded-xl font-bold tracking-wide shadow-indigo-200 shadow-xl"
                             >
                                 Xác nhận Điều chỉnh
                             </Button>
                         </Form>
-                    </Card>
+                    </SectionCard>
                 </div>
             )
         }
     ];
 
     return (
-        <Layout className="bg-[#f8fafc] p-4 min-h-screen">
-            <Content className="w-full">
-                <div className="mb-10">
-                    <Title level={2} style={{ marginBottom: 4, fontWeight: 700, color: '#1e293b' }}>
-                        <SolutionOutlined className="mr-3 text-indigo-600" />Cấu hình Nghỉ Phép
-                    </Title>
-                    <Paragraph type="secondary" className="text-lg text-slate-500">
-                        Phân bổ hạng mục nghỉ phép, thiết lập tự động hóa số dư và điều chỉnh thủ công.
-                    </Paragraph>
-                </div>
+        <div className="p-2">
+            <PageHeader
+                title="Cấu hình nghỉ phép"
+                subtitle="Phân bổ hạng mục nghỉ phép, thiết lập tự động hóa số dư và điều chỉnh thủ công."
+            />
 
-                <Tabs 
-                    defaultActiveKey="1" 
-                    items={tabItems} 
-                    className="custom-minimal-tabs"
-                    tabBarStyle={{ 
-                        marginBottom: 32,
-                        borderBottom: '1px solid #e2e8f0'
-                    }}
-                    size="large"
-                />
-            </Content>
+            <Tabs defaultActiveKey="1" items={tabItems} />
 
             <LeaveTypeModal
                 visible={isModalVisible}
@@ -571,7 +507,7 @@ const LeaveConfiguration = () => {
                             </Col>
                             {generateResult.carriedForward > 0 && (
                                 <Col span={24}>
-                                    <div className="bg-blue-50 rounded-lg p-3 text-blue-700 text-sm mt-2">
+                                    <div className="bg-blue-50 rounded-lg p-3 text-blue-700 mt-2">
                                         ✅ <strong>{generateResult.carriedForward}</strong> bản ghi được cộng dồn ngày dư từ năm {generateResult.year - 1}.
                                     </div>
                                 </Col>
@@ -580,7 +516,7 @@ const LeaveConfiguration = () => {
                     </div>
                 )}
             </Modal>
-        </Layout>
+        </div>
     );
 };
 

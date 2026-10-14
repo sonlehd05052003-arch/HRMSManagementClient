@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Table, Card, Tag, Space, DatePicker, Button, Typography } from "antd";
+import { Table, Tag, Space, DatePicker, Button, Typography } from "antd";
 import { SearchOutlined, ReloadOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { fetchMySchedule, selectMySchedule, selectShiftAssignmentLoading } from "../../../../../store/shiftAssignmentSlide";
 import dayjs from "dayjs";
+import { FilterCard, TableCard } from "../../../components/listPage";
 
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
@@ -33,11 +34,12 @@ const MyScheduleTable = () => {
             title: "Ngày",
             dataIndex: "assignmentDate",
             key: "assignmentDate",
+            width: 230,
             render: (text: string) => (
-                <Space>
+                <Space style={{ whiteSpace: "nowrap" }}>
                     <ClockCircleOutlined className="text-gray-400" />
                     <span className="font-medium">{dayjs(text).format("DD/MM/YYYY")}</span>
-                    <Text type="secondary" className="text-xs">({dayjs(text).format("dddd")})</Text>
+                    <Text type="secondary">({dayjs(text).format("dddd")})</Text>
                 </Space>
             )
         },
@@ -75,36 +77,43 @@ const MyScheduleTable = () => {
     ];
 
     return (
-        <Card title="Lịch làm việc của tôi" className="shadow-sm border-0 rounded-xl overflow-hidden">
-            <Space className="mb-4 flex flex-wrap">
+        <>
+            <FilterCard
+                extra={
+                    <>
+                        <Button type="primary" icon={<SearchOutlined />} onClick={handleFetch} loading={loading}>
+                            Xem lịch
+                        </Button>
+                        <Button icon={<ReloadOutlined />} onClick={() => {
+                            setDateRange([dayjs().startOf('week'), dayjs().endOf('month')]);
+                            dispatch(fetchMySchedule({ 
+                                fromDate: dayjs().startOf('week').format("YYYY-MM-DD"), 
+                                toDate: dayjs().endOf('month').format("YYYY-MM-DD") 
+                            }));
+                        }}>
+                            Làm mới
+                        </Button>
+                    </>
+                }
+            >
                 <RangePicker 
                     value={dateRange}
                     onChange={(val) => setDateRange(val as any)}
                     format="DD/MM/YYYY"
                 />
-                <Button type="primary" icon={<SearchOutlined />} onClick={handleFetch} loading={loading}>
-                    Xem lịch
-                </Button>
-                <Button icon={<ReloadOutlined />} onClick={() => {
-                    setDateRange([dayjs().startOf('week'), dayjs().endOf('month')]);
-                    dispatch(fetchMySchedule({ 
-                        fromDate: dayjs().startOf('week').format("YYYY-MM-DD"), 
-                        toDate: dayjs().endOf('month').format("YYYY-MM-DD") 
-                    }));
-                }}>
-                    Làm mới
-                </Button>
-            </Space>
+            </FilterCard>
 
-            <Table 
-                columns={columns} 
-                dataSource={schedule} 
-                rowKey="assignmentId"
-                loading={loading}
-                pagination={{ pageSize: 10 }}
-                locale={{ emptyText: "Không có lịch làm việc trong khoảng thời gian này" }}
-            />
-        </Card>
+            <TableCard title="Lịch làm việc của tôi" count={schedule.length}>
+                <Table 
+                    columns={columns} 
+                    dataSource={schedule} 
+                    rowKey="assignmentId"
+                    loading={loading}
+                    pagination={{ pageSize: 10 }}
+                    locale={{ emptyText: "Không có lịch làm việc trong khoảng thời gian này" }}
+                />
+            </TableCard>
+        </>
     );
 };
 

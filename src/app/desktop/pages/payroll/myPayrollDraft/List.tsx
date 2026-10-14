@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { Card, List, Tag, Button, Typography, Space, Empty, Spin } from "antd"
-import { EyeOutlined, ClockCircleOutlined } from "@ant-design/icons"
+import { List, Tag, Button, Typography, Space, Empty, Spin } from "antd"
+import { EyeOutlined, ClockCircleOutlined, HistoryOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import {
   fetchMyPeriods,
@@ -9,8 +9,9 @@ import {
   selectPayrollLoading,
 } from "../../../../../store/payrollSlide"
 import URL from "../../../../../constants/url"
+import { PageHeader, SectionCard } from "../../../components/listPage"
 
-const { Title, Text } = Typography
+const { Text } = Typography
 
 const STATUS_COLORS: Record<string, string> = {
   Open:             "default",
@@ -46,23 +47,22 @@ const MyAttendanceReviewList = () => {
   }
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
-      <Title level={3} className="!mb-1">Review Chấm Công</Title>
-      <Text type="secondary" className="block !mb-5">
-        Kiểm tra dữ liệu chấm công trong các kỳ lương đang mở review.
-      </Text>
+    <div className="p-2">
+      <PageHeader
+        title="Rà soát chấm công"
+        subtitle="Kiểm tra dữ liệu chấm công trong các kỳ lương đang mở review."
+      />
 
       {reviewPeriods.length > 0 && (
-        <Card
+        <SectionCard
           title={
             <Space>
               <Tag color="orange">ĐANG REVIEW CHẤM CÔNG</Tag>
-              <Text className="text-sm font-normal text-gray-500">
+              <Text type="secondary" className="font-normal">
                 Kiểm tra và báo cáo sai sót trước khi hết hạn review
               </Text>
             </Space>
           }
-          className="shadow-sm rounded-xl !mb-4 border-orange-200"
         >
           <List
             dataSource={reviewPeriods}
@@ -84,12 +84,12 @@ const MyAttendanceReviewList = () => {
                 <List.Item.Meta
                   title={
                     <Space>
-                      <Text strong className="text-base">Tháng {period.month}/{period.year}</Text>
+                      <Text strong>Tháng {period.month}/{period.year}</Text>
                       <Tag color="orange" icon={<ClockCircleOutlined />}>Đang review</Tag>
                     </Space>
                   }
                   description={
-                    <Text type="secondary" className="text-xs">
+                    <Text type="secondary">
                       Từ {period.startDate} đến {period.endDate}
                       {period.reviewDeadline && (
                         <span className={`ml-3 font-semibold ${period.reviewDeadlineExpired ? "text-red-500" : "text-orange-600"}`}>
@@ -103,11 +103,11 @@ const MyAttendanceReviewList = () => {
               </List.Item>
             )}
           />
-        </Card>
+        </SectionCard>
       )}
 
       {otherPeriods.length > 0 && (
-        <Card title="Lịch sử kỳ lương" className="shadow-sm rounded-xl">
+        <SectionCard title="Lịch sử kỳ lương" icon={<HistoryOutlined />}>
           <List
             dataSource={otherPeriods}
             renderItem={period => (
@@ -136,7 +136,7 @@ const MyAttendanceReviewList = () => {
                     </Space>
                   }
                   description={
-                    <Text type="secondary" className="text-xs">
+                    <Text type="secondary">
                       {period.startDate} — {period.endDate}
                     </Text>
                   }
@@ -144,7 +144,7 @@ const MyAttendanceReviewList = () => {
               </List.Item>
             )}
           />
-        </Card>
+        </SectionCard>
       )}
 
       {periods.length === 0 && !loading && (

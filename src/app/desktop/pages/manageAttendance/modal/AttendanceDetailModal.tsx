@@ -130,7 +130,7 @@ const AttendanceDetailModal = ({ open, onClose, employeeId, employeeName, date }
                                 <Tag color="green" icon={<UnlockOutlined />}>Đang mở</Tag>
                             )}
                             <br />
-                            <Text type="secondary" className="text-xs">
+                            <Text type="secondary">
                                 {isPayrollLocked
                                     ? "Bản ghi thuộc kỳ lương đã phê duyệt, không thể mở khóa."
                                     : "Bản ghi bị khóa sẽ không thể điều chỉnh được."}

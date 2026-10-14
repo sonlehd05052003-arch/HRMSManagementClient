@@ -33,20 +33,20 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, onCancel }) => {
         dispatch(createTask(submitData))
             .unwrap()
             .then(() => {
-                message.success("Task created successfully");
+                message.success("Đã tạo công việc");
                 form.resetFields();
                 onCancel();
                 dispatch(fetchAllTasks());
             })
             .catch((err: any) => {
-                message.error(err || "Failed to create task");
+                message.error(err || "Tạo công việc thất bại");
             })
             .finally(() => setLoading(false));
     };
 
     return (
         <Modal
-            title="Create New Task"
+            title="Tạo công việc"
             open={open}
             onCancel={onCancel}
             onOk={() => form.submit()}
@@ -61,28 +61,28 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, onCancel }) => {
             >
                 <Form.Item
                     name="taskTitle"
-                    label="Task Title"
-                    rules={[{ required: true, message: 'Please enter task title' }]}
+                    label="Tên công việc"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên công việc' }]}
                 >
-                    <Input placeholder="Enter task title" />
+                    <Input placeholder="Nhập tên công việc" />
                 </Form.Item>
 
                 <Form.Item
                     name="taskType"
-                    label="Task Type"
-                    rules={[{ required: true, message: 'Please enter task type' }]}
+                    label="Loại công việc"
+                    rules={[{ required: true, message: 'Vui lòng nhập loại công việc' }]}
                 >
                     <Input placeholder="Enter task type (e.g. Leave Approval, Research...)" />
                 </Form.Item>
 
                 <Form.Item
                     name="assignedTo"
-                    label="Assign To"
-                    rules={[{ required: true, message: 'Please select a user' }]}
+                    label="Giao cho"
+                    rules={[{ required: true, message: 'Vui lòng chọn người thực hiện' }]}
                 >
                     <Select
                         showSearch
-                        placeholder="Select user"
+                        placeholder="Chọn người thực hiện"
                         optionFilterProp="children"
                     >
                         {allUsers.map((user: IUser) => (
@@ -95,28 +95,28 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, onCancel }) => {
 
                 <Form.Item
                     name="priority"
-                    label="Priority"
+                    label="Độ ưu tiên"
                     rules={[{ required: true }]}
                 >
                     <Select>
-                        <Select.Option value="High">High</Select.Option>
-                        <Select.Option value="Medium">Medium</Select.Option>
-                        <Select.Option value="Low">Low</Select.Option>
+                        <Select.Option value="High">Cao</Select.Option>
+                        <Select.Option value="Medium">Trung bình</Select.Option>
+                        <Select.Option value="Low">Thấp</Select.Option>
                     </Select>
                 </Form.Item>
 
                 <Form.Item
                     name="dueDate"
-                    label="Due Date"
+                    label="Hạn hoàn thành"
                 >
                     <DatePicker style={{ width: '100%' }} disabledDate={(current) => current && current < dayjs().startOf('day')} />
                 </Form.Item>
 
                 <Form.Item
                     name="taskDescription"
-                    label="Description"
+                    label="Mô tả"
                 >
-                    <Input.TextArea rows={4} placeholder="Enter task description" />
+                    <Input.TextArea rows={4} placeholder="Nhập mô tả công việc" />
                 </Form.Item>
             </Form>
         </Modal>

@@ -1,12 +1,14 @@
-import { Button, Form, Input, DatePicker, TimePicker, message, Card, Typography, Radio, Row, Col, Alert, AutoComplete } from "antd";
+import { Button, Form, Input, DatePicker, TimePicker, message, Typography, Radio, Row, Col, Alert, AutoComplete } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { createOvertimeRequest, selectOvertimeLoading, fetchMyOvertimeRequests } from "../../../../../store/overtimeSlide";
 import { fetchMySchedule, selectMySchedule } from "../../../../../store/shiftAssignmentSlide";
 import { SUGGESTIONS_OVERTIME_REASON } from "../../../../../constants/explanationTemplates";
 import dayjs from "dayjs";
 import { useEffect, useMemo } from "react";
+import { ClockCircleOutlined } from "@ant-design/icons";
+import { SectionCard } from "../../../components/listPage";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 const { TextArea } = Input;
 
 const OvertimeRequestForm = () => {
@@ -200,11 +202,7 @@ const OvertimeRequestForm = () => {
     };
 
     return (
-        <Card className="rounded-2xl shadow-md border-0 bg-white">
-            <Title level={4} className="mb-6 flex items-center text-slate-800">
-                <span className="w-1.5 h-6 bg-indigo-500 rounded-full mr-3"></span>
-                Đăng ký tăng ca (OT)
-            </Title>
+        <SectionCard title="Đăng ký tăng ca (OT)" icon={<ClockCircleOutlined />} gap={0}>
             
             <Form 
                 form={form} 
@@ -221,13 +219,12 @@ const OvertimeRequestForm = () => {
                         style={{ width: "100%" }} 
                         format="DD/MM/YYYY" 
                         disabledDate={disabledDate} 
-                        className="h-10 rounded-lg"
                         placeholder="Chọn ngày đăng ký OT"
                     />
                 </Form.Item>
 
                 {overtimeDate && (
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6 animate-in fade-in duration-500">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
                         <div className="mb-4">
                             {selectedDateShift ? (
                                 <Alert
@@ -258,15 +255,15 @@ const OvertimeRequestForm = () => {
                                     {selectedDateShift ? (
                                         <>
                                             <Col span={12}>
-                                                <Radio.Button value="BeforeShift" className="w-full text-center h-10 leading-10 rounded-l-lg">Trước ca</Radio.Button>
+                                                <Radio.Button value="BeforeShift" className="w-full text-center">Trước ca</Radio.Button>
                                             </Col>
                                             <Col span={12}>
-                                                <Radio.Button value="AfterShift" className="w-full text-center h-10 leading-10 rounded-r-lg">Sau ca</Radio.Button>
+                                                <Radio.Button value="AfterShift" className="w-full text-center">Sau ca</Radio.Button>
                                             </Col>
                                         </>
                                     ) : (
                                         <Col span={24}>
-                                            <Radio.Button value="FullRange" className="w-full text-center h-10 leading-10 rounded-lg">Tăng ca ngày nghỉ/lễ</Radio.Button>
+                                            <Radio.Button value="FullRange" className="w-full text-center">Tăng ca ngày nghỉ/lễ</Radio.Button>
                                         </Col>
                                     )}
                                 </Row>
@@ -285,7 +282,6 @@ const OvertimeRequestForm = () => {
                                     <TimePicker 
                                         style={{ width: "100%" }} 
                                         format="HH:mm" 
-                                        className="h-10 rounded-lg"
                                         disabled={otMode === "AfterShift"}
                                         disabledTime={() => getDisabledStartTime()}
                                         hideDisabledOptions
@@ -303,7 +299,6 @@ const OvertimeRequestForm = () => {
                                     <TimePicker 
                                         style={{ width: "100%" }} 
                                         format="HH:mm" 
-                                        className="h-10 rounded-lg"
                                         disabled={otMode === "BeforeShift"}
                                         disabledTime={() => getDisabledEndTime()}
                                         hideDisabledOptions
@@ -313,33 +308,33 @@ const OvertimeRequestForm = () => {
                         </div>
                         
                         {selectedDateShift && (
-                            <div className="mt-2 text-xs text-slate-400 italic">
+                            <Text type="secondary" italic className="block mt-2" style={{ fontSize: 12 }}>
                                 * Lưu ý: Giờ tăng ca tối đa là 4 tiếng/ngày và không được trùng với giờ làm việc chính.
-                            </div>
+                            </Text>
                         )}
                     </div>
                 )}
 
                 <Form.Item name="reason" label={<Text strong>Lý do tăng ca</Text>} rules={[{ required: true, message: "Vui lòng nhập lý do!" }]}>
                     <AutoComplete options={reasonOptions} style={{ width: "100%" }} popupMatchSelectWidth>
-                        <TextArea rows={3} placeholder="Nhập lý do hoặc chọn gợi ý từ danh sách..." className="rounded-lg" showCount maxLength={500} />
+                        <TextArea rows={3} placeholder="Nhập lý do hoặc chọn gợi ý từ danh sách..." showCount maxLength={500} />
                     </AutoComplete>
                 </Form.Item>
 
                 <Form.Item name="taskDescription" label={<Text strong>Nội dung công việc</Text>}>
-                    <TextArea rows={3} placeholder="Mô tả chi tiết các đầu việc sẽ thực hiện..." className="rounded-lg" />
+                    <TextArea rows={3} placeholder="Mô tả chi tiết các đầu việc sẽ thực hiện..." />
                 </Form.Item>
 
                 <Button 
                     type="primary" 
                     htmlType="submit" 
-                    className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 mt-4 text-base font-semibold shadow-lg shadow-indigo-100" 
+                    block 
                     loading={loading}
                 >
                     Gửi yêu cầu đăng ký
                 </Button>
             </Form>
-        </Card>
+        </SectionCard>
     );
 };
 

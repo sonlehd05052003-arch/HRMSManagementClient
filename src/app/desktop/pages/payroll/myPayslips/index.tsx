@@ -1,12 +1,12 @@
 import { useEffect } from "react"
-import { Table, Card, Button, Typography, Tag } from "antd"
+import { Table, Button, Tag } from "antd"
 import { FilePdfOutlined } from "@ant-design/icons"
 import { useAppDispatch, useAppSelector } from "../../../../../store"
 import { fetchMyPayslips, downloadPayslipPdf, selectMyPayslips, selectPayrollLoading } from "../../../../../store/payrollSlide"
 import type { IPayslip } from "../../../../../types/payroll"
 import { errorText } from "../../../../../utils/apiError";
+import { PageHeader, TableCard } from "../../../components/listPage"
 
-const { Title } = Typography
 
 const MyPayslips = () => {
   const dispatch = useAppDispatch()
@@ -42,44 +42,52 @@ const MyPayslips = () => {
       title: "Số phiếu",
       dataIndex: "payslipNumber",
       key: "payslipNumber",
+      width: 170,
       render: (v: string) => <span className="font-mono text-blue-600">{v}</span>
     },
     {
       title: "Kỳ lương",
       key: "period",
-      render: (_: any, r: IPayslip) => <strong>Tháng {r.month}/{r.year}</strong>
+      width: 130,
+      render: (_: any, r: IPayslip) => <strong style={{ whiteSpace: "nowrap" }}>Tháng {r.month}/{r.year}</strong>
     },
     {
       title: "Tổng thu nhập",
       dataIndex: "grossPay",
       align: "right",
-      render: (v: number) => v.toLocaleString() + " đ"
+      width: 160,
+      render: (v: number) => <span style={{ whiteSpace: "nowrap" }}>{v.toLocaleString() + " đ"}</span>
     },
     {
       title: "Khấu trừ",
       dataIndex: "totalDeductions",
       align: "right",
-      render: (v: number) => <span className="text-red-500">-{v.toLocaleString()} đ</span>
+      width: 150,
+      render: (v: number) => <span className="text-red-500" style={{ whiteSpace: "nowrap" }}>-{v.toLocaleString()} đ</span>
     },
     {
       title: "Thực lĩnh",
       dataIndex: "netPay",
       align: "right",
-      render: (v: number) => <span className="font-bold text-green-600">{v.toLocaleString()} đ</span>
+      width: 160,
+      render: (v: number) => <span className="font-bold text-green-600" style={{ whiteSpace: "nowrap" }}>{v.toLocaleString()} đ</span>
     },
     {
       title: "Ngày nhận",
       dataIndex: "generatedDate",
-      render: (v: string) => new Date(v).toLocaleDateString("vi-VN")
+      width: 120,
+      render: (v: string) => <span style={{ whiteSpace: "nowrap" }}>{new Date(v).toLocaleDateString("vi-VN")}</span>
     },
     {
       title: "Trình trạng",
       dataIndex: "isViewed",
+      width: 120,
       render: (v: boolean) => v ? <Tag color="default">Đã xem</Tag> : <Tag color="blue">Mới</Tag>
     },
     {
       title: "",
       key: "action",
+      width: 130,
       render: (_: any, r: IPayslip) => (
         <Button
           type="primary"
@@ -93,17 +101,18 @@ const MyPayslips = () => {
   ]
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
-      <Title level={2} className="mb-6">Phiếu Lương Của Tôi</Title>
-      <Card className="shadow-sm rounded-xl">
+    <div className="p-2">
+      <PageHeader title="Phiếu lương của tôi" />
+      <TableCard title="Danh sách phiếu lương" count={myPayslips.length}>
         <Table
           columns={columns as any}
           dataSource={myPayslips}
           rowKey="payslipId"
           loading={loading}
           pagination={{ pageSize: 12 }}
+          scroll={{ x: 1140 }}
         />
-      </Card>
+      </TableCard>
     </div>
   )
 }

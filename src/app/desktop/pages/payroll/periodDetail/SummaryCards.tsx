@@ -1,4 +1,5 @@
-import { Row, Col, Card, Statistic } from "antd"
+import type { ReactNode } from "react"
+import { Row, Col, Card, Statistic, Typography } from "antd"
 import { useAppSelector } from "../../../../../store"
 import { selectCurrentPeriod, selectPayrollRecords } from "../../../../../store/payrollSlide"
 import { selectInfoLogin } from "../../../../../store/authSlide"
@@ -9,6 +10,29 @@ import {
   SafetyCertificateOutlined,
   BankOutlined
 } from "@ant-design/icons"
+
+const { Text } = Typography
+
+/** Same look as the shared StatRow, plus an optional caption under the value (needed for the manager's view) */
+const SummaryCard = ({ title, value, suffix, prefix, color, caption }: {
+  title: string
+  value: number
+  suffix?: string
+  prefix: ReactNode
+  color?: string
+  caption?: ReactNode
+}) => (
+  <Card size="small" className="rounded-xl shadow-sm" style={{ height: "100%" }}>
+    <Statistic
+      title={title}
+      value={value}
+      suffix={suffix}
+      prefix={prefix}
+      valueStyle={{ color, fontSize: 24 }}
+    />
+    {caption && <Text type="secondary" style={{ fontSize: 12 }}>{caption}</Text>}
+  </Card>
+)
 
 const SummaryCards = () => {
   const period = useAppSelector(selectCurrentPeriod)
@@ -36,72 +60,47 @@ const SummaryCards = () => {
   }, 0)
 
   const totalDeductions = totalGross - totalNet
+  const ofEmployees = isManager ? `Của ${totalEmployees} nhân viên` : undefined
 
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
       <Col xs={24} sm={12} lg={6}>
-        <Card bordered={false} className="shadow-sm border-l-4 border-blue-500">
-          <div className="flex justify-between items-start">
-            <Statistic
-              title={employeeCountTitle}
-              value={totalEmployees}
-              prefix={<UsergroupAddOutlined className="text-blue-500 mr-2" />}
-            />
-          </div>
-          {isManager && uniqueDepartments.length > 0 && (
-            <div className="mt-2 text-xs text-gray-500">
-              Phòng ban: {uniqueDepartments.join(", ")}
-            </div>
-          )}
-        </Card>
+        <SummaryCard
+          title={employeeCountTitle}
+          value={totalEmployees}
+          prefix={<UsergroupAddOutlined className="text-blue-500 mr-2" />}
+          caption={isManager && uniqueDepartments.length > 0 ? `Phòng ban: ${uniqueDepartments.join(", ")}` : undefined}
+        />
       </Col>
       <Col xs={24} sm={12} lg={6}>
-        <Card bordered={false} className="shadow-sm border-l-4 border-orange-500">
-          <Statistic
-            title={isManager ? "Tổng Thu Nhập (Quản lý)" : "Tổng Thu Nhập (Gross)"}
-            value={totalGross}
-            suffix="đ"
-            prefix={<WalletOutlined className="text-orange-500 mr-2" />}
-            valueStyle={{ color: "#fa8c16" }}
-          />
-          {isManager && (
-            <div className="mt-2 text-xs text-gray-500">
-              Của {totalEmployees} nhân viên
-            </div>
-          )}
-        </Card>
+        <SummaryCard
+          title={isManager ? "Tổng Thu Nhập (Quản lý)" : "Tổng Thu Nhập (Gross)"}
+          value={totalGross}
+          prefix={<WalletOutlined className="text-orange-500 mr-2" />}
+          suffix="đ"
+          color="#fa8c16"
+          caption={ofEmployees}
+        />
       </Col>
       <Col xs={24} sm={12} lg={6}>
-        <Card bordered={false} className="shadow-sm border-l-4 border-red-500">
-          <Statistic
-            title={isManager ? "Thuế & BH (Quản lý)" : "Ước tính Thuế & BH"}
-            value={totalDeductions}
-            suffix="đ"
-            prefix={<SafetyCertificateOutlined className="text-red-500 mr-2" />}
-            valueStyle={{ color: "#f5222d" }}
-          />
-          {isManager && (
-            <div className="mt-2 text-xs text-gray-500">
-              Của {totalEmployees} nhân viên
-            </div>
-          )}
-        </Card>
+        <SummaryCard
+          title={isManager ? "Thuế & BH (Quản lý)" : "Ước tính Thuế & BH"}
+          value={totalDeductions}
+          prefix={<SafetyCertificateOutlined className="text-red-500 mr-2" />}
+          suffix="đ"
+          color="#f5222d"
+          caption={ofEmployees}
+        />
       </Col>
       <Col xs={24} sm={12} lg={6}>
-        <Card bordered={false} className="shadow-sm border-l-4 border-green-500">
-          <Statistic
-            title={isManager ? "Thực Lĩnh (Quản lý)" : "Thực Lĩnh (Net Pay)"}
-            value={totalNet}
-            suffix="đ"
-            prefix={<BankOutlined className="text-green-500 mr-2" />}
-            valueStyle={{ color: "#52c41a" }}
-          />
-          {isManager && (
-            <div className="mt-2 text-xs text-gray-500">
-              Của {totalEmployees} nhân viên
-            </div>
-          )}
-        </Card>
+        <SummaryCard
+          title={isManager ? "Thực Lĩnh (Quản lý)" : "Thực Lĩnh (Net Pay)"}
+          value={totalNet}
+          prefix={<BankOutlined className="text-green-500 mr-2" />}
+          suffix="đ"
+          color="#52c41a"
+          caption={ofEmployees}
+        />
       </Col>
     </Row>
   )

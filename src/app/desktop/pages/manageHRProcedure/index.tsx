@@ -164,7 +164,7 @@ const ManageHRProcedure = () => {
     return (
         <div className="p-2">
             <PageHeader
-                title="Quản lý Thủ tục HR"
+                title="Quản lý thủ tục HR"
                 actions={canCreate && (
                     <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsAddOpen(true)}>
                         Tạo thủ tục mới
@@ -192,7 +192,6 @@ const ManageHRProcedure = () => {
                     loading={loading} 
                     pagination={{ pageSize: 10 }}
                     scroll={{ x: 1200 }} 
-                    size="middle"
                 />
             </TableCard>
 

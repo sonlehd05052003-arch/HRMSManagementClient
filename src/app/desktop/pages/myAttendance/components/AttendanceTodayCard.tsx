@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Card, Button, Typography, Tag, Space, message, Row, Col, Statistic, Spin } from "antd";
-import { CheckCircleOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Button, Typography, Tag, Space, message, Row, Col, Statistic, Spin } from "antd";
+import { CheckCircleOutlined, LogoutOutlined, ScanOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { checkIn, checkOut, fetchMyToday, selectMyToday, selectAttendanceLoading } from "../../../../../store/attendanceSlide";
 import { fetchLocationSettings, selectLocationSettings } from "../../../../../store/systemSettingSlide";
 import dayjs from "dayjs";
 import CameraCaptureModal from "../modal/CameraCaptureModal";
 import { errorText } from "../../../../../utils/apiError";
+import { SectionCard } from "../../../components/listPage";
 
 const { Text } = Typography;
 
@@ -135,12 +136,8 @@ const AttendanceTodayCard = () => {
 
     return (
         <>
-            <Card
-                title="Attendance Today"
-                variant="borderless"
-                className="shadow-sm mb-6"
-            >
-                <Text type="secondary" className="block mb-4">Ngày hiện tại: {dayjs().format("DD/MM/YYYY")}</Text>
+            <SectionCard title="Chấm công hôm nay" icon={<ScanOutlined />} gap={0}>
+                <Text type="secondary" className="block" style={{ marginBottom: 16 }}>Ngày hiện tại: {dayjs().format("DD/MM/YYYY")}</Text>
 
                 {loading && !myToday ? (
                     <div className="text-center p-6"><Spin /></div>
@@ -162,17 +159,17 @@ const AttendanceTodayCard = () => {
                         </Col>
                         <Col xs={24} sm={12} md={12}>
                             <Statistic
-                                title="Working hours"
+                                title="Giờ làm việc"
                                 value={attendance?.workingHours ?? 0}
                                 suffix="h"
                             />
                         </Col>
                         <Col xs={24} sm={12} md={12}>
                             <div className="flex flex-col">
-                                <span className="text-gray-400 text-sm mb-1">Status</span>
+                                <Text type="secondary" style={{ marginBottom: 4 }}>Trạng thái</Text>
                                 <div>
                                     <Tag color={getStatusColor(attendance?.status || "")}>
-                                        {attendance?.status || "Not Checked In"}
+                                        {attendance?.status || "Chưa chấm công"}
                                     </Tag>
                                 </div>
                             </div>
@@ -204,11 +201,11 @@ const AttendanceTodayCard = () => {
                         </Button>
                     </Space>
                 </div>
-            </Card>
+            </SectionCard>
 
             <CameraCaptureModal 
                 open={checkInOpen}
-                title="Check In"
+                title="Giờ vào"
                 onCancel={() => setCheckInOpen(false)}
                 onCapture={handleCheckInCapture}
                 loading={loading}
@@ -216,7 +213,7 @@ const AttendanceTodayCard = () => {
 
             <CameraCaptureModal 
                 open={checkOutOpen}
-                title="Check Out"
+                title="Giờ ra"
                 onCancel={() => setCheckOutOpen(false)}
                 onCapture={handleCheckOutCapture}
                 loading={loading}

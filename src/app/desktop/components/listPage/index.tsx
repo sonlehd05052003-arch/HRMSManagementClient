@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Button, Card, Space, Tag, Typography } from "antd";
+import { Button, Card, Col, Row, Space, Statistic, Tag, Typography } from "antd";
 import { ClearOutlined, FilterOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
@@ -14,6 +14,11 @@ const BLOCK_GAP = 16;
  *   PageHeader   page title on the left, the page's main actions (e.g. "Thêm mới") on the right
  *   FilterCard   the search / filter conditions, in their own card
  *   TableCard    the result list, with its name and how many rows match
+ *   SectionCard  any other block of a page: a form, details, a chart
+ *   StatRow      a row of key figures above the content
+ *
+ * Text sizes come from the theme (constants/theme.ts): 14px for content, 16px for block titles, 20px for the page
+ * title. Use Typography.Text type="secondary" for notes rather than setting a font size.
  */
 
 interface PageHeaderProps {
@@ -80,4 +85,58 @@ export const TableCard = ({ title, count, extra, children }: TableCardProps) => 
     >
         {children}
     </Card>
+);
+
+interface SectionCardProps {
+    title?: ReactNode;
+    icon?: ReactNode;
+    extra?: ReactNode;
+    children: ReactNode;
+    /** Space below the card; set to 0 for the last block or inside a grid */
+    gap?: number;
+    bodyPadding?: number;
+}
+
+export const SectionCard = ({ title, icon, extra, children, gap = BLOCK_GAP, bodyPadding }: SectionCardProps) => (
+    <Card
+        className="rounded-xl shadow-sm"
+        style={{ marginBottom: gap }}
+        title={title && (icon ? <Space><span className="text-indigo-500">{icon}</span><span>{title}</span></Space> : title)}
+        extra={extra}
+        styles={bodyPadding !== undefined ? { body: { padding: bodyPadding } } : undefined}
+    >
+        {children}
+    </Card>
+);
+
+export interface StatItem {
+    title: ReactNode;
+    value?: number | string;
+    suffix?: ReactNode;
+    prefix?: ReactNode;
+    color?: string;
+    /** Shown at the top right of the card */
+    icon?: ReactNode;
+    /** One short line under the value, e.g. "Đã dùng: 3" */
+    description?: ReactNode;
+}
+
+/** Key figures in equal cards on one row (two per row on a narrow screen) */
+export const StatRow = ({ items, loading }: { items: StatItem[]; loading?: boolean }) => (
+    <Row gutter={[16, 16]} style={{ marginBottom: BLOCK_GAP }}>
+        {items.map((item, i) => (
+            <Col key={i} xs={24} sm={12} lg={Math.max(6, Math.floor(24 / items.length))}>
+                <Card size="small" className="rounded-xl shadow-sm" loading={loading} style={{ height: "100%" }}>
+                    <div className="flex items-start justify-between gap-2">
+                        <Statistic title={item.title} value={item.value} suffix={item.suffix} prefix={item.prefix}
+                            styles={{ content: { color: item.color, fontSize: 24 } }} />
+                        {item.icon && <span style={{ fontSize: 22, color: item.color ?? "#4f46e5" }}>{item.icon}</span>}
+                    </div>
+                    {item.description && (
+                        <Text type="secondary" style={{ fontSize: 12, display: "block", marginTop: 4 }}>{item.description}</Text>
+                    )}
+                </Card>
+            </Col>
+        ))}
+    </Row>
 );

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import {
     Table, Button, Tag, Space, Tooltip, Popconfirm, Empty,
-    Typography, Select, Row, Col, Badge, message, Input, DatePicker,
+    Typography, Select, message, Input, DatePicker,
 } from "antd";
 import {
     UploadOutlined, EditOutlined, DeleteOutlined, DownloadOutlined,
@@ -20,6 +20,7 @@ import {
 import type { IEmployeeDocumentList } from "../../../../../store/employeeDocumentSlide";
 import UploadDocumentModal from "./UploadDocumentModal";
 import EditDocumentModal from "./EditDocumentModal";
+import { TableCard } from "../../../components/listPage";
 
 const { Text } = Typography;
 
@@ -161,7 +162,7 @@ const DocumentsTab = ({ employeeId }: DocumentsTabProps) => {
             width: 200,
             render: (name: string, record: IEmployeeDocumentList) => (
                 <div>
-                    <div style={{ fontSize: 13 }}>{name}</div>
+                    <div>{name}</div>
                     <Text type="secondary" style={{ fontSize: 12 }}>
                         {record.fileType.toUpperCase()} · {record.fileSizeFormatted}
                     </Text>
@@ -218,60 +219,54 @@ const DocumentsTab = ({ employeeId }: DocumentsTabProps) => {
     ];
 
     return (
-        <div>
+        <TableCard
+            title="Tài liệu"
+            count={filteredDocs.length}
+            extra={
+                <Button
+                    type="primary"
+                    icon={<UploadOutlined />}
+                    onClick={() => setIsUploadOpen(true)}
+                >
+                    Tải lên tài liệu
+                </Button>
+            }
+        >
             {/* Toolbar */}
-            <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
-                <Col>
-                    <Space wrap>
-                        <Input
-                            placeholder="Tìm tiêu đề hoặc tên file..."
-                            prefix={<SearchOutlined style={{ color: "#8c8c8c" }} />}
-                            allowClear
-                            style={{ width: 220 }}
-                            value={searchText}
-                            onChange={e => setSearchText(e.target.value)}
-                        />
-                        <FilterOutlined style={{ color: "#8c8c8c" }} />
-                        <Select
-                            style={{ width: 180 }}
-                            placeholder="Danh mục"
-                            allowClear
-                            value={categoryFilter}
-                            onChange={v => setCategoryFilter(v)}
-                            options={CATEGORY_OPTIONS.slice(1)}
-                        />
-                        <Select
-                            style={{ width: 160 }}
-                            placeholder="Người tải"
-                            allowClear
-                            value={uploaderFilter}
-                            onChange={v => setUploaderFilter(v)}
-                            options={uploaderOptions}
-                        />
-                        <DatePicker.RangePicker
-                            style={{ width: 240 }}
-                            placeholder={["Từ ngày", "Đến ngày"]}
-                            format="DD/MM/YYYY"
-                            value={dateRange}
-                            onChange={v => setDateRange(v as [Dayjs | null, Dayjs | null] | null)}
-                        />
-                        {filteredDocs.length > 0 && (
-                            <Badge count={filteredDocs.length} color="#1890ff" showZero>
-                                <span style={{ fontSize: 13, color: "#8c8c8c" }}>tài liệu</span>
-                            </Badge>
-                        )}
-                    </Space>
-                </Col>
-                <Col>
-                    <Button
-                        type="primary"
-                        icon={<UploadOutlined />}
-                        onClick={() => setIsUploadOpen(true)}
-                    >
-                        Tải lên tài liệu
-                    </Button>
-                </Col>
-            </Row>
+            <Space wrap style={{ marginBottom: 16 }}>
+                <Input
+                    placeholder="Tìm tiêu đề hoặc tên file..."
+                    prefix={<SearchOutlined style={{ color: "#8c8c8c" }} />}
+                    allowClear
+                    style={{ width: 220 }}
+                    value={searchText}
+                    onChange={e => setSearchText(e.target.value)}
+                />
+                <FilterOutlined style={{ color: "#8c8c8c" }} />
+                <Select
+                    style={{ width: 180 }}
+                    placeholder="Danh mục"
+                    allowClear
+                    value={categoryFilter}
+                    onChange={v => setCategoryFilter(v)}
+                    options={CATEGORY_OPTIONS.slice(1)}
+                />
+                <Select
+                    style={{ width: 160 }}
+                    placeholder="Người tải"
+                    allowClear
+                    value={uploaderFilter}
+                    onChange={v => setUploaderFilter(v)}
+                    options={uploaderOptions}
+                />
+                <DatePicker.RangePicker
+                    style={{ width: 240 }}
+                    placeholder={["Từ ngày", "Đến ngày"]}
+                    format="DD/MM/YYYY"
+                    value={dateRange}
+                    onChange={v => setDateRange(v as [Dayjs | null, Dayjs | null] | null)}
+                />
+            </Space>
 
             {/* Table */}
             <Table
@@ -279,7 +274,6 @@ const DocumentsTab = ({ employeeId }: DocumentsTabProps) => {
                 dataSource={filteredDocs}
                 rowKey={(record) => record.employeeDocumentId || (record as any).documentId || (record as any).id}
                 loading={loading}
-                size="middle"
                 pagination={{ pageSize: 8, showSizeChanger: false }}
                 locale={{
                     emptyText: (
@@ -310,7 +304,7 @@ const DocumentsTab = ({ employeeId }: DocumentsTabProps) => {
                 onCancel={() => { setIsEditOpen(false); setEditingDoc(null); }}
                 onSuccess={() => { setIsEditOpen(false); setEditingDoc(null); }}
             />
-        </div>
+        </TableCard>
     );
 };
 
