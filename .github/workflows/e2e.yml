@@ -1,0 +1,106 @@
+# End-to-end tests against a real API: SQL Server in a container, the API built from the main branch of
+# the API repository, its migrations and the seeded PERF test data (Tools/HRManagement.Seeder).
+name: E2E
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      sql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: E2e-Strong!Pass1
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'E2e-Strong!Pass1' -Q 'SELECT 1'"
+          --health-interval 10s --health-timeout 5s --health-retries 12
+    env:
+      # Throwaway values for this run only; the API repository keeps its real settings out of git
+      ConnectionStrings__MyCnn: Server=localhost,1433;Database=HRMS_E2E;User Id=sa;Password=E2e-Strong!Pass1;TrustServerCertificate=True
+      Jwt__Key: e2e-only-signing-key-0123456789-abcdefghijklmnopqrstuvwxyz
+      Jwt__Issuer: http://localhost:5103
+      Jwt__Audience: http://localhost:4173
+      Jwt__LifetimeMinutes: "60"
+      Jwt__MaxSessionHours: "8"
+      Email__Smtp: localhost
+      Email__Port: "25"
+      Email__Username: e2e
+      Email__Password: e2e
+      Email__From: e2e@example.com
+      Cloudinary__CloudName: e2e
+      Cloudinary__ApiKey: e2e
+      Cloudinary__ApiSecret: e2e
+      Cloudinary__FolderName: e2e
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://localhost:5103
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: sonlehd05052003-arch/HRMSManagement
+          path: api
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build the API
+        working-directory: api
+        run: |
+          dotnet tool install --global dotnet-ef --version 8.0.23
+          dotnet build HRManagement.csproj --configuration Release
+
+      - name: Create the database
+        working-directory: api
+        run: |
+          dotnet ef database update --configuration Release --no-build --connection "$ConnectionStrings__MyCnn"
+          dotnet run --configuration Release --project Tools/HRManagement.Seeder -- --companies 2 --employees 120 --days 30 --connection "$ConnectionStrings__MyCnn"
+
+      - name: Start the API
+        working-directory: api
+        run: |
+          nohup dotnet bin/Release/net8.0/HRManagement.dll > ../api.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:5103/health && exit 0
+            sleep 2
+          done
+          cat ../api.log
+          exit 1
+
+      - name: Install
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npm run e2e
+        env:
+          E2E_API_URL: http://localhost:5103
+
+      - name: API log
+        if: failure()
+        run: cat api.log
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
