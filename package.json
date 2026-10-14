@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "lint:ci": "eslint . --max-warnings 362",
+    "lint:ci": "eslint . --max-warnings 360",
     "e2e": "playwright test",
     "preview": "vite preview",
     "dev:lan": "vite --host --mode lan"
@@ -23,9 +23,11 @@
     "framer-motion": "^12.33.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-is": "^19.2.3",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.0",
     "react-webcam": "^7.2.0",
+    "recharts": "^3.10.1",
     "redux": "^5.0.1",
     "tailwindcss": "^4.1.18"
   },
